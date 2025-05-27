@@ -53,6 +53,24 @@ class ApiConstants {
   static const String releaseDateLteParam = 'release_date.lte';
   static const String withWatchMonetizationTypesParam = 'with_watch_monetization_types';
   
+  // Advanced search parameters for /discover/movie endpoint
+  static const String primaryReleaseYearParam = 'primary_release_year';
+  static const String primaryReleaseDateGteParam = 'primary_release_date.gte';
+  static const String primaryReleaseDateLteParam = 'primary_release_date.lte';
+  static const String voteAverageGteParam = 'vote_average.gte';
+  static const String voteAverageLteParam = 'vote_average.lte';
+  static const String voteCountGteParam = 'vote_count.gte';
+  static const String withOriginalLanguageParam = 'with_original_language';
+  static const String withoutGenresParam = 'without_genres';
+  static const String withKeywordsParam = 'with_keywords';
+  static const String withoutKeywordsParam = 'without_keywords';
+  static const String withRuntimeGteParam = 'with_runtime.gte';
+  static const String withRuntimeLteParam = 'with_runtime.lte';
+  static const String certificationParam = 'certification';
+  static const String certificationCountryParam = 'certification_country';
+  static const String includeAdultParam = 'include_adult';
+  static const String includeVideoParam = 'include_video';
+  
   // Default values
   static const String defaultLanguage = 'en-US';
   static const int defaultPage = 1;

@@ -10,6 +10,7 @@ import '../models/movie_video.dart';
 import '../models/movie_cast.dart';
 import '../models/movie_review.dart';
 import '../models/movie_images.dart';
+import '../models/advanced_search_params.dart';
 
 abstract class MovieRepository {
   Future<ApiResult<MovieResponse>> getPopularMovies({int page = 1});
@@ -24,6 +25,7 @@ abstract class MovieRepository {
   Future<ApiResult<MovieImagesResponse>> getMovieImages(int movieId);
   Future<ApiResult<GenreResponse>> getGenres();
   Future<ApiResult<MovieResponse>> getMoviesByGenre(int genreId, {int page = 1});
+  Future<ApiResult<MovieResponse>> discoverMovies(AdvancedSearchParams params);
   
   // New methods for enhanced home screen content
   Future<ApiResult<MixedContentResponse>> getTrendingToday({int page = 1});
@@ -156,6 +158,15 @@ class MovieRepositoryImpl implements MovieRepository {
         ApiConstants.pageParam: page,
         ApiConstants.sortByParam: 'popularity.desc',
       },
+      fromJson: (json) => MovieResponse.fromJson(json),
+    );
+  }
+
+  @override
+  Future<ApiResult<MovieResponse>> discoverMovies(AdvancedSearchParams params) async {
+    return await _apiClient.get(
+      ApiConstants.discoverMovie,
+      queryParameters: params.toQueryParameters(),
       fromJson: (json) => MovieResponse.fromJson(json),
     );
   }
