@@ -7,6 +7,10 @@ import '../../features/favorites/screens/favorites_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../../features/movie_details/screens/movie_details_screen.dart';
 import '../../features/movie_details/providers/movie_details_provider.dart';
+import '../../features/auth/screens/login_screen.dart';
+import '../../features/auth/screens/register_screen.dart';
+import '../../features/auth/screens/forgot_password_screen.dart';
+import '../../features/auth/providers/auth_provider.dart';
 import '../../shared/widgets/bottom_navigation.dart';
 import '../../shared/repositories/movie_repository.dart';
 import '../constants/app_constants.dart';
@@ -20,7 +24,48 @@ class AppRouter {
   static final GoRouter _router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: AppConstants.homeRoute,
+    redirect: (context, state) {
+      final authProvider = context.read<AuthProvider>();
+      final isAuthenticated = authProvider.isAuthenticated;
+      final isLoading = authProvider.isLoading;
+      final isAuthRoute = [
+        AppConstants.loginRoute,
+        AppConstants.registerRoute,
+        AppConstants.forgotPasswordRoute,
+      ].contains(state.matchedLocation);
+
+      // Don't redirect while loading
+      if (isLoading) {
+        return null;
+      }
+
+      // If authenticated and on auth route, redirect to home
+      if (isAuthenticated && isAuthRoute) {
+        return AppConstants.homeRoute;
+      }
+
+      // Allow guest access - no forced redirects to login
+      return null;
+    },
     routes: [
+      // Authentication routes
+      GoRoute(
+        path: AppConstants.loginRoute,
+        name: 'login',
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: AppConstants.registerRoute,
+        name: 'register',
+        builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: AppConstants.forgotPasswordRoute,
+        name: 'forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+
+      // Main app routes with shell navigation (guest access allowed)
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         builder: (context, state, child) {
@@ -52,6 +97,8 @@ class AppRouter {
           ),
         ],
       ),
+
+      // Movie details route (guest access allowed)
       GoRoute(
         path: '${AppConstants.movieDetailsRoute}/:id',
         name: 'movie-details',
@@ -128,6 +175,21 @@ class AppRouter {
     context.go(AppConstants.profileRoute);
   }
 
+  /// Navigate to login
+  static void goToLogin(BuildContext context) {
+    context.go(AppConstants.loginRoute);
+  }
+
+  /// Navigate to register
+  static void goToRegister(BuildContext context) {
+    context.go(AppConstants.registerRoute);
+  }
+
+  /// Navigate to forgot password
+  static void goToForgotPassword(BuildContext context) {
+    context.go(AppConstants.forgotPasswordRoute);
+  }
+
   /// Get current route name
   static String? getCurrentRoute(BuildContext context) {
     final routeMatch = GoRouter.of(context).routerDelegate.currentConfiguration;
@@ -141,6 +203,15 @@ class AppRouter {
       AppConstants.exploreRoute,
       AppConstants.favoritesRoute,
       AppConstants.profileRoute,
+    ].contains(route);
+  }
+
+  /// Check if current route is an auth route
+  static bool isAuthRoute(String route) {
+    return [
+      AppConstants.loginRoute,
+      AppConstants.registerRoute,
+      AppConstants.forgotPasswordRoute,
     ].contains(route);
   }
 }

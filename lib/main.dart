@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'core/network/api_client.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -9,10 +11,18 @@ import 'features/home/providers/home_provider.dart';
 import 'features/explore/providers/explore_provider.dart';
 import 'features/favorites/providers/favorites_provider.dart';
 import 'features/profile/providers/profile_provider.dart';
+import 'features/auth/providers/auth_provider.dart';
+import 'features/auth/services/auth_service.dart';
+import 'features/auth/repositories/auth_repository.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase with platform-specific options
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // Load environment variables
   await dotenv.load(fileName: ".env");
@@ -34,8 +44,16 @@ class MainApp extends StatelessWidget {
         Provider<MovieRepository>(
           create: (_) => MovieRepositoryImpl(ApiClient()),
         ),
+        Provider<AuthRepository>(
+          create: (_) => AuthRepositoryImpl(AuthService()),
+        ),
 
         // Providers
+        ChangeNotifierProvider<AuthProvider>(
+          create: (context) => AuthProvider(
+            context.read<AuthRepository>(),
+          ),
+        ),
         ChangeNotifierProvider<ProfileProvider>(
           create: (_) => ProfileProvider(),
         ),
@@ -54,7 +72,6 @@ class MainApp extends StatelessWidget {
           ),
           update: (context, movieRepo, previous) => previous ?? ExploreProvider(movieRepo),
         ),
-
 
       ],
       child: Consumer<ProfileProvider>(
