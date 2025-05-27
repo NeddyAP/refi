@@ -10,6 +10,8 @@ import '../../../shared/models/user.dart';
 import '../providers/home_provider.dart';
 import '../widgets/content_carousel.dart';
 import 'all_items_screen.dart';
+import '../../../features/auth/services/tmdb_auth_service.dart';
+import '../../../features/auth/models/auth_user.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -45,12 +47,16 @@ class _HomeScreenState extends State<HomeScreen> {
     _autoSlideTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
       if (!_userInteracting && _pageController.hasClients) {
         final provider = context.read<HomeProvider>();
-        final movieCount = provider.upcomingMovies?.when(
-          success: (movieResponse) => movieResponse.results.length > 5 ? 5 : movieResponse.results.length,
-          error: (_, __) => 5,
-          loading: () => 5,
-        ) ?? 5;
-        
+        final movieCount =
+            provider.upcomingMovies?.when(
+              success: (movieResponse) => movieResponse.results.length > 5
+                  ? 5
+                  : movieResponse.results.length,
+              error: (_, __) => 5,
+              loading: () => 5,
+            ) ??
+            5;
+
         if (movieCount > 1) {
           final nextIndex = (_currentCarouselIndex + 1) % movieCount;
           _pageController.animateToPage(
@@ -67,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _userInteracting = true;
     });
-    
+
     // Resume auto-slide after 5 seconds of inactivity
     Timer(const Duration(seconds: 5), () {
       if (mounted) {
@@ -153,74 +159,84 @@ class _HomeScreenState extends State<HomeScreen> {
                               title: 'Trending Today',
                               apiResult: provider.trendingToday,
                               sectionKey: 'trendingToday',
-                              onRetry: () => provider.retrySection('trendingToday'),
+                              onRetry: () =>
+                                  provider.retrySection('trendingToday'),
                               collectionType: CollectionType.trendingToday,
                             ),
                             const SizedBox(height: 24),
-                            
+
                             // Trending This Week
                             ContentCarousel(
                               title: 'Trending This Week',
                               apiResult: provider.trendingThisWeek,
                               sectionKey: 'trendingThisWeek',
-                              onRetry: () => provider.retrySection('trendingThisWeek'),
+                              onRetry: () =>
+                                  provider.retrySection('trendingThisWeek'),
                               collectionType: CollectionType.trendingThisWeek,
                             ),
                             const SizedBox(height: 24),
-                            
+
                             // Latest Trailers
                             ContentCarousel(
                               title: 'Latest Trailers',
                               apiResult: provider.latestTrailers,
                               sectionKey: 'latestTrailers',
-                              onRetry: () => provider.retrySection('latestTrailers'),
+                              onRetry: () =>
+                                  provider.retrySection('latestTrailers'),
                               collectionType: CollectionType.latestTrailers,
                             ),
                             const SizedBox(height: 24),
-                            
+
                             // Popular on Streaming
                             ContentCarousel(
                               title: 'Popular on Streaming',
                               apiResult: provider.popularOnStreaming,
                               sectionKey: 'popularOnStreaming',
-                              onRetry: () => provider.retrySection('popularOnStreaming'),
+                              onRetry: () =>
+                                  provider.retrySection('popularOnStreaming'),
                               collectionType: CollectionType.popularOnStreaming,
                             ),
                             const SizedBox(height: 24),
-                            
+
                             // Popular On TV
                             ContentCarousel(
                               title: 'Popular On TV',
                               apiResult: provider.popularOnTv,
                               sectionKey: 'popularOnTv',
-                              onRetry: () => provider.retrySection('popularOnTv'),
+                              onRetry: () =>
+                                  provider.retrySection('popularOnTv'),
                               collectionType: CollectionType.popularOnTv,
                             ),
                             const SizedBox(height: 24),
-                            
+
                             // Available For Rent
                             ContentCarousel(
                               title: 'Available For Rent',
                               apiResult: provider.availableForRent,
                               sectionKey: 'availableForRent',
-                              onRetry: () => provider.retrySection('availableForRent'),
+                              onRetry: () =>
+                                  provider.retrySection('availableForRent'),
                               collectionType: CollectionType.availableForRent,
                             ),
                             const SizedBox(height: 24),
-                            
+
                             // Currently In Theaters
                             ContentCarousel(
                               title: 'Currently In Theaters',
                               apiResult: provider.currentlyInTheaters,
                               sectionKey: 'currentlyInTheaters',
-                              onRetry: () => provider.retrySection('currentlyInTheaters'),
-                              collectionType: CollectionType.currentlyInTheaters,
+                              onRetry: () =>
+                                  provider.retrySection('currentlyInTheaters'),
+                              collectionType:
+                                  CollectionType.currentlyInTheaters,
                             ),
                           ],
                         );
                       },
                     ),
-                    SizedBox(height: MediaQuery.of(context).padding.bottom + 20),
+                    SizedBox(
+                      height: MediaQuery.of(context).padding.bottom + 20,
+                    ),
                   ],
                 ),
               ),
@@ -234,32 +250,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class _HeaderSection extends StatelessWidget {
   final int currentCarouselIndex;
-  
+
   const _HeaderSection({required this.currentCarouselIndex});
 
-  // Mock function to check if user is logged in
-  // In a real app, this would come from an authentication provider
-  User? get currentUser => null; // Return null for guest user
-  
+  AuthUser? get tmdbUser => TmdbAuthService().currentUser;
+
   String get userName {
-    if (currentUser != null) {
-      return currentUser!.name;
+    if (tmdbUser != null && tmdbUser!.displayName.isNotEmpty) {
+      return tmdbUser!.displayName;
     }
     return "Guest";
   }
 
   Widget userAvatar(BuildContext context) {
-    if (currentUser?.photoUrl != null) {
+    final user = tmdbUser;
+    if (user != null && user.avatarUrl != null && user.avatarUrl!.isNotEmpty) {
       return CircleAvatar(
         radius: 18,
-        backgroundImage: NetworkImage(currentUser!.photoUrl!),
+        backgroundImage: NetworkImage(user.avatarUrl!),
       );
-    } else if (currentUser != null) {
+    } else if (user != null && user.displayName.isNotEmpty) {
       return CircleAvatar(
         radius: 18,
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: Text(
-          currentUser!.initials,
+          user.initials,
           style: TextStyle(
             color: Theme.of(context).colorScheme.onPrimary,
             fontSize: 14,
@@ -315,8 +330,8 @@ class _HeaderSection extends StatelessWidget {
                 ],
               ),
             ),
-            
-            // Notification Bell
+
+            // Settings (Gear) Icon
             Flexible(
               flex: 2,
               child: Align(
@@ -327,12 +342,15 @@ class _HeaderSection extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      AppRouter.goToProfile(context);
+                    },
                     icon: const Icon(
-                      Icons.notifications_outlined,
+                      Icons.settings,
                       color: Colors.white,
                       size: 22,
                     ),
+                    tooltip: 'Profile & Settings',
                   ),
                 ),
               ),
@@ -367,64 +385,69 @@ class _MovieCarouselSection extends StatelessWidget {
             children: [
               // Background Image/Carousel
               provider.upcomingMovies?.when(
-                success: (movieResponse) {
-                  if (movieResponse.results.isEmpty) {
-                    return _buildPlaceholderCarousel();
-                  }
-                  
-                  // Display only the first 5 newest movies
-                  final newestMovies = movieResponse.results.take(5).toList();
-                  
-                  return PageView.builder(
-                    controller: pageController,
-                    onPageChanged: (index) {
-                      onUserInteraction();
-                      onPageChanged(index);
-                    },
-                    itemCount: newestMovies.length,
-                    itemBuilder: (context, index) {
-                      final movie = newestMovies[index];
-                      return GestureDetector(
-                        onTap: () => AppRouter.goToMovieDetails(context, movie.id),
-                        onPanDown: (_) => onUserInteraction(),
-                        child: Stack(
-                          children: [
-                            // Background Image
-                            movie.fullBackdropUrl != null
-                                ? Image.network(
-                                    movie.fullBackdropUrl!,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    errorBuilder: (context, error, stackTrace) =>
-                                        _buildPlaceholderImage(),
-                                  )
-                                : _buildPlaceholderImage(),
-                            // Darker Overlay
-                            Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.black.withOpacity(0.4),
-                                    Colors.black.withOpacity(0.6),
-                                    Colors.black.withOpacity(0.8),
-                                  ],
-                                  stops: const [0.0, 0.5, 1.0],
+                    success: (movieResponse) {
+                      if (movieResponse.results.isEmpty) {
+                        return _buildPlaceholderCarousel();
+                      }
+
+                      // Display only the first 5 newest movies
+                      final newestMovies = movieResponse.results
+                          .take(5)
+                          .toList();
+
+                      return PageView.builder(
+                        controller: pageController,
+                        onPageChanged: (index) {
+                          onUserInteraction();
+                          onPageChanged(index);
+                        },
+                        itemCount: newestMovies.length,
+                        itemBuilder: (context, index) {
+                          final movie = newestMovies[index];
+                          return GestureDetector(
+                            onTap: () =>
+                                AppRouter.goToMovieDetails(context, movie.id),
+                            onPanDown: (_) => onUserInteraction(),
+                            child: Stack(
+                              children: [
+                                // Background Image
+                                movie.fullBackdropUrl != null
+                                    ? Image.network(
+                                        movie.fullBackdropUrl!,
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                _buildPlaceholderImage(),
+                                      )
+                                    : _buildPlaceholderImage(),
+                                // Darker Overlay
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(0.4),
+                                        Colors.black.withOpacity(0.6),
+                                        Colors.black.withOpacity(0.8),
+                                      ],
+                                      stops: const [0.0, 0.5, 1.0],
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
+                          );
+                        },
                       );
                     },
-                  );
-                },
-                error: (message, statusCode) => _buildPlaceholderCarousel(),
-                loading: () => _buildPlaceholderCarousel(),
-              ) ?? _buildPlaceholderCarousel(),
-              
+                    error: (message, statusCode) => _buildPlaceholderCarousel(),
+                    loading: () => _buildPlaceholderCarousel(),
+                  ) ??
+                  _buildPlaceholderCarousel(),
+
               // Overlay Content
               Positioned(
                 bottom: 100,
@@ -444,7 +467,7 @@ class _MovieCarouselSection extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Search Bar
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -476,18 +499,23 @@ class _MovieCarouselSection extends StatelessWidget {
                         ),
                       ),
                     ),
-                    
+
                     const SizedBox(height: 20),
-                    
+
                     // Pagination Dots
                     Consumer<HomeProvider>(
                       builder: (context, provider, child) {
-                        final movieCount = provider.upcomingMovies?.when(
-                          success: (movieResponse) => movieResponse.results.length > 5 ? 5 : movieResponse.results.length,
-                          error: (_, __) => 3,
-                          loading: () => 3,
-                        ) ?? 3;
-                        
+                        final movieCount =
+                            provider.upcomingMovies?.when(
+                              success: (movieResponse) =>
+                                  movieResponse.results.length > 5
+                                  ? 5
+                                  : movieResponse.results.length,
+                              error: (_, __) => 3,
+                              loading: () => 3,
+                            ) ??
+                            3;
+
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(
@@ -510,7 +538,7 @@ class _MovieCarouselSection extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               // Rating and Movie Info
               Positioned(
                 bottom: 30,
@@ -518,85 +546,94 @@ class _MovieCarouselSection extends StatelessWidget {
                 child: Consumer<HomeProvider>(
                   builder: (context, provider, child) {
                     return provider.upcomingMovies?.when(
-                      success: (movieResponse) {
-                        if (movieResponse.results.isEmpty) {
-                          return const SizedBox.shrink();
-                        }
-                        final newestMovies = movieResponse.results.take(5).toList();
-                        final movie = newestMovies[currentIndex < newestMovies.length ? currentIndex : 0];
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: Colors.amber.shade400,
-                                borderRadius: BorderRadius.circular(15),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.amber.withOpacity(0.3),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 2),
+                          success: (movieResponse) {
+                            if (movieResponse.results.isEmpty) {
+                              return const SizedBox.shrink();
+                            }
+                            final newestMovies = movieResponse.results
+                                .take(5)
+                                .toList();
+                            final movie =
+                                newestMovies[currentIndex < newestMovies.length
+                                    ? currentIndex
+                                    : 0];
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 6,
                                   ),
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.star,
+                                  decoration: BoxDecoration(
+                                    color: Colors.amber.shade400,
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.amber.withOpacity(0.3),
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.star,
+                                        color: Colors.white,
+                                        size: 12,
+                                      ),
+                                      const SizedBox(width: 2),
+                                      Text(
+                                        movie.voteAverage.toStringAsFixed(1),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  movie.title,
+                                  style: const TextStyle(
                                     color: Colors.white,
-                                    size: 12,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    shadows: [
+                                      Shadow(
+                                        offset: Offset(0, 1),
+                                        blurRadius: 2,
+                                        color: Colors.black26,
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 2),
-                                  Text(
-                                    movie.voteAverage.toStringAsFixed(1),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
+                                  textAlign: TextAlign.right,
+                                ),
+                                const Text(
+                                  'Family',
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 12,
+                                    shadows: [
+                                      Shadow(
+                                        offset: Offset(0, 1),
+                                        blurRadius: 2,
+                                        color: Colors.black26,
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              movie.title,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                shadows: [
-                                  Shadow(
-                                    offset: Offset(0, 1),
-                                    blurRadius: 2,
-                                    color: Colors.black26,
-                                  ),
-                                ],
-                              ),
-                              textAlign: TextAlign.right,
-                            ),
-                            const Text(
-                              'Family',
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 12,
-                                shadows: [
-                                  Shadow(
-                                    offset: Offset(0, 1),
-                                    blurRadius: 2,
-                                    color: Colors.black26,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                      error: (_, __) => const SizedBox.shrink(),
-                      loading: () => const SizedBox.shrink(),
-                    ) ?? const SizedBox.shrink();
+                                ),
+                              ],
+                            );
+                          },
+                          error: (_, __) => const SizedBox.shrink(),
+                          loading: () => const SizedBox.shrink(),
+                        ) ??
+                        const SizedBox.shrink();
                   },
                 ),
               ),
@@ -613,10 +650,7 @@ class _MovieCarouselSection extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Colors.blue.shade300,
-            Colors.blue.shade700,
-          ],
+          colors: [Colors.blue.shade300, Colors.blue.shade700],
         ),
       ),
     );
@@ -628,18 +662,11 @@ class _MovieCarouselSection extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Colors.blue.shade300,
-            Colors.blue.shade700,
-          ],
+          colors: [Colors.blue.shade300, Colors.blue.shade700],
         ),
       ),
       child: const Center(
-        child: Icon(
-          Icons.movie,
-          size: 100,
-          color: Colors.white54,
-        ),
+        child: Icon(Icons.movie, size: 100, color: Colors.white54),
       ),
     );
   }
@@ -649,10 +676,7 @@ class _CompactMovieCard extends StatelessWidget {
   final Movie movie;
   final VoidCallback? onTap;
 
-  const _CompactMovieCard({
-    required this.movie,
-    this.onTap,
-  });
+  const _CompactMovieCard({required this.movie, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -671,7 +695,9 @@ class _CompactMovieCard extends StatelessWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),
@@ -688,16 +714,22 @@ class _CompactMovieCard extends StatelessWidget {
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) =>
                                   Container(
-                                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.surfaceContainerHighest,
                                     child: Icon(
                                       Icons.movie,
                                       size: 50,
-                                      color: Theme.of(context).colorScheme.outline,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.outline,
                                     ),
                                   ),
                             )
                           : Container(
-                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.surfaceContainerHighest,
                               child: Icon(
                                 Icons.movie,
                                 size: 50,

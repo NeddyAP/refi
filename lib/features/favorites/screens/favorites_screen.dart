@@ -51,7 +51,12 @@ class _FavoritesScreenState extends State<FavoritesScreen>
           if (provider.isLoading) {
             return const LoadingWidget(message: 'Loading your movies...');
           }
-
+          if (provider.errorMessage != null) {
+            return ErrorDisplayWidget(
+              message: provider.errorMessage!,
+              onRetry: provider.pullToRefresh,
+            );
+          }
           return TabBarView(
             controller: _tabController,
             children: [
@@ -72,33 +77,46 @@ class _FavoritesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (provider.favoriteMovies.isEmpty) {
-      return NoFavoritesWidget(
-        onExplore: () => AppRouter.goToExplore(context),
-      );
-    }
-
-    return GridView.builder(
-      padding: EdgeInsets.fromLTRB(
-        16,
-        16,
-        16,
-        MediaQuery.of(context).padding.bottom + 100
-      ),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.6,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-      ),
-      itemCount: provider.favoriteMovies.length,
-      itemBuilder: (context, index) {
-        final movie = provider.favoriteMovies[index];
-        return MovieCard(
-          movie: movie,
-          onTap: () => AppRouter.goToMovieDetails(context, movie.id),
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: provider.pullToRefresh,
+      child: provider.favoriteMovies.isEmpty
+          ? NoFavoritesWidget(onExplore: () => AppRouter.goToExplore(context))
+          : GridView.builder(
+              padding: EdgeInsets.fromLTRB(
+                16,
+                16,
+                16,
+                MediaQuery.of(context).padding.bottom + 100,
+              ),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.6,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+              ),
+              itemCount: provider.favoriteMovies.length,
+              itemBuilder: (context, index) {
+                final movie = provider.favoriteMovies[index];
+                return Stack(
+                  children: [
+                    MovieCard(
+                      movie: movie,
+                      onTap: () =>
+                          AppRouter.goToMovieDetails(context, movie.id),
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: IconButton(
+                        icon: const Icon(Icons.favorite, color: Colors.red),
+                        tooltip: 'Remove from favorites',
+                        onPressed: () => provider.removeFromFavorites(movie.id),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
     );
   }
 }
@@ -110,35 +128,54 @@ class _WatchlistTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (provider.watchlistMovies.isEmpty) {
-      return const EmptyStateWidget(
-        title: 'No Movies in Watchlist',
-        message: 'Add movies to your watchlist to keep track of what you want to watch.',
-        icon: Icons.playlist_add,
-      );
-    }
-
-    return GridView.builder(
-      padding: EdgeInsets.fromLTRB(
-        16,
-        16,
-        16,
-        MediaQuery.of(context).padding.bottom + 100
-      ),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.6,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-      ),
-      itemCount: provider.watchlistMovies.length,
-      itemBuilder: (context, index) {
-        final movie = provider.watchlistMovies[index];
-        return MovieCard(
-          movie: movie,
-          onTap: () => AppRouter.goToMovieDetails(context, movie.id),
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: provider.pullToRefresh,
+      child: provider.watchlistMovies.isEmpty
+          ? const EmptyStateWidget(
+              title: 'No Movies in Watchlist',
+              message:
+                  'Add movies to your watchlist to keep track of what you want to watch.',
+              icon: Icons.playlist_add,
+            )
+          : GridView.builder(
+              padding: EdgeInsets.fromLTRB(
+                16,
+                16,
+                16,
+                MediaQuery.of(context).padding.bottom + 100,
+              ),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.6,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+              ),
+              itemCount: provider.watchlistMovies.length,
+              itemBuilder: (context, index) {
+                final movie = provider.watchlistMovies[index];
+                return Stack(
+                  children: [
+                    MovieCard(
+                      movie: movie,
+                      onTap: () =>
+                          AppRouter.goToMovieDetails(context, movie.id),
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.bookmark_remove,
+                          color: Colors.blueGrey,
+                        ),
+                        tooltip: 'Remove from watchlist',
+                        onPressed: () => provider.removeFromWatchlist(movie.id),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
     );
   }
 }

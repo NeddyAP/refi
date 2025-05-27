@@ -14,7 +14,8 @@ import 'features/auth/providers/auth_provider.dart';
 import 'features/auth/services/auth_service.dart';
 import 'features/auth/repositories/auth_repository.dart';
 import 'shared/providers/navigation_visibility_provider.dart';
-
+import 'shared/repositories/tmdb_account_repository.dart';
+import 'features/auth/services/tmdb_auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,32 +49,32 @@ class MainApp extends StatelessWidget {
 
         // Providers
         ChangeNotifierProvider<AuthProvider>(
-          create: (context) => AuthProvider(
-            context.read<AuthRepository>(),
-          ),
+          create: (context) => AuthProvider(context.read<AuthRepository>()),
         ),
         ChangeNotifierProvider<ProfileProvider>(
           create: (_) => ProfileProvider(),
         ),
         ChangeNotifierProvider<FavoritesProvider>(
-          create: (_) => FavoritesProvider(),
+          create: (_) => FavoritesProvider(
+            TmdbAccountRepository(
+              ApiClient(),
+              () => TmdbAuthService().currentUser!,
+            ),
+          ),
         ),
         ChangeNotifierProxyProvider<MovieRepository, HomeProvider>(
-          create: (context) => HomeProvider(
-            context.read<MovieRepository>(),
-          ),
-          update: (context, movieRepo, previous) => previous ?? HomeProvider(movieRepo),
+          create: (context) => HomeProvider(context.read<MovieRepository>()),
+          update: (context, movieRepo, previous) =>
+              previous ?? HomeProvider(movieRepo),
         ),
         ChangeNotifierProxyProvider<MovieRepository, ExploreProvider>(
-          create: (context) => ExploreProvider(
-            context.read<MovieRepository>(),
-          ),
-          update: (context, movieRepo, previous) => previous ?? ExploreProvider(movieRepo),
+          create: (context) => ExploreProvider(context.read<MovieRepository>()),
+          update: (context, movieRepo, previous) =>
+              previous ?? ExploreProvider(movieRepo),
         ),
         ChangeNotifierProvider<NavigationVisibilityProvider>(
           create: (_) => NavigationVisibilityProvider(),
         ),
-
       ],
       child: Consumer<ProfileProvider>(
         builder: (context, profileProvider, child) {
@@ -82,7 +83,9 @@ class MainApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            themeMode: profileProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            themeMode: profileProvider.isDarkMode
+                ? ThemeMode.dark
+                : ThemeMode.light,
             routerConfig: AppRouter.router,
           );
         },

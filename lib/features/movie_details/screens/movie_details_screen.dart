@@ -31,7 +31,10 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Store reference to NavigationVisibilityProvider
-      _navigationProvider = Provider.of<NavigationVisibilityProvider>(context, listen: false);
+      _navigationProvider = Provider.of<NavigationVisibilityProvider>(
+        context,
+        listen: false,
+      );
       // Hide bottom navigation bar when movie details screen is shown
       _navigationProvider?.hide();
       context.read<MovieDetailsProvider>().initialize();
@@ -108,23 +111,106 @@ class _MovieDetailsContent extends StatelessWidget {
 class _HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // Back button
             Container(
-              // Use a semi-transparent color that works on both themes
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface.withOpacity(0.3),
                 shape: BoxShape.circle,
               ),
               child: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                // Use onSurface color for icon
-                icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
+            ),
+            // Favorite and Bookmark icons
+            Consumer<FavoritesProvider>(
+              builder: (context, favoritesProvider, child) {
+                final movieDetails =
+                    (context
+                                .findAncestorWidgetOfExactType<
+                                  _MovieDetailsContent
+                                >()
+                            as _MovieDetailsContent?)
+                        ?.movieDetails;
+                if (movieDetails == null) return SizedBox.shrink();
+                final movie = Movie(
+                  id: movieDetails.id,
+                  title: movieDetails.title,
+                  overview: movieDetails.overview,
+                  posterPath: movieDetails.posterPath,
+                  backdropPath: movieDetails.backdropPath,
+                  releaseDate: movieDetails.releaseDate,
+                  voteAverage: movieDetails.voteAverage,
+                  voteCount: movieDetails.voteCount,
+                  genreIds: movieDetails.genres
+                      .map<int>((g) => g.id as int)
+                      .toList(),
+                  adult: movieDetails.adult,
+                  originalLanguage: movieDetails.originalLanguage,
+                  originalTitle: movieDetails.originalTitle,
+                  popularity: movieDetails.popularity,
+                  video: movieDetails.video,
+                );
+                final isFavorite = favoritesProvider.isFavorite(movie.id);
+                final isInWatchlist = favoritesProvider.isInWatchlist(movie.id);
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () async {
+                        await favoritesProvider.toggleFavorite(movie);
+                        final msg = favoritesProvider.errorMessage == null
+                            ? (favoritesProvider.isFavorite(movie.id)
+                                  ? 'Added to favorites'
+                                  : 'Removed from favorites')
+                            : favoritesProvider.errorMessage!;
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(msg)));
+                      },
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite ? Colors.red : Colors.white,
+                        size: 28,
+                      ),
+                      tooltip: isFavorite
+                          ? 'Remove from favorites'
+                          : 'Add to favorites',
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        await favoritesProvider.toggleWatchlist(movie);
+                        final msg = favoritesProvider.errorMessage == null
+                            ? (favoritesProvider.isInWatchlist(movie.id)
+                                  ? 'Added to watchlist'
+                                  : 'Removed from watchlist')
+                            : favoritesProvider.errorMessage!;
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(msg)));
+                      },
+                      icon: Icon(
+                        isInWatchlist ? Icons.bookmark : Icons.bookmark_border,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                      tooltip: isInWatchlist
+                          ? 'Remove from watchlist'
+                          : 'Add to watchlist',
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),
@@ -152,8 +238,9 @@ class _TopSection extends StatelessWidget {
                 ? CachedNetworkImage(
                     imageUrl: movieDetails.fullBackdropUrl!,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        Container(color: theme.colorScheme.surfaceContainerHighest),
+                    placeholder: (context, url) => Container(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                    ),
                     errorWidget: (context, url, error) => Container(
                       color: theme.colorScheme.surfaceContainerHighest,
                       child: Icon(
@@ -329,6 +416,8 @@ class _MovieTitleSection extends StatelessWidget {
             children: [
               Text(
                 movieDetails.title,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   // Use onSurface color for text
@@ -397,42 +486,6 @@ class _MovieTitleSection extends StatelessWidget {
             ],
           ),
         ),
-
-        // Bookmark icon
-        Consumer<FavoritesProvider>(
-          builder: (context, favoritesProvider, child) {
-            final movie = Movie(
-              id: movieDetails.id,
-              title: movieDetails.title,
-              overview: movieDetails.overview,
-              posterPath: movieDetails.posterPath,
-              backdropPath: movieDetails.backdropPath,
-              releaseDate: movieDetails.releaseDate,
-              voteAverage: movieDetails.voteAverage,
-              voteCount: movieDetails.voteCount,
-              genreIds: movieDetails.genres
-                  .map<int>((g) => g.id as int)
-                  .toList(),
-              adult: movieDetails.adult,
-              originalLanguage: movieDetails.originalLanguage,
-              originalTitle: movieDetails.originalTitle,
-              popularity: movieDetails.popularity,
-              video: movieDetails.video,
-            );
-
-            final isInWatchlist = favoritesProvider.isInWatchlist(movie.id);
-
-            return IconButton(
-              onPressed: () => favoritesProvider.toggleWatchlist(movie),
-              icon: Icon(
-                isInWatchlist ? Icons.bookmark : Icons.bookmark_border,
-                // Use onSurfaceVariant for bookmark icon
-                color: theme.colorScheme.onSurfaceVariant,
-                size: 28,
-              ),
-            );
-          },
-        ),
       ],
     );
   }
@@ -474,10 +527,7 @@ class _InfoChip extends StatelessWidget {
   final IconData icon;
   final String label;
 
-  const _InfoChip({
-    required this.icon,
-    required this.label,
-  });
+  const _InfoChip({required this.icon, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -860,58 +910,59 @@ class _FullCastCrewSection extends StatelessWidget {
     return Consumer<MovieDetailsProvider>(
       builder: (context, provider, child) {
         return provider.movieCredits?.when(
-          success: (credits) => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Full Cast & Crew',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  // Use onSurface color for title
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Director info
-              if (credits.director != null) ...[
-                _CrewMemberRow(
-                  title: 'Director',
-                  crewMember: credits.director!,
-                ),
-                const SizedBox(height: 8),
-              ],
-
-              // Writers
-              if (credits.writers.isNotEmpty) ...[
-                _CrewMemberRow(
-                  title: 'Writers',
-                  crewMember: credits.writers.first,
-                  additionalCount: credits.writers.length - 1,
-                ),
-                const SizedBox(height: 8),
-              ],
-
-              // View full cast button
-              TextButton(
-                onPressed: () {
-                  _showFullCastBottomSheet(context, credits);
-                },
-                child: Text(
-                  'View Full Cast & Crew',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    // Use primary color for button text
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.w500,
+              success: (credits) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Full Cast & Crew',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      // Use onSurface color for title
+                      color: theme.colorScheme.onSurface,
+                    ),
                   ),
-                ),
+
+                  const SizedBox(height: 16),
+
+                  // Director info
+                  if (credits.director != null) ...[
+                    _CrewMemberRow(
+                      title: 'Director',
+                      crewMember: credits.director!,
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+
+                  // Writers
+                  if (credits.writers.isNotEmpty) ...[
+                    _CrewMemberRow(
+                      title: 'Writers',
+                      crewMember: credits.writers.first,
+                      additionalCount: credits.writers.length - 1,
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+
+                  // View full cast button
+                  TextButton(
+                    onPressed: () {
+                      _showFullCastBottomSheet(context, credits);
+                    },
+                    child: Text(
+                      'View Full Cast & Crew',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        // Use primary color for button text
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          error: (message, statusCode) => const SizedBox.shrink(),
-          loading: () => const SizedBox.shrink(),
-        ) ?? const SizedBox.shrink();
+              error: (message, statusCode) => const SizedBox.shrink(),
+              loading: () => const SizedBox.shrink(),
+            ) ??
+            const SizedBox.shrink();
       },
     );
   }
@@ -1046,9 +1097,9 @@ class _FullCastBottomSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                ...credits.cast.map<Widget>((castMember) => _FullCastMemberTile(
-                      castMember: castMember,
-                    )),
+                ...credits.cast.map<Widget>(
+                  (castMember) => _FullCastMemberTile(castMember: castMember),
+                ),
 
                 const SizedBox(height: 24),
 
@@ -1062,9 +1113,9 @@ class _FullCastBottomSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                ...credits.crew.map<Widget>((crewMember) => _FullCrewMemberTile(
-                      crewMember: crewMember,
-                    )),
+                ...credits.crew.map<Widget>(
+                  (crewMember) => _FullCrewMemberTile(crewMember: crewMember),
+                ),
 
                 const SizedBox(height: 16),
               ],
@@ -1292,7 +1343,10 @@ class _ReviewsSection extends StatelessWidget {
     );
   }
 
-  void _showAllReviewsBottomSheet(BuildContext context, List<MovieReview> reviews) {
+  void _showAllReviewsBottomSheet(
+    BuildContext context,
+    List<MovieReview> reviews,
+  ) {
     // Navigation bar is already hidden in movie details screen, no need to hide again
     showModalBottomSheet(
       context: context,
@@ -1342,11 +1396,16 @@ class _ReviewCard extends StatelessWidget {
                 // Use theme surfaceContainer for background
                 backgroundColor: theme.colorScheme.surfaceContainer,
                 backgroundImage: review.authorDetails.fullAvatarUrl != null
-                    ? CachedNetworkImageProvider(review.authorDetails.fullAvatarUrl!)
+                    ? CachedNetworkImageProvider(
+                        review.authorDetails.fullAvatarUrl!,
+                      )
                     : null,
                 child: review.authorDetails.fullAvatarUrl == null
                     // Use onSurfaceVariant for icon
-                    ? Icon(Icons.person, color: theme.colorScheme.onSurfaceVariant)
+                    ? Icon(
+                        Icons.person,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      )
                     : null,
               ),
 
@@ -1381,7 +1440,9 @@ class _ReviewCard extends StatelessWidget {
                   children: List.generate(
                     5,
                     (index) => Icon(
-                      index < review.ratingStars ? Icons.star : Icons.star_border,
+                      index < review.ratingStars
+                          ? Icons.star
+                          : Icons.star_border,
                       // Keep amber for stars
                       color: Colors.amber,
                       size: 16,
@@ -1567,14 +1628,16 @@ class _ImageGalleriesSection extends StatelessWidget {
     );
   }
 
-  void _showImageGallery(BuildContext context, List<MovieImage> images, int initialIndex) {
+  void _showImageGallery(
+    BuildContext context,
+    List<MovieImage> images,
+    int initialIndex,
+  ) {
     // Navigation bar is already hidden in movie details screen, no need to hide again
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => _ImageGalleryScreen(
-          images: images,
-          initialIndex: initialIndex,
-        ),
+        builder: (context) =>
+            _ImageGalleryScreen(images: images, initialIndex: initialIndex),
       ),
     );
   }
@@ -1640,10 +1703,7 @@ class _ImageGalleryScreen extends StatefulWidget {
   final List<MovieImage> images;
   final int initialIndex;
 
-  const _ImageGalleryScreen({
-    required this.images,
-    required this.initialIndex,
-  });
+  const _ImageGalleryScreen({required this.images, required this.initialIndex});
 
   @override
   State<_ImageGalleryScreen> createState() => _ImageGalleryScreenState();
