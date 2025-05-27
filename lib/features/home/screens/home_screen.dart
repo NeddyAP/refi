@@ -9,6 +9,7 @@ import '../../../shared/models/movie.dart';
 import '../../../shared/models/user.dart';
 import '../providers/home_provider.dart';
 import '../widgets/content_carousel.dart';
+import 'all_items_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -116,8 +117,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 24),
-                    const _CategoriesSection(),
-                    const SizedBox(height: 24),
                     // Frequently Visited Section using ContentCarousel
                     Consumer<HomeProvider>(
                       builder: (context, provider, child) {
@@ -126,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           apiResult: provider.nowPlayingMovies,
                           sectionKey: 'nowPlaying',
                           onRetry: () => provider.retrySection('nowPlaying'),
+                          collectionType: CollectionType.nowPlaying,
                         );
                       },
                     ),
@@ -138,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           apiResult: provider.topRatedMovies,
                           sectionKey: 'topRated',
                           onRetry: () => provider.retrySection('topRated'),
+                          collectionType: CollectionType.topRated,
                         );
                       },
                     ),
@@ -153,6 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               apiResult: provider.trendingToday,
                               sectionKey: 'trendingToday',
                               onRetry: () => provider.retrySection('trendingToday'),
+                              collectionType: CollectionType.trendingToday,
                             ),
                             const SizedBox(height: 24),
                             
@@ -162,6 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               apiResult: provider.trendingThisWeek,
                               sectionKey: 'trendingThisWeek',
                               onRetry: () => provider.retrySection('trendingThisWeek'),
+                              collectionType: CollectionType.trendingThisWeek,
                             ),
                             const SizedBox(height: 24),
                             
@@ -171,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               apiResult: provider.latestTrailers,
                               sectionKey: 'latestTrailers',
                               onRetry: () => provider.retrySection('latestTrailers'),
+                              collectionType: CollectionType.latestTrailers,
                             ),
                             const SizedBox(height: 24),
                             
@@ -180,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               apiResult: provider.popularOnStreaming,
                               sectionKey: 'popularOnStreaming',
                               onRetry: () => provider.retrySection('popularOnStreaming'),
+                              collectionType: CollectionType.popularOnStreaming,
                             ),
                             const SizedBox(height: 24),
                             
@@ -189,6 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               apiResult: provider.popularOnTv,
                               sectionKey: 'popularOnTv',
                               onRetry: () => provider.retrySection('popularOnTv'),
+                              collectionType: CollectionType.popularOnTv,
                             ),
                             const SizedBox(height: 24),
                             
@@ -198,6 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               apiResult: provider.availableForRent,
                               sectionKey: 'availableForRent',
                               onRetry: () => provider.retrySection('availableForRent'),
+                              collectionType: CollectionType.availableForRent,
                             ),
                             const SizedBox(height: 24),
                             
@@ -207,12 +214,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               apiResult: provider.currentlyInTheaters,
                               sectionKey: 'currentlyInTheaters',
                               onRetry: () => provider.retrySection('currentlyInTheaters'),
+                              collectionType: CollectionType.currentlyInTheaters,
                             ),
                           ],
                         );
                       },
                     ),
-                    const SizedBox(height: 100), // Add bottom padding for floating nav
+                    SizedBox(height: MediaQuery.of(context).padding.bottom + 100), // Add bottom padding for floating nav and safe area
                   ],
                 ),
               ),
@@ -636,84 +644,6 @@ class _MovieCarouselSection extends StatelessWidget {
     );
   }
 }
-
-class _CategoriesSection extends StatelessWidget {
-  const _CategoriesSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final categories = ['Family', 'Drama', 'Action', 'Thriller', 'Horror', 'Anime', 'Cartoon', 'Adventure'];
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Kategori',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  AppRouter.goToExplore(context);
-                },
-                child: Text(
-                  'Lihat Semua',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          height: 40,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              final category = categories[index];
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: FilterChip(
-                  label: Text(category),
-                  selected: false, // Always false
-                  onSelected: (selected) {
-                    // Navigate to explore screen with selected category
-                    AppRouter.goToExploreWithCategory(context, category);
-                  },
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.1), // Keep this color or change if needed
-                  side: BorderSide(
-                    color: Theme.of(context).colorScheme.outline.withOpacity(0.5), // Always use outline color
-                    width: 1, // Always use width 1
-                  ),
-                  labelStyle: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant, // Always use onSurfaceVariant color
-                    fontWeight: FontWeight.w500, // Always use w500
-                    fontSize: 13,
-                  ),
-                  elevation: 0, // Always 0
-                  shadowColor: Colors.transparent, // Always transparent
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 
 class _CompactMovieCard extends StatelessWidget {
   final Movie movie;

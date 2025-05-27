@@ -9,6 +9,7 @@ class AppConstants {
   static const String favoritesRoute = '/favorites';
   static const String profileRoute = '/profile';
   static const String movieDetailsRoute = '/movie';
+  static const String allItemsRoute = '/all-items';
   static const String searchRoute = '/search';
   static const String loginRoute = '/login';
   static const String registerRoute = '/register';

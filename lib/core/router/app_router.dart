@@ -7,6 +7,7 @@ import '../../features/favorites/screens/favorites_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../../features/movie_details/screens/movie_details_screen.dart';
 import '../../features/movie_details/providers/movie_details_provider.dart';
+import '../../features/home/screens/all_items_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/auth/screens/forgot_password_screen.dart';
@@ -113,6 +114,20 @@ class AppRouter {
           );
         },
       ),
+
+      // All items route (guest access allowed)
+      GoRoute(
+        path: '${AppConstants.allItemsRoute}/:collectionType',
+        name: 'all-items',
+        builder: (context, state) {
+          final collectionTypeString = state.pathParameters['collectionType']!;
+          final collectionType = CollectionType.values.firstWhere(
+            (type) => type.name == collectionTypeString,
+            orElse: () => CollectionType.nowPlaying,
+          );
+          return AllItemsScreen(collectionType: collectionType);
+        },
+      ),
     ],
     errorBuilder: (context, state) => Scaffold(
       body: Center(
@@ -188,6 +203,11 @@ class AppRouter {
   /// Navigate to forgot password
   static void goToForgotPassword(BuildContext context) {
     context.go(AppConstants.forgotPasswordRoute);
+  }
+
+  /// Navigate to all items screen
+  static void goToAllItems(BuildContext context, CollectionType collectionType) {
+    context.push('${AppConstants.allItemsRoute}/${collectionType.name}');
   }
 
   /// Get current route name

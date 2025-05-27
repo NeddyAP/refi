@@ -6,6 +6,7 @@ import '../../../shared/widgets/error_widget.dart';
 import '../../../shared/models/movie.dart';
 import '../../../shared/models/tv_show.dart';
 import '../../../shared/models/mixed_content.dart';
+import '../screens/all_items_screen.dart';
 
 /// Base class for content items that can be displayed in the carousel
 abstract class CarouselContentItem {
@@ -39,6 +40,7 @@ class ContentCarousel extends StatelessWidget {
   final String sectionKey;
   final VoidCallback onRetry;
   final EdgeInsets padding;
+  final CollectionType? collectionType;
 
   const ContentCarousel({
     super.key,
@@ -47,6 +49,7 @@ class ContentCarousel extends StatelessWidget {
     required this.sectionKey,
     required this.onRetry,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
+    this.collectionType,
   });
 
   @override
@@ -56,12 +59,28 @@ class ContentCarousel extends StatelessWidget {
       children: [
         Padding(
           padding: padding,
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+              if (collectionType != null)
+                GestureDetector(
+                  onTap: () => AppRouter.goToAllItems(context, collectionType!),
+                  child: Text(
+                    'View More',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
         const SizedBox(height: 12),
