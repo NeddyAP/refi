@@ -1,0 +1,138 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../../features/home/screens/home_screen.dart';
+import '../../features/explore/screens/explore_screen.dart';
+import '../../features/favorites/screens/favorites_screen.dart';
+import '../../features/profile/screens/profile_screen.dart';
+import '../../features/movie_details/screens/movie_details_screen.dart';
+import '../../features/movie_details/providers/movie_details_provider.dart';
+import '../../shared/widgets/bottom_navigation.dart';
+import '../../shared/repositories/movie_repository.dart';
+import '../constants/app_constants.dart';
+
+class AppRouter {
+  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  static final _shellNavigatorKey = GlobalKey<NavigatorState>();
+
+  static GoRouter get router => _router;
+
+  static final GoRouter _router = GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: AppConstants.homeRoute,
+    routes: [
+      ShellRoute(
+        navigatorKey: _shellNavigatorKey,
+        builder: (context, state, child) {
+          return BottomNavigationWrapper(child: child);
+        },
+        routes: [
+          GoRoute(
+            path: AppConstants.homeRoute,
+            name: 'home',
+            builder: (context, state) => const HomeScreen(),
+          ),
+          GoRoute(
+            path: AppConstants.exploreRoute,
+            name: 'explore',
+            builder: (context, state) => const ExploreScreen(),
+          ),
+          GoRoute(
+            path: AppConstants.favoritesRoute,
+            name: 'favorites',
+            builder: (context, state) => const FavoritesScreen(),
+          ),
+          GoRoute(
+            path: AppConstants.profileRoute,
+            name: 'profile',
+            builder: (context, state) => const ProfileScreen(),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '${AppConstants.movieDetailsRoute}/:id',
+        name: 'movie-details',
+        builder: (context, state) {
+          final movieId = int.parse(state.pathParameters['id']!);
+          return ChangeNotifierProvider(
+            create: (context) => MovieDetailsProvider(
+              context.read<MovieRepository>(),
+              movieId,
+            ),
+            child: MovieDetailsScreen(movieId: movieId),
+          );
+        },
+      ),
+    ],
+    errorBuilder: (context, state) => Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Colors.red,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Page Not Found',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'The page you are looking for does not exist.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => context.go(AppConstants.homeRoute),
+              child: const Text('Go Home'),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  /// Navigate to movie details
+  static void goToMovieDetails(BuildContext context, int movieId) {
+    context.push('${AppConstants.movieDetailsRoute}/$movieId');
+  }
+
+  /// Navigate to home
+  static void goToHome(BuildContext context) {
+    context.go(AppConstants.homeRoute);
+  }
+
+  /// Navigate to explore
+  static void goToExplore(BuildContext context) {
+    context.go(AppConstants.exploreRoute);
+  }
+
+  /// Navigate to favorites
+  static void goToFavorites(BuildContext context) {
+    context.go(AppConstants.favoritesRoute);
+  }
+
+  /// Navigate to profile
+  static void goToProfile(BuildContext context) {
+    context.go(AppConstants.profileRoute);
+  }
+
+  /// Get current route name
+  static String? getCurrentRoute(BuildContext context) {
+    final routeMatch = GoRouter.of(context).routerDelegate.currentConfiguration;
+    return routeMatch.last.matchedLocation;
+  }
+
+  /// Check if current route is a tab route
+  static bool isTabRoute(String route) {
+    return [
+      AppConstants.homeRoute,
+      AppConstants.exploreRoute,
+      AppConstants.favoritesRoute,
+      AppConstants.profileRoute,
+    ].contains(route);
+  }
+}
