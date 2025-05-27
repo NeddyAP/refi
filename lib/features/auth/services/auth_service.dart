@@ -1,246 +1,114 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import '../models/auth_user.dart';
+import '../models/tmdb_request_token.dart';
+import 'tmdb_auth_service.dart';
 
-/// Authentication service that handles Firebase Auth operations
+/// Authentication service that handles TMDB Auth operations
 class AuthService {
   static final AuthService _instance = AuthService._internal();
   factory AuthService() => _instance;
   AuthService._internal();
 
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final TmdbAuthService _tmdbAuthService = TmdbAuthService();
+
+  /// Initialize the service
+  Future<void> initialize() async {
+    await _tmdbAuthService.initialize();
+  }
 
   /// Get current user
-  AuthUser? get currentUser {
-    final user = _firebaseAuth.currentUser;
-    return user != null ? AuthUser.fromFirebaseUser(user) : null;
-  }
+  AuthUser? get currentUser => _tmdbAuthService.currentUser;
 
   /// Stream of authentication state changes
-  Stream<AuthUser?> get authStateChanges {
-    return _firebaseAuth.authStateChanges().map((user) {
-      return user != null ? AuthUser.fromFirebaseUser(user) : null;
-    });
-  }
+  Stream<AuthUser?> get authStateChanges => _tmdbAuthService.authStateChanges;
 
-  /// Sign in with email and password
+  /// Sign in with TMDB username and password
   Future<AuthUser> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
     try {
-      final credential = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email.trim(),
+      // For TMDB, email is actually username
+      return await _tmdbAuthService.createSessionWithLogin(
+        username: email.trim(),
         password: password,
       );
-
-      final user = credential.user;
-      if (user == null) {
-        throw Exception('Sign in failed: No user returned');
-      }
-
-      // Add a small delay to ensure user data is properly loaded
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      // Reload user to get fresh data
-      await user.reload();
-      final refreshedUser = _firebaseAuth.currentUser;
-
-      if (refreshedUser == null) {
-        throw Exception('Sign in failed: User data could not be loaded');
-      }
-
-      return AuthUser.fromFirebaseUser(refreshedUser);
-    } on FirebaseAuthException catch (e) {
-      throw Exception(_handleFirebaseAuthException(e));
     } catch (e) {
-      throw Exception('Sign in failed: ${e.toString()}');
+      throw Exception('Sign in failed: $e');
     }
   }
 
-  /// Create user with email and password
+  /// Create user with email and password (redirects to TMDB registration)
   Future<AuthUser> createUserWithEmailAndPassword({
     required String email,
     required String password,
     String? displayName,
   }) async {
-    try {
-      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      );
-
-      final user = credential.user;
-      if (user == null) {
-        throw Exception('Registration failed: No user returned');
-      }
-
-      // Update display name if provided
-      if (displayName != null && displayName.isNotEmpty) {
-        await user.updateDisplayName(displayName.trim());
-        await user.reload();
-      }
-
-      // Add a small delay to ensure user data is properly loaded
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      // Get fresh user data
-      final refreshedUser = _firebaseAuth.currentUser;
-
-      if (refreshedUser == null) {
-        throw Exception('Registration failed: User data could not be loaded');
-      }
-
-      return AuthUser.fromFirebaseUser(refreshedUser);
-    } on FirebaseAuthException catch (e) {
-      throw Exception(_handleFirebaseAuthException(e));
-    } catch (e) {
-      throw Exception('Registration failed: ${e.toString()}');
-    }
+    // TMDB doesn't support direct registration via API
+    // Users need to register on TMDB website
+    throw Exception('Please register at https://www.themoviedb.org/signup and then sign in with your TMDB credentials.');
   }
 
-  /// Sign in with Google
+  /// Sign in with Google (not supported by TMDB)
   Future<AuthUser> signInWithGoogle() async {
-    try {
-      // Trigger the authentication flow
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
-      if (googleUser == null) {
-        throw Exception('Google sign in was cancelled');
-      }
-
-      // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-      // Create a new credential
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      // Sign in to Firebase with the Google credential
-      final userCredential = await _firebaseAuth.signInWithCredential(credential);
-
-      final user = userCredential.user;
-      if (user == null) {
-        throw Exception('Google sign in failed: No user returned');
-      }
-
-      // Add a small delay to ensure user data is properly loaded
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      // Reload user to get fresh data
-      await user.reload();
-      final refreshedUser = _firebaseAuth.currentUser;
-
-      if (refreshedUser == null) {
-        throw Exception('Google sign in failed: User data could not be loaded');
-      }
-
-      return AuthUser.fromFirebaseUser(refreshedUser);
-    } on FirebaseAuthException catch (e) {
-      throw Exception(_handleFirebaseAuthException(e));
-    } catch (e) {
-      throw Exception('Google sign in failed: ${e.toString()}');
-    }
+    throw Exception('Google Sign-In is not supported. Please use your TMDB username and password.');
   }
 
-  /// Send password reset email
+  /// Send password reset email (redirects to TMDB)
   Future<void> sendPasswordResetEmail(String email) async {
-    try {
-      await _firebaseAuth.sendPasswordResetEmail(email: email.trim());
-    } on FirebaseAuthException catch (e) {
-      throw _handleFirebaseAuthException(e);
-    } catch (e) {
-      throw Exception('Password reset failed: ${e.toString()}');
-    }
+    throw Exception('Please reset your password at https://www.themoviedb.org/reset-password');
   }
 
-  /// Send email verification
+  /// Send email verification (not applicable for TMDB)
   Future<void> sendEmailVerification() async {
-    try {
-      final user = _firebaseAuth.currentUser;
-      if (user != null && !user.emailVerified) {
-        await user.sendEmailVerification();
-      }
-    } on FirebaseAuthException catch (e) {
-      throw _handleFirebaseAuthException(e);
-    } catch (e) {
-      throw Exception('Email verification failed: ${e.toString()}');
-    }
+    throw Exception('Email verification is not required for TMDB accounts.');
   }
 
-  /// Sign out
+  /// Sign out current user
   Future<void> signOut() async {
     try {
-      await Future.wait([
-        _firebaseAuth.signOut(),
-        _googleSignIn.signOut(),
-      ]);
+      await _tmdbAuthService.signOut();
     } catch (e) {
-      throw Exception('Sign out failed: ${e.toString()}');
+      throw Exception('Sign out failed: $e');
     }
   }
 
-  /// Delete user account
+  /// Delete user account (not supported via API)
   Future<void> deleteAccount() async {
-    try {
-      final user = _firebaseAuth.currentUser;
-      if (user != null) {
-        await user.delete();
-      }
-    } on FirebaseAuthException catch (e) {
-      throw _handleFirebaseAuthException(e);
-    } catch (e) {
-      throw Exception('Account deletion failed: ${e.toString()}');
-    }
+    throw Exception('Account deletion must be done through TMDB website settings.');
   }
 
-  /// Update user profile
+  /// Update user profile (not supported via API)
   Future<void> updateProfile({
     String? displayName,
     String? photoURL,
   }) async {
+    throw Exception('Profile updates must be done through TMDB website settings.');
+  }
+
+  /// Create request token for authentication
+  Future<TmdbRequestToken> createRequestToken() async {
     try {
-      final user = _firebaseAuth.currentUser;
-      if (user != null) {
-        await user.updateDisplayName(displayName);
-        await user.updatePhotoURL(photoURL);
-        await user.reload();
-      }
-    } on FirebaseAuthException catch (e) {
-      throw _handleFirebaseAuthException(e);
+      return await _tmdbAuthService.createRequestToken();
     } catch (e) {
-      throw Exception('Profile update failed: ${e.toString()}');
+      throw Exception('Failed to create request token: $e');
     }
   }
 
-  /// Handle Firebase Auth exceptions and return user-friendly messages
-  String _handleFirebaseAuthException(FirebaseAuthException e) {
-    switch (e.code) {
-      case 'user-not-found':
-        return 'No user found with this email address.';
-      case 'wrong-password':
-        return 'Incorrect password. Please try again.';
-      case 'email-already-in-use':
-        return 'An account already exists with this email address.';
-      case 'weak-password':
-        return 'Password is too weak. Please choose a stronger password.';
-      case 'invalid-email':
-        return 'Please enter a valid email address.';
-      case 'user-disabled':
-        return 'This account has been disabled.';
-      case 'too-many-requests':
-        return 'Too many failed attempts. Please try again later.';
-      case 'operation-not-allowed':
-        return 'This sign-in method is not enabled.';
-      case 'network-request-failed':
-        return 'Network error. Please check your connection and try again.';
-      case 'requires-recent-login':
-        return 'Please sign in again to complete this action.';
-      default:
-        return e.message ?? 'An authentication error occurred.';
+  /// Create session from approved request token
+  Future<AuthUser> createSessionFromToken(String requestToken) async {
+    try {
+      return await _tmdbAuthService.createSessionFromToken(requestToken);
+    } catch (e) {
+      throw Exception('Failed to create session: $e');
+    }
+  }
+
+  /// Create guest session
+  Future<AuthUser> createGuestSession() async {
+    try {
+      return await _tmdbAuthService.createGuestSession();
+    } catch (e) {
+      throw Exception('Failed to create guest session: $e');
     }
   }
 }

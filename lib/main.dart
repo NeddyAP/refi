@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+
 import 'core/network/api_client.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -20,16 +19,14 @@ import 'shared/providers/navigation_visibility_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase with platform-specific options
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
   // Load environment variables
   await dotenv.load(fileName: ".env");
 
   // Initialize API client
   ApiClient().initialize();
+
+  // Initialize authentication service
+  await AuthService().initialize();
 
   runApp(const MainApp());
 }

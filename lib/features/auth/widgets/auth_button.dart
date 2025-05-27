@@ -28,7 +28,7 @@ class AuthButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     Widget child = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -102,12 +102,12 @@ class AuthButton extends StatelessWidget {
   }
 }
 
-/// Google Sign-In button with custom styling
-class GoogleSignInButton extends StatelessWidget {
+/// TMDB Sign-In button with custom styling
+class TmdbSignInButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool isLoading;
 
-  const GoogleSignInButton({
+  const TmdbSignInButton({
     super.key,
     this.onPressed,
     this.isLoading = false,
@@ -116,25 +116,15 @@ class GoogleSignInButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AuthButton(
-      text: 'Continue with Google',
+      text: 'Sign In with TMDB',
       onPressed: onPressed,
       isLoading: isLoading,
-      isOutlined: true,
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.black87,
       icon: isLoading
           ? null
-          : Image.asset(
-              'assets/images/google_logo.png',
-              width: 20,
-              height: 20,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.g_mobiledata,
-                  size: 24,
-                  color: Colors.red,
-                );
-              },
+          : const Icon(
+              Icons.movie,
+              size: 20,
+              color: Colors.white,
             ),
     );
   }

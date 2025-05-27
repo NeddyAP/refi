@@ -6,7 +6,7 @@ import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
 import '../../../core/constants/app_constants.dart';
 
-/// Login screen with email/password and Google Sign-In
+/// Login screen with TMDB username/password authentication
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -16,22 +16,23 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _hasNavigatedBack = false;
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  String? _validateEmail(String? value) {
+  String? _validateUsername(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your email';
+      return 'Please enter your TMDB username';
     }
-    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-      return 'Please enter a valid email address';
+    if (value.length < 3) {
+      return 'Username must be at least 3 characters';
     }
     return null;
   }
@@ -49,22 +50,30 @@ class _LoginScreenState extends State<LoginScreen> {
   void _signIn() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthProvider>().signInWithEmailAndPassword(
-            email: _emailController.text.trim(),
+            email: _usernameController.text.trim(), // Using email param for username
             password: _passwordController.text,
           );
     }
   }
 
-  void _signInWithGoogle() {
-    context.read<AuthProvider>().signInWithGoogle();
+  void _goToTmdbRegister() {
+    // Open TMDB registration page
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please register at https://www.themoviedb.org/signup'),
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 
-  void _goToRegister() {
-    context.push(AppConstants.registerRoute);
-  }
-
-  void _goToForgotPassword() {
-    context.push('/forgot-password');
+  void _goToTmdbPasswordReset() {
+    // Open TMDB password reset page
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please reset your password at https://www.themoviedb.org/reset-password'),
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -75,6 +84,16 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Consumer<AuthProvider>(
           builder: (context, authProvider, child) {
+            // Navigate back when authentication is successful
+            if (authProvider.isAuthenticated && !_hasNavigatedBack) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted && !_hasNavigatedBack) {
+                  _hasNavigatedBack = true;
+                  context.pop(); // Go back to previous screen
+                }
+              });
+            }
+
             // Show error if any
             if (authProvider.hasError) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -123,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 8),
 
                     Text(
-                      'Sign in to discover amazing movies',
+                      'Sign in with your TMDB account to discover amazing movies',
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
@@ -132,14 +151,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 48),
 
-                    // Email field
+                    // Username field
                     AuthTextField(
-                      label: 'Email',
-                      hint: 'Enter your email address',
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: _validateEmail,
-                      prefixIcon: const Icon(Icons.email_outlined),
+                      label: 'TMDB Username',
+                      hint: 'Enter your TMDB username',
+                      controller: _usernameController,
+                      keyboardType: TextInputType.text,
+                      validator: _validateUsername,
+                      prefixIcon: const Icon(Icons.person_outlined),
                     ),
 
                     const SizedBox(height: 24),
@@ -160,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: _goToForgotPassword,
+                        onPressed: _goToTmdbPasswordReset,
                         child: Text(
                           'Forgot Password?',
                           style: TextStyle(
@@ -175,62 +194,67 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Sign in button
                     AuthButton(
-                      text: 'Sign In',
+                      text: 'Sign In with TMDB',
                       onPressed: _signIn,
                       isLoading: authProvider.isLoading,
                     ),
 
                     const SizedBox(height: 24),
 
-                    // Divider
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Divider(
-                            color: theme.colorScheme.outline,
-                          ),
+                    // Info about guest access
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: theme.colorScheme.outline.withValues(alpha: 0.3),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            'OR',
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            color: theme.colorScheme.primary,
+                            size: 24,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'You can browse movies without signing in',
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
+                              fontWeight: FontWeight.w500,
                             ),
+                            textAlign: TextAlign.center,
                           ),
-                        ),
-                        Expanded(
-                          child: Divider(
-                            color: theme.colorScheme.outline,
+                          const SizedBox(height: 4),
+                          Text(
+                            'Sign in to rate movies and create watchlists',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Google Sign-In button
-                    GoogleSignInButton(
-                      onPressed: _signInWithGoogle,
-                      isLoading: authProvider.isLoading,
+                        ],
+                      ),
                     ),
 
                     const SizedBox(height: 32),
 
                     // Sign up link
-                    Row(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Don't have an account? ",
+                          "Don't have a TMDB account? ",
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
                         TextButton(
-                          onPressed: _goToRegister,
+                          onPressed: _goToTmdbRegister,
                           child: Text(
-                            'Sign Up',
+                            'Sign Up at TMDB',
                             style: TextStyle(
                               color: theme.colorScheme.primary,
                               fontWeight: FontWeight.w600,

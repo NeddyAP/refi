@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../shared/widgets/bottom_navigation.dart';
 import '../../../core/constants/app_constants.dart';
 import '../providers/profile_provider.dart';
@@ -46,13 +47,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 // About section
                 const _AboutSection(),
-                
+
+                const SizedBox(height: 32), // Add space before sign out button
+
+                // Sign Out button (moved here)
+                Consumer<AuthProvider>( // Use Consumer to access AuthProvider
+                  builder: (context, authProvider, child) {
+                    if (authProvider.isAuthenticated) {
+                      return ElevatedButton.icon( // Use ElevatedButton.icon for icon
+                        onPressed: () => _showSignOutDialog(context, authProvider),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.error,
+                          foregroundColor: Theme.of(context).colorScheme.onError,
+                          minimumSize: const Size(double.infinity, 48),
+                        ),
+                        icon: const Icon(Icons.logout), // Add logout icon
+                        label: const Text('Sign Out'),
+                      );
+                    } else {
+                      return const SizedBox.shrink(); // Hide button if not authenticated
+                    }
+                  },
+                ),
+
+
                 // Bottom padding for navigation bar
-                SizedBox(height: MediaQuery.of(context).padding.bottom + 100),
+                SizedBox(height: MediaQuery.of(context).padding.bottom + 20),
               ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  // Keep _showSignOutDialog here as it's used by the button in this state
+  void _showSignOutDialog(BuildContext context, AuthProvider authProvider) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Sign Out'),
+        content: const Text('Are you sure you want to sign out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              authProvider.signOut();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            child: const Text('Sign Out'),
+          ),
+        ],
       ),
     );
   }
@@ -81,10 +133,10 @@ class _UserInfoSection extends StatelessWidget {
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: theme.colorScheme.primary,
-                  backgroundImage: user?.photoURL != null
-                      ? NetworkImage(user!.photoURL!)
+                  backgroundImage: user?.avatarUrl != null
+                      ? NetworkImage(user!.avatarUrl!)
                       : null,
-                  child: user?.photoURL == null
+                  child: user?.hasProfilePhoto != true
                       ? Text(
                           isAuthenticated ? (user?.initials ?? 'U') : 'G',
                           style: theme.textTheme.headlineMedium?.copyWith(
@@ -99,7 +151,7 @@ class _UserInfoSection extends StatelessWidget {
 
                 // Name
                 Text(
-                  isAuthenticated ? (user?.name ?? 'User') : 'Guest User',
+                  isAuthenticated ? (user?.displayName ?? 'User') : 'Guest User',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -107,10 +159,10 @@ class _UserInfoSection extends StatelessWidget {
 
                 const SizedBox(height: 8),
 
-                // Status/Email
+                // Status/Username
                 Text(
                   isAuthenticated
-                      ? (user?.email ?? 'Authenticated User')
+                      ? (user?.username != null ? '@${user!.username}' : 'TMDB User')
                       : 'Browsing as guest',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
@@ -119,27 +171,27 @@ class _UserInfoSection extends StatelessWidget {
 
                 const SizedBox(height: 8),
 
-                // Email verification status
-                if (isAuthenticated && user != null && !user.emailVerified)
+                // Session status for authenticated users
+                if (isAuthenticated && user != null)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.errorContainer,
+                      color: theme.colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          Icons.warning_amber,
+                          Icons.verified_user,
                           size: 16,
-                          color: theme.colorScheme.onErrorContainer,
+                          color: theme.colorScheme.onPrimaryContainer,
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          'Email not verified',
+                          user.isGuest ? 'Guest Session' : 'TMDB Account',
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onErrorContainer,
+                            color: theme.colorScheme.onPrimaryContainer,
                           ),
                         ),
                       ],
@@ -150,48 +202,22 @@ class _UserInfoSection extends StatelessWidget {
 
                 // Action buttons
                 if (isAuthenticated) ...[
-                  // Authenticated user buttons
-                  Row(
-                    children: [
-                      if (user != null && !user.emailVerified) ...[
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () => authProvider.sendEmailVerification(),
-                            child: const Text('Verify Email'),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                      ],
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => _showSignOutDialog(context, authProvider),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: theme.colorScheme.error,
-                            foregroundColor: theme.colorScheme.onError,
-                          ),
-                          child: const Text('Sign Out'),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Authenticated user buttons (Sign Out button removed from here)
+                  // Add other authenticated user actions here if needed
                 ] else ...[
                   // Guest user buttons
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => context.push(AppConstants.registerRoute),
-                          child: const Text('Sign Up'),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => context.push(AppConstants.loginRoute),
-                          child: const Text('Sign In'),
-                        ),
-                      ),
-                    ],
+                  ElevatedButton.icon( // Sign In button
+                    onPressed: () => context.push(AppConstants.loginRoute),
+                    icon: const Icon(Icons.login),
+                    label: const Text('Sign In'),
+                    style: ElevatedButton.styleFrom(
+                       minimumSize: const Size(double.infinity, 48), // Make it full width
+                    ),
+                  ),
+                  const SizedBox(height: 12), // Add spacing
+                  TextButton( // Sign Up text button
+                    onPressed: () => _launchTmdbSignUpUrl(context),
+                    child: const Text('Sign Up at TMDB'),
                   ),
                 ],
               ],
@@ -202,31 +228,18 @@ class _UserInfoSection extends StatelessWidget {
     );
   }
 
-  void _showSignOutDialog(BuildContext context, AuthProvider authProvider) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Sign Out'),
-        content: const Text('Are you sure you want to sign out?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              authProvider.signOut();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-              foregroundColor: Theme.of(context).colorScheme.onError,
-            ),
-            child: const Text('Sign Out'),
-          ),
-        ],
-      ),
-    );
+  // New function to launch the TMDB sign-up URL
+  void _launchTmdbSignUpUrl(BuildContext context) async {
+    final Uri url = Uri.parse('https://www.themoviedb.org/signup');
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      // Handle error, e.g., show a SnackBar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Could not open $url'),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 }
 

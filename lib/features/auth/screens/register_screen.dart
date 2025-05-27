@@ -1,280 +1,220 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import '../providers/auth_provider.dart';
-import '../widgets/auth_text_field.dart';
-import '../widgets/auth_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/app_constants.dart';
 
-/// Registration screen for new users
-class RegisterScreen extends StatefulWidget {
+/// Registration screen that redirects to TMDB registration
+class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
-
-  @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
-}
-
-class _RegisterScreenState extends State<RegisterScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  String? _validateName(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your name';
-    }
-    if (value.length < 2) {
-      return 'Name must be at least 2 characters';
-    }
-    return null;
-  }
-
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    }
-    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-      return 'Please enter a valid email address';
-    }
-    return null;
-  }
-
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter a password';
-    }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters';
-    }
-    if (!RegExp(r'^(?=.*[a-zA-Z])(?=.*\d)').hasMatch(value)) {
-      return 'Password must contain at least one letter and one number';
-    }
-    return null;
-  }
-
-  String? _validateConfirmPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please confirm your password';
-    }
-    if (value != _passwordController.text) {
-      return 'Passwords do not match';
-    }
-    return null;
-  }
-
-  void _register() {
-    if (_formKey.currentState!.validate()) {
-      context.read<AuthProvider>().createUserWithEmailAndPassword(
-            email: _emailController.text.trim(),
-            password: _passwordController.text,
-            displayName: _nameController.text.trim(),
-          );
-    }
-  }
-
-  void _signInWithGoogle() {
-    context.read<AuthProvider>().signInWithGoogle();
-  }
-
-  void _goToLogin() {
-    context.pop();
-  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Account'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        title: const Text('Sign Up'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
       ),
       body: SafeArea(
-        child: Consumer<AuthProvider>(
-          builder: (context, authProvider, child) {
-            // Show error if any
-            if (authProvider.hasError) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(authProvider.errorMessage!),
-                    backgroundColor: theme.colorScheme.error,
-                    action: SnackBarAction(
-                      label: 'Dismiss',
-                      textColor: theme.colorScheme.onError,
-                      onPressed: () {
-                        authProvider.clearError();
-                      },
-                    ),
-                  ),
-                );
-              });
-            }
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // TMDB Logo/Icon
+              Icon(
+                Icons.movie,
+                size: 80,
+                color: theme.colorScheme.primary,
+              ),
+              const SizedBox(height: 24),
 
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Form(
-                key: _formKey,
+              // Title
+              Text(
+                'Create TMDB Account',
+                style: theme.textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 16),
+
+              // Description
+              Text(
+                'To use all features of ${AppConstants.appName}, you need a TMDB account. Registration is free and takes just a minute.',
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 32),
+
+              // Features list
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                  ),
+                ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 20),
-                    
-                    // Title
                     Text(
-                      'Join ${AppConstants.appName}',
-                      style: theme.textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.onSurface,
+                      'With a TMDB account you can:',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                    
-                    const SizedBox(height: 8),
-                    
-                    Text(
-                      'Create your account to get started',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                      textAlign: TextAlign.center,
+                    const SizedBox(height: 16),
+                    _buildFeatureItem(
+                      context,
+                      Icons.star,
+                      'Rate movies and TV shows',
                     ),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // Name field
-                    AuthTextField(
-                      label: 'Full Name',
-                      hint: 'Enter your full name',
-                      controller: _nameController,
-                      textCapitalization: TextCapitalization.words,
-                      validator: _validateName,
-                      prefixIcon: const Icon(Icons.person_outlined),
+                    const SizedBox(height: 12),
+                    _buildFeatureItem(
+                      context,
+                      Icons.bookmark,
+                      'Create and manage watchlists',
                     ),
-                    
-                    const SizedBox(height: 24),
-                    
-                    // Email field
-                    AuthTextField(
-                      label: 'Email',
-                      hint: 'Enter your email address',
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: _validateEmail,
-                      prefixIcon: const Icon(Icons.email_outlined),
+                    const SizedBox(height: 12),
+                    _buildFeatureItem(
+                      context,
+                      Icons.favorite,
+                      'Mark movies as favorites',
                     ),
-                    
-                    const SizedBox(height: 24),
-                    
-                    // Password field
-                    AuthTextField(
-                      label: 'Password',
-                      hint: 'Create a strong password',
-                      controller: _passwordController,
-                      obscureText: true,
-                      validator: _validatePassword,
-                      prefixIcon: const Icon(Icons.lock_outlined),
-                    ),
-                    
-                    const SizedBox(height: 24),
-                    
-                    // Confirm password field
-                    AuthTextField(
-                      label: 'Confirm Password',
-                      hint: 'Confirm your password',
-                      controller: _confirmPasswordController,
-                      obscureText: true,
-                      validator: _validateConfirmPassword,
-                      prefixIcon: const Icon(Icons.lock_outlined),
-                    ),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // Register button
-                    AuthButton(
-                      text: 'Create Account',
-                      onPressed: _register,
-                      isLoading: authProvider.isLoading,
-                    ),
-                    
-                    const SizedBox(height: 24),
-                    
-                    // Divider
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Divider(
-                            color: theme.colorScheme.outline,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            'OR',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Divider(
-                            color: theme.colorScheme.outline,
-                          ),
-                        ),
-                      ],
-                    ),
-                    
-                    const SizedBox(height: 24),
-                    
-                    // Google Sign-In button
-                    GoogleSignInButton(
-                      onPressed: _signInWithGoogle,
-                      isLoading: authProvider.isLoading,
-                    ),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // Sign in link
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Already have an account? ',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: _goToLogin,
-                          child: Text(
-                            'Sign In',
-                            style: TextStyle(
-                              color: theme.colorScheme.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
+                    const SizedBox(height: 12),
+                    _buildFeatureItem(
+                      context,
+                      Icons.sync,
+                      'Sync across all devices',
                     ),
                   ],
                 ),
               ),
-            );
-          },
+
+              const SizedBox(height: 32),
+
+              // Register button
+              ElevatedButton(
+                onPressed: () => _launchTmdbRegistration(context),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 56),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Register at TMDB',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Already have account
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Already have an account? ',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => context.push(AppConstants.loginRoute),
+                    child: Text(
+                      'Sign In',
+                      style: TextStyle(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
+              // Guest access info
+              TextButton(
+                onPressed: () => context.go(AppConstants.homeRoute),
+                child: Text(
+                  'Continue browsing as guest',
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Widget _buildFeatureItem(BuildContext context, IconData icon, String text) {
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 20,
+          color: theme.colorScheme.primary,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            text,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _launchTmdbRegistration(BuildContext context) async {
+    const url = 'https://www.themoviedb.org/signup';
+    try {
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(
+          Uri.parse(url),
+          mode: LaunchMode.externalApplication,
+        );
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please visit https://www.themoviedb.org/signup to register'),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please visit https://www.themoviedb.org/signup to register'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 }

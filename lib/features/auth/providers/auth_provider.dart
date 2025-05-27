@@ -202,6 +202,41 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  /// Create request token for TMDB authentication
+  Future<String> createRequestToken() async {
+    try {
+      _setLoading();
+      final token = await _authRepository.createRequestToken();
+      _setState(const AuthState.unauthenticated());
+      return token;
+    } catch (e) {
+      _setState(AuthState.error(e.toString()));
+      rethrow;
+    }
+  }
+
+  /// Create session from approved request token
+  Future<void> createSessionFromToken(String requestToken) async {
+    try {
+      _setLoading();
+      final user = await _authRepository.createSessionFromToken(requestToken);
+      _setState(AuthState.authenticated(user));
+    } catch (e) {
+      _setState(AuthState.error(e.toString()));
+    }
+  }
+
+  /// Create guest session
+  Future<void> createGuestSession() async {
+    try {
+      _setLoading();
+      final user = await _authRepository.createGuestSession();
+      _setState(AuthState.authenticated(user));
+    } catch (e) {
+      _setState(AuthState.error(e.toString()));
+    }
+  }
+
   /// Clear error state
   void clearError() {
     if (_state.hasError) {

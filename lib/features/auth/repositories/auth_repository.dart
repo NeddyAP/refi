@@ -24,26 +24,35 @@ abstract class AuthRepository {
     String? displayName,
   });
 
-  /// Sign in with Google
+  /// Sign in with Google (not supported)
   Future<AuthUser> signInWithGoogle();
 
-  /// Send password reset email
+  /// Send password reset email (redirects to TMDB)
   Future<void> sendPasswordResetEmail(String email);
 
-  /// Send email verification
+  /// Send email verification (not applicable)
   Future<void> sendEmailVerification();
 
   /// Sign out
   Future<void> signOut();
 
-  /// Delete user account
+  /// Delete user account (not supported via API)
   Future<void> deleteAccount();
 
-  /// Update user profile
+  /// Update user profile (not supported via API)
   Future<void> updateProfile({
     String? displayName,
     String? photoURL,
   });
+
+  /// Create request token for TMDB authentication
+  Future<String> createRequestToken();
+
+  /// Create session from approved request token
+  Future<AuthUser> createSessionFromToken(String requestToken);
+
+  /// Create guest session
+  Future<AuthUser> createGuestSession();
 
   /// Save user data locally
   Future<void> saveUserLocally(AuthUser user);
@@ -134,12 +143,32 @@ class AuthRepositoryImpl implements AuthRepository {
       displayName: displayName,
       photoURL: photoURL,
     );
-    
+
     // Update local user data if available
     final updatedUser = _authService.currentUser;
     if (updatedUser != null) {
       await saveUserLocally(updatedUser);
     }
+  }
+
+  @override
+  Future<String> createRequestToken() async {
+    final token = await _authService.createRequestToken();
+    return token.requestToken;
+  }
+
+  @override
+  Future<AuthUser> createSessionFromToken(String requestToken) async {
+    final user = await _authService.createSessionFromToken(requestToken);
+    await saveUserLocally(user);
+    return user;
+  }
+
+  @override
+  Future<AuthUser> createGuestSession() async {
+    final user = await _authService.createGuestSession();
+    await saveUserLocally(user);
+    return user;
   }
 
   @override
@@ -159,12 +188,12 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       final userJson = prefs.getString(_userKey);
-      
+
       if (userJson != null) {
         final userMap = json.decode(userJson) as Map<String, dynamic>;
         return AuthUser.fromJson(userMap);
       }
-      
+
       return null;
     } catch (e) {
       // Log error but don't throw - local storage is not critical
