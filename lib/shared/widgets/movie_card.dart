@@ -39,20 +39,20 @@ class MovieCard extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceVariant,
+                    color: theme.colorScheme.surfaceContainerHighest,
                   ),
                   child: movie.fullPosterUrl != null
                       ? CachedNetworkImage(
                           imageUrl: movie.fullPosterUrl!,
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
-                            color: theme.colorScheme.surfaceVariant,
+                            color: theme.colorScheme.surfaceContainerHighest,
                             child: const Center(
                               child: CircularProgressIndicator(),
                             ),
                           ),
                           errorWidget: (context, url, error) => Container(
-                            color: theme.colorScheme.surfaceVariant,
+                            color: theme.colorScheme.surfaceContainerHighest,
                             child: Icon(
                               Icons.movie,
                               size: 48,
@@ -153,13 +153,13 @@ class MovieListCard extends StatelessWidget {
                           imageUrl: movie.fullPosterUrl!,
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
-                            color: theme.colorScheme.surfaceVariant,
+                            color: theme.colorScheme.surfaceContainerHighest,
                             child: const Center(
                               child: CircularProgressIndicator(),
                             ),
                           ),
                           errorWidget: (context, url, error) => Container(
-                            color: theme.colorScheme.surfaceVariant,
+                            color: theme.colorScheme.surfaceContainerHighest,
                             child: Icon(
                               Icons.movie,
                               color: theme.colorScheme.onSurfaceVariant,
@@ -167,7 +167,7 @@ class MovieListCard extends StatelessWidget {
                           ),
                         )
                       : Container(
-                          color: theme.colorScheme.surfaceVariant,
+                          color: theme.colorScheme.surfaceContainerHighest,
                           child: Icon(
                             Icons.movie,
                             color: theme.colorScheme.onSurfaceVariant,

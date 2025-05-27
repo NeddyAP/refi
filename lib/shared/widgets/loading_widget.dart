@@ -71,7 +71,7 @@ class MovieCardSkeleton extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceVariant,
+                  color: theme.colorScheme.surfaceContainerHighest,
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(12),
                   ),
@@ -93,7 +93,7 @@ class MovieCardSkeleton extends StatelessWidget {
                       height: 14,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceVariant,
+                        color: theme.colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: const _ShimmerEffect(),
@@ -106,7 +106,7 @@ class MovieCardSkeleton extends StatelessWidget {
                       height: 12,
                       width: 80,
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceVariant,
+                        color: theme.colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: const _ShimmerEffect(),
@@ -140,7 +140,7 @@ class MovieListSkeleton extends StatelessWidget {
               width: 60,
               height: 90,
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceVariant,
+                color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const _ShimmerEffect(),
@@ -158,7 +158,7 @@ class MovieListSkeleton extends StatelessWidget {
                     height: 16,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceVariant,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: const _ShimmerEffect(),
@@ -171,7 +171,7 @@ class MovieListSkeleton extends StatelessWidget {
                     height: 12,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceVariant,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: const _ShimmerEffect(),
@@ -183,7 +183,7 @@ class MovieListSkeleton extends StatelessWidget {
                     height: 12,
                     width: 150,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceVariant,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: const _ShimmerEffect(),
@@ -196,7 +196,7 @@ class MovieListSkeleton extends StatelessWidget {
                     height: 14,
                     width: 80,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceVariant,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: const _ShimmerEffect(),
@@ -255,9 +255,9 @@ class _ShimmerEffectState extends State<_ShimmerEffect>
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               colors: [
-                theme.colorScheme.surfaceVariant,
-                theme.colorScheme.surfaceVariant.withOpacity(0.5),
-                theme.colorScheme.surfaceVariant,
+                theme.colorScheme.surfaceContainerHighest,
+                theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                theme.colorScheme.surfaceContainerHighest,
               ],
               stops: [
                 _animation.value - 0.3,

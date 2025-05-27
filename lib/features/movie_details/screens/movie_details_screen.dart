@@ -132,9 +132,9 @@ class _TopSection extends StatelessWidget {
                     imageUrl: movieDetails.fullBackdropUrl!,
                     fit: BoxFit.cover,
                     placeholder: (context, url) =>
-                        Container(color: theme.colorScheme.surfaceVariant),
+                        Container(color: theme.colorScheme.surfaceContainerHighest),
                     errorWidget: (context, url, error) => Container(
-                      color: theme.colorScheme.surfaceVariant,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       child: Icon(
                         Icons.movie,
                         size: 64,
@@ -143,7 +143,7 @@ class _TopSection extends StatelessWidget {
                     ),
                   )
                 : Container(
-                    color: theme.colorScheme.surfaceVariant,
+                    color: theme.colorScheme.surfaceContainerHighest,
                     child: Icon(
                       Icons.movie,
                       size: 64,
@@ -256,7 +256,7 @@ class _MovieTitleSection extends StatelessWidget {
                     imageUrl: movieDetails.fullPosterUrl!,
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Container(
-                      color: theme.colorScheme.surfaceVariant,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       child: Icon(
                         Icons.movie,
                         size: 24,
@@ -264,7 +264,7 @@ class _MovieTitleSection extends StatelessWidget {
                       ),
                     ),
                     errorWidget: (context, url, error) => Container(
-                      color: theme.colorScheme.surfaceVariant,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       child: Icon(
                         Icons.movie,
                         size: 24,
@@ -273,7 +273,7 @@ class _MovieTitleSection extends StatelessWidget {
                     ),
                   )
                 : Container(
-                    color: theme.colorScheme.surfaceVariant,
+                    color: theme.colorScheme.surfaceContainerHighest,
                     child: Icon(
                       Icons.movie,
                       size: 24,

@@ -215,7 +215,7 @@ class _MovieCarouselSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<HomeProvider>(
       builder: (context, provider, child) {
-        return Container(
+        return SizedBox(
           height: 500,
           child: Stack(
             children: [
@@ -740,7 +740,7 @@ class _CompactMovieCard extends StatelessWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: Theme.of(context).colorScheme.surfaceVariant,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),
@@ -757,7 +757,7 @@ class _CompactMovieCard extends StatelessWidget {
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) =>
                                   Container(
-                                    color: Theme.of(context).colorScheme.surfaceVariant,
+                                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                     child: Icon(
                                       Icons.movie,
                                       size: 50,
@@ -766,7 +766,7 @@ class _CompactMovieCard extends StatelessWidget {
                                   ),
                             )
                           : Container(
-                              color: Theme.of(context).colorScheme.surfaceVariant,
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: Icon(
                                 Icons.movie,
                                 size: 50,
