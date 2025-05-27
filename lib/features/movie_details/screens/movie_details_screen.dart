@@ -10,6 +10,7 @@ import '../../../shared/models/movie_video.dart';
 import '../../../shared/models/movie_cast.dart';
 import '../../../shared/models/movie_review.dart';
 import '../../../shared/models/movie_images.dart';
+import '../../../shared/providers/navigation_visibility_provider.dart';
 import '../../../features/favorites/providers/favorites_provider.dart';
 import '../providers/movie_details_provider.dart';
 
@@ -23,12 +24,29 @@ class MovieDetailsScreen extends StatefulWidget {
 }
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
+  NavigationVisibilityProvider? _navigationProvider;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Store reference to NavigationVisibilityProvider
+      _navigationProvider = Provider.of<NavigationVisibilityProvider>(context, listen: false);
+      // Hide bottom navigation bar when movie details screen is shown
+      _navigationProvider?.hide();
       context.read<MovieDetailsProvider>().initialize();
     });
+  }
+
+  @override
+  void dispose() {
+    // Show bottom navigation bar when movie details screen is disposed
+    // Use stored reference instead of accessing via context
+    // Defer the update to prevent FlutterError when widget tree is locked
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _navigationProvider?.show();
+    });
+    super.dispose();
   }
 
   @override
@@ -875,6 +893,7 @@ class _FullCastCrewSection extends StatelessWidget {
   }
 
   void _showFullCastBottomSheet(BuildContext context, dynamic credits) {
+    // Navigation bar is already hidden in movie details screen, no need to hide again
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1235,6 +1254,7 @@ class _ReviewsSection extends StatelessWidget {
   }
 
   void _showAllReviewsBottomSheet(BuildContext context, List<MovieReview> reviews) {
+    // Navigation bar is already hidden in movie details screen, no need to hide again
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1493,6 +1513,7 @@ class _ImageGalleriesSection extends StatelessWidget {
   }
 
   void _showImageGallery(BuildContext context, List<MovieImage> images, int initialIndex) {
+    // Navigation bar is already hidden in movie details screen, no need to hide again
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => _ImageGalleryScreen(

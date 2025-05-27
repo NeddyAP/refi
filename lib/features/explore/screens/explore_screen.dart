@@ -8,6 +8,7 @@ import '../../../shared/widgets/movie_card.dart';
 import '../../../shared/widgets/loading_widget.dart';
 import '../../../shared/widgets/error_widget.dart';
 import '../../../shared/models/genre.dart';
+import '../../../shared/providers/navigation_visibility_provider.dart';
 import '../providers/explore_provider.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -43,6 +44,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   void _showAdvancedSearchModal(BuildContext context) {
+    // Hide the bottom navigation bar when modal opens
+    context.read<NavigationVisibilityProvider>().hide();
+    
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -50,7 +54,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => const _AdvancedSearchModal(),
-    );
+    ).then((_) {
+      // Show the bottom navigation bar when modal closes
+      context.read<NavigationVisibilityProvider>().show();
+    });
   }
 
   @override
@@ -185,8 +192,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
       return _SearchResults(provider: provider);
     }
     
-    // Show genre selection and movies
-    return _GenreExploration(provider: provider);
+    // Show default/popular movies when no search or filters are active
+    return _DefaultMoviesDisplay(provider: provider);
   }
 }
 
@@ -207,7 +214,12 @@ class _SearchResults extends StatelessWidget {
         }
         
         return GridView.builder(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.fromLTRB(
+            16,
+            16,
+            16,
+            MediaQuery.of(context).padding.bottom + 100
+          ),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.6,
@@ -262,7 +274,12 @@ class _AdvancedSearchResults extends StatelessWidget {
         }
         
         return GridView.builder(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.fromLTRB(
+            16,
+            16,
+            16,
+            MediaQuery.of(context).padding.bottom + 100
+          ),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.6,
@@ -751,83 +768,48 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
   }
 }
 
-class _GenreExploration extends StatelessWidget {
+class _DefaultMoviesDisplay extends StatelessWidget {
   final ExploreProvider provider;
 
-  const _GenreExploration({required this.provider});
+  const _DefaultMoviesDisplay({required this.provider});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Genres section
+        // Header section
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
-            'Browse by Genre',
+            'Popular Movies',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
         
-        const SizedBox(height: 12),
-        
-        // Genre chips
-        SizedBox(
-          height: 50,
-          child: provider.genres?.when(
-            success: (genreResponse) {
-              return ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: genreResponse.genres.length,
-                itemBuilder: (context, index) {
-                  final genre = genreResponse.genres[index];
-                  final isSelected = provider.selectedGenre?.id == genre.id;
-                  
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: FilterChip(
-                      label: Text(genre.name),
-                      selected: isSelected,
-                      onSelected: (selected) {
-                        if (selected) {
-                          provider.selectGenre(genre);
-                        } else {
-                          provider.clearGenreSelection();
-                        }
-                      },
-                    ),
-                  );
-                },
-              );
-            },
-            error: (message, statusCode) => Center(
-              child: Text('Failed to load genres: $message'),
-            ),
-            loading: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
-          ) ?? const SizedBox.shrink(),
-        ),
-        
         const SizedBox(height: 16),
         
-        // Genre movies
+        // Default movies grid
         Expanded(
-          child: provider.genreMovies?.when(
+          child: provider.defaultMovies?.when(
             success: (movieResponse) {
               if (movieResponse.results.isEmpty) {
                 return const EmptyStateWidget(
-                  title: 'No Movies Found',
-                  message: 'No movies found for this genre.',
+                  title: 'No Movies Available',
+                  message: 'Unable to load popular movies at this time.',
+                  icon: Icons.movie_outlined,
                 );
               }
               
               return GridView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  0,
+                  16,
+                  MediaQuery.of(context).padding.bottom + 100
+                ),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 0.6,
@@ -846,7 +828,7 @@ class _GenreExploration extends StatelessWidget {
             },
             error: (message, statusCode) => ErrorDisplayWidget(
               message: message,
-              onRetry: () => provider.retryGenreMovies(),
+              onRetry: () => provider.retryDefaultMovies(),
             ),
             loading: () => GridView.builder(
               padding: const EdgeInsets.all(16),
@@ -862,9 +844,9 @@ class _GenreExploration extends StatelessWidget {
               },
             ),
           ) ?? const EmptyStateWidget(
-            title: 'Select a Genre',
-            message: 'Choose a genre above to discover movies.',
-            icon: Icons.category,
+            title: 'Loading...',
+            message: 'Fetching popular movies for you.',
+            icon: Icons.movie_outlined,
           ),
         ),
       ],

@@ -74,12 +74,37 @@ class ExploreProvider extends ChangeNotifier {
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
 
+  // Default/Popular movies for when no search or content is active
+  ApiResult<MovieResponse>? _defaultMovies;
+  ApiResult<MovieResponse>? get defaultMovies => _defaultMovies;
+
   /// Initialize explore data
   Future<void> initialize() async {
     if (_isInitialized) return;
 
     await loadGenres();
+    await loadDefaultMovies();
     _isInitialized = true;
+  }
+
+  /// Load default/popular movies for initial display
+  Future<void> loadDefaultMovies() async {
+    _defaultMovies = const ApiLoading();
+    notifyListeners();
+
+    try {
+      final result = await _movieRepository.getPopularMovies();
+      _defaultMovies = result;
+    } catch (e) {
+      _defaultMovies = ApiError(message: 'Failed to load popular movies: $e');
+    }
+    
+    notifyListeners();
+  }
+
+  /// Retry loading default movies
+  Future<void> retryDefaultMovies() async {
+    await loadDefaultMovies();
   }
 
   /// Load genres

@@ -14,6 +14,7 @@ import 'features/profile/providers/profile_provider.dart';
 import 'features/auth/providers/auth_provider.dart';
 import 'features/auth/services/auth_service.dart';
 import 'features/auth/repositories/auth_repository.dart';
+import 'shared/providers/navigation_visibility_provider.dart';
 
 
 void main() async {
@@ -71,6 +72,9 @@ class MainApp extends StatelessWidget {
             context.read<MovieRepository>(),
           ),
           update: (context, movieRepo, previous) => previous ?? ExploreProvider(movieRepo),
+        ),
+        ChangeNotifierProvider<NavigationVisibilityProvider>(
+          create: (_) => NavigationVisibilityProvider(),
         ),
 
       ],

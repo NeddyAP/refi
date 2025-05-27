@@ -46,6 +46,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 // About section
                 const _AboutSection(),
+                
+                // Bottom padding for navigation bar
+                SizedBox(height: MediaQuery.of(context).padding.bottom + 100),
               ],
             ),
           );

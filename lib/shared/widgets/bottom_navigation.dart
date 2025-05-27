@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
+import '../providers/navigation_visibility_provider.dart';
 
 class BottomNavigationWrapper extends StatelessWidget {
   final Widget child;
@@ -16,7 +18,21 @@ class BottomNavigationWrapper extends StatelessWidget {
       body: child,
       backgroundColor: Colors.transparent,
       extendBody: true, // This allows the body to extend behind the bottom navigation
-      bottomNavigationBar: const CustomBottomNavigationBar(),
+      bottomNavigationBar: Consumer<NavigationVisibilityProvider>(
+        builder: (context, navProvider, child) {
+          return AnimatedSlide(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            offset: navProvider.isVisible ? Offset.zero : const Offset(0, 1),
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              opacity: navProvider.isVisible ? 1.0 : 0.0,
+              child: const CustomBottomNavigationBar(),
+            ),
+          );
+        },
+      ),
     );
   }
 }
