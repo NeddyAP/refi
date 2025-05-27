@@ -51,7 +51,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Use Scaffold without explicit backgroundColor to inherit theme background
     return Scaffold(
+      // ...existing body...
       body: Consumer<MovieDetailsProvider>(
         builder: (context, provider, child) {
           return provider.movieDetails?.when(
@@ -93,8 +95,6 @@ class _MovieDetailsContent extends StatelessWidget {
             SliverToBoxAdapter(child: _TopSection(movieDetails: movieDetails)),
             // Main content with curved separation
             SliverToBoxAdapter(child: _MainContent(movieDetails: movieDetails)),
-            // Bottom padding to prevent content blockage by navigation bar
-            const SliverToBoxAdapter(child: SizedBox(height: 120)),
           ],
         ),
 
@@ -115,13 +115,15 @@ class _HeaderSection extends StatelessWidget {
           children: [
             // Back button
             Container(
+              // Use a semi-transparent color that works on both themes
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
+                color: Theme.of(context).colorScheme.surface.withOpacity(0.3),
                 shape: BoxShape.circle,
               ),
               child: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                // Use onSurface color for icon
+                icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
           ],
@@ -171,7 +173,7 @@ class _TopSection extends StatelessWidget {
                   ),
           ),
 
-          // Dark overlay
+          // Dark overlay (keep as is, it's meant to darken the background image)
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -199,10 +201,12 @@ class _MainContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      // Use theme surface color for the main content background
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(24),
           topRight: Radius.circular(24),
         ),
@@ -277,7 +281,7 @@ class _MovieTitleSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withOpacity(0.1), // Keep shadow color
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -327,7 +331,8 @@ class _MovieTitleSection extends StatelessWidget {
                 movieDetails.title,
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  // Use onSurface color for text
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
 
@@ -345,13 +350,15 @@ class _MovieTitleSection extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        // Use a theme-aware background for chips
+                        color: theme.colorScheme.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
                         genre.name,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.black54,
+                          // Use onSurfaceVariant for chip text
+                          color: theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
                     );
@@ -367,7 +374,8 @@ class _MovieTitleSection extends StatelessWidget {
                     movieDetails.formattedRating,
                     style: theme.textTheme.displaySmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      // Use onSurface color for rating text
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -378,6 +386,7 @@ class _MovieTitleSection extends StatelessWidget {
                         index < (movieDetails.voteAverage / 2).round()
                             ? Icons.star
                             : Icons.star_border,
+                        // Keep amber for stars
                         color: Colors.amber,
                         size: 20,
                       ),
@@ -417,7 +426,8 @@ class _MovieTitleSection extends StatelessWidget {
               onPressed: () => favoritesProvider.toggleWatchlist(movie),
               icon: Icon(
                 isInWatchlist ? Icons.bookmark : Icons.bookmark_border,
-                color: Colors.black54,
+                // Use onSurfaceVariant for bookmark icon
+                color: theme.colorScheme.onSurfaceVariant,
                 size: 28,
               ),
             );
@@ -476,18 +486,21 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
+        // Use a theme-aware background for chips
+        color: theme.colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: Colors.black54),
+          // Use onSurfaceVariant for icon
+          Icon(icon, size: 16, color: theme.colorScheme.onSurfaceVariant),
           const SizedBox(width: 6),
           Text(
             label,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: Colors.black87,
+              // Use onSurfaceVariant for text
+              color: theme.colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -513,7 +526,8 @@ class _DescriptionSection extends StatelessWidget {
           'Overview',
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            // Use onSurface color for title
+            color: theme.colorScheme.onSurface,
           ),
         ),
 
@@ -523,7 +537,8 @@ class _DescriptionSection extends StatelessWidget {
           Text(
             movieDetails.overview!,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.black87,
+              // Use onSurface color for overview text
+              color: theme.colorScheme.onSurface,
               height: 1.5,
             ),
           )
@@ -531,7 +546,8 @@ class _DescriptionSection extends StatelessWidget {
           Text(
             'No overview available.',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.black54,
+              // Use onSurfaceVariant for placeholder text
+              color: theme.colorScheme.onSurfaceVariant,
               fontStyle: FontStyle.italic,
             ),
           ),
@@ -560,7 +576,8 @@ class _TrailersSection extends StatelessWidget {
               'Trailers',
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                // Use onSurface color for title
+                color: theme.colorScheme.onSurface,
               ),
             ),
 
@@ -616,7 +633,7 @@ class _TrailerCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withOpacity(0.1), // Keep shadow color
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -651,8 +668,8 @@ class _TrailerCard extends StatelessWidget {
                             ),
                           ),
                   ),
-                  
-                  // Play button overlay
+
+                  // Play button overlay (keep as is, white icon on dark overlay)
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
@@ -677,7 +694,8 @@ class _TrailerCard extends StatelessWidget {
               trailer.name,
               style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w500,
-                color: Colors.black87,
+                // Use onSurface color for title
+                color: theme.colorScheme.onSurface,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -687,7 +705,8 @@ class _TrailerCard extends StatelessWidget {
             Text(
               trailer.type,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: Colors.black54,
+                // Use onSurfaceVariant for type
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -717,7 +736,8 @@ class _TopBilledCastSection extends StatelessWidget {
               'Top Billed Cast',
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                // Use onSurface color for title
+                color: theme.colorScheme.onSurface,
               ),
             ),
 
@@ -763,7 +783,7 @@ class _CastMemberCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withOpacity(0.1), // Keep shadow color
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -809,7 +829,8 @@ class _CastMemberCard extends StatelessWidget {
             castMember.name,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
-              color: Colors.black87,
+              // Use onSurface color for name
+              color: theme.colorScheme.onSurface,
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -819,7 +840,8 @@ class _CastMemberCard extends StatelessWidget {
           Text(
             castMember.character,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: Colors.black54,
+              // Use onSurfaceVariant for character
+              color: theme.colorScheme.onSurfaceVariant,
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -845,7 +867,8 @@ class _FullCastCrewSection extends StatelessWidget {
                 'Full Cast & Crew',
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  // Use onSurface color for title
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
 
@@ -878,7 +901,8 @@ class _FullCastCrewSection extends StatelessWidget {
                 child: Text(
                   'View Full Cast & Crew',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.blue,
+                    // Use primary color for button text
+                    color: theme.colorScheme.primary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -897,6 +921,8 @@ class _FullCastCrewSection extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      // Use theme background for the modal
+      backgroundColor: Theme.of(context).colorScheme.surface,
       builder: (context) => DraggableScrollableSheet(
         initialChildSize: 0.9,
         maxChildSize: 0.9,
@@ -934,7 +960,8 @@ class _CrewMemberRow extends StatelessWidget {
             title,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
-              color: Colors.black87,
+              // Use onSurface color for title
+              color: theme.colorScheme.onSurface,
             ),
           ),
         ),
@@ -944,7 +971,8 @@ class _CrewMemberRow extends StatelessWidget {
                 ? '${crewMember.name} (+$additionalCount more)'
                 : crewMember.name,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.black54,
+              // Use onSurfaceVariant for name
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ),
@@ -967,9 +995,10 @@ class _FullCastBottomSheet extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      // Use theme surface color for background
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
@@ -982,7 +1011,8 @@ class _FullCastBottomSheet extends StatelessWidget {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              // Use theme surfaceContainer color for handle
+              color: theme.colorScheme.surfaceContainer,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -994,7 +1024,8 @@ class _FullCastBottomSheet extends StatelessWidget {
               'Full Cast & Crew',
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                // Use onSurface color for header
+                color: theme.colorScheme.onSurface,
               ),
             ),
           ),
@@ -1010,7 +1041,8 @@ class _FullCastBottomSheet extends StatelessWidget {
                   'Cast',
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    // Use onSurface color for section title
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -1025,7 +1057,8 @@ class _FullCastBottomSheet extends StatelessWidget {
                   'Crew',
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    // Use onSurface color for section title
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -1105,13 +1138,15 @@ class _FullCastMemberTile extends StatelessWidget {
                   castMember.name,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                    // Use onSurface color for name
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
                 Text(
                   castMember.character,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.black54,
+                    // Use onSurfaceVariant for character
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -1185,13 +1220,15 @@ class _FullCrewMemberTile extends StatelessWidget {
                   crewMember.name,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                    // Use onSurface color for name
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
                 Text(
                   crewMember.job,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.black54,
+                    // Use onSurfaceVariant for job
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -1223,7 +1260,8 @@ class _ReviewsSection extends StatelessWidget {
               'User Reviews',
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                // Use onSurface color for title
+                color: theme.colorScheme.onSurface,
               ),
             ),
 
@@ -1241,7 +1279,8 @@ class _ReviewsSection extends StatelessWidget {
                 child: Text(
                   'View All Reviews (${reviews.length})',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.blue,
+                    // Use primary color for button text
+                    color: theme.colorScheme.primary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -1258,6 +1297,8 @@ class _ReviewsSection extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      // Use theme background for the modal
+      backgroundColor: Theme.of(context).colorScheme.surface,
       builder: (context) => DraggableScrollableSheet(
         initialChildSize: 0.9,
         maxChildSize: 0.9,
@@ -1283,9 +1324,11 @@ class _ReviewCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
+        // Use theme surfaceContainerLow for background
+        color: theme.colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        // Use theme outline or surfaceContainer for border
+        border: Border.all(color: theme.colorScheme.surfaceContainer),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1296,12 +1339,14 @@ class _ReviewCard extends StatelessWidget {
               // Avatar
               CircleAvatar(
                 radius: 20,
-                backgroundColor: Colors.grey[300],
+                // Use theme surfaceContainer for background
+                backgroundColor: theme.colorScheme.surfaceContainer,
                 backgroundImage: review.authorDetails.fullAvatarUrl != null
                     ? CachedNetworkImageProvider(review.authorDetails.fullAvatarUrl!)
                     : null,
                 child: review.authorDetails.fullAvatarUrl == null
-                    ? Icon(Icons.person, color: Colors.grey[600])
+                    // Use onSurfaceVariant for icon
+                    ? Icon(Icons.person, color: theme.colorScheme.onSurfaceVariant)
                     : null,
               ),
 
@@ -1315,13 +1360,15 @@ class _ReviewCard extends StatelessWidget {
                       review.authorDetails.displayName,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                        // Use onSurface color for name
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     Text(
                       review.formattedCreatedAt,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.black54,
+                        // Use onSurfaceVariant for date
+                        color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -1335,6 +1382,7 @@ class _ReviewCard extends StatelessWidget {
                     5,
                     (index) => Icon(
                       index < review.ratingStars ? Icons.star : Icons.star_border,
+                      // Keep amber for stars
                       color: Colors.amber,
                       size: 16,
                     ),
@@ -1349,7 +1397,8 @@ class _ReviewCard extends StatelessWidget {
           Text(
             review.getTruncatedContent(300),
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.black87,
+              // Use onSurface color for content
+              color: theme.colorScheme.onSurface,
               height: 1.5,
             ),
           ),
@@ -1373,9 +1422,10 @@ class _AllReviewsBottomSheet extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      // Use theme surface color for background
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
@@ -1388,7 +1438,8 @@ class _AllReviewsBottomSheet extends StatelessWidget {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              // Use theme surfaceContainer color for handle
+              color: theme.colorScheme.surfaceContainer,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -1400,7 +1451,8 @@ class _AllReviewsBottomSheet extends StatelessWidget {
               'All Reviews (${reviews.length})',
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                // Use onSurface color for header
+                color: theme.colorScheme.onSurface,
               ),
             ),
           ),
@@ -1447,7 +1499,8 @@ class _ImageGalleriesSection extends StatelessWidget {
               'Media',
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                // Use onSurface color for title
+                color: theme.colorScheme.onSurface,
               ),
             ),
 
@@ -1459,7 +1512,8 @@ class _ImageGalleriesSection extends StatelessWidget {
                 'Backdrops',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  // Use onSurface color for section title
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 12),
@@ -1486,7 +1540,8 @@ class _ImageGalleriesSection extends StatelessWidget {
                 'Posters',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  // Use onSurface color for section title
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 12),
@@ -1549,7 +1604,7 @@ class _ImageCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withOpacity(0.1), // Keep shadow color
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -1613,6 +1668,7 @@ class _ImageGalleryScreenState extends State<_ImageGalleryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Keep black background and white foreground for image gallery
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
