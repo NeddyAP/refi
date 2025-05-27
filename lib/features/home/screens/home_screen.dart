@@ -220,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       },
                     ),
-                    SizedBox(height: MediaQuery.of(context).padding.bottom + 100), // Add bottom padding for floating nav and safe area
+                    SizedBox(height: MediaQuery.of(context).padding.bottom + 20),
                   ],
                 ),
               ),

@@ -7,7 +7,6 @@ import '../../../shared/widgets/bottom_navigation.dart';
 import '../../../shared/widgets/movie_card.dart';
 import '../../../shared/widgets/loading_widget.dart';
 import '../../../shared/widgets/error_widget.dart';
-import '../../../shared/models/genre.dart';
 import '../../../shared/providers/navigation_visibility_provider.dart';
 import '../providers/explore_provider.dart';
 
@@ -808,7 +807,7 @@ class _DefaultMoviesDisplay extends StatelessWidget {
                   16,
                   0,
                   16,
-                  MediaQuery.of(context).padding.bottom + 100
+                  MediaQuery.of(context).padding.bottom + 20
                 ),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
