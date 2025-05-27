@@ -6,6 +6,9 @@ class ProfileProvider extends ChangeNotifier {
   bool _isDarkMode = false;
   bool get isDarkMode => _isDarkMode;
 
+  String _appLanguageCode = 'en'; // Default language
+  String get appLanguageCode => _appLanguageCode;
+
   bool _isGuest = true;
   bool get isGuest => _isGuest;
 
@@ -23,6 +26,7 @@ class ProfileProvider extends ChangeNotifier {
     if (_isInitialized) return;
 
     await _loadThemePreference();
+    await _loadLanguagePreference();
     await _loadUserData();
 
     _isInitialized = true;
@@ -38,6 +42,20 @@ class ProfileProvider extends ChangeNotifier {
       print('Error loading theme preference: $e');
       _isDarkMode = false;
     }
+  }
+
+  /// Load language preference
+  Future<void> _loadLanguagePreference() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _appLanguageCode =
+          prefs.getString(AppConstants.languageKey) ??
+          'en'; // Default to English on error
+    } catch (e) {
+      print('Error loading language preference: $e');
+      _appLanguageCode = 'en';
+    }
+    notifyListeners();
   }
 
   /// Load user data
@@ -56,14 +74,26 @@ class ProfileProvider extends ChangeNotifier {
   /// Toggle theme mode
   Future<void> toggleTheme() async {
     _isDarkMode = !_isDarkMode;
-    
+
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(AppConstants.themeKey, _isDarkMode);
     } catch (e) {
       print('Error saving theme preference: $e');
     }
-    
+
+    notifyListeners();
+  }
+
+  /// Set app language
+  Future<void> setAppLanguage(String languageCode) async {
+    _appLanguageCode = languageCode;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(AppConstants.languageKey, _appLanguageCode);
+    } catch (e) {
+      print('Error saving language preference: $e');
+    }
     notifyListeners();
   }
 
@@ -112,7 +142,7 @@ class ProfileProvider extends ChangeNotifier {
   String get userInitials {
     final name = displayName;
     if (name.isEmpty) return 'GU';
-    
+
     final words = name.split(' ');
     if (words.length >= 2) {
       return '${words[0][0]}${words[1][0]}'.toUpperCase();

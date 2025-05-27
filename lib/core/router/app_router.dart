@@ -15,6 +15,9 @@ import '../../features/auth/providers/auth_provider.dart';
 import '../../shared/widgets/bottom_navigation.dart';
 import '../../shared/repositories/movie_repository.dart';
 import '../constants/app_constants.dart';
+import '../../features/profile/screens/account_info_screen.dart';
+import '../../features/profile/screens/privacy_settings_screen.dart';
+import '../../features/profile/screens/language_settings_screen.dart';
 
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -96,6 +99,21 @@ class AppRouter {
             name: 'profile',
             builder: (context, state) => const ProfileScreen(),
           ),
+          GoRoute(
+            path: AppConstants.accountInfoRoute,
+            name: 'account-info',
+            builder: (context, state) => const AccountInfoScreen(),
+          ),
+          GoRoute(
+            path: AppConstants.privacySettingsRoute,
+            name: 'privacy-settings',
+            builder: (context, state) => const PrivacySettingsScreen(),
+          ),
+          GoRoute(
+            path: AppConstants.languageSettingsRoute,
+            name: 'language-settings',
+            builder: (context, state) => const LanguageSettingsScreen(),
+          ),
         ],
       ),
 
@@ -106,10 +124,8 @@ class AppRouter {
         builder: (context, state) {
           final movieId = int.parse(state.pathParameters['id']!);
           return ChangeNotifierProvider(
-            create: (context) => MovieDetailsProvider(
-              context.read<MovieRepository>(),
-              movieId,
-            ),
+            create: (context) =>
+                MovieDetailsProvider(context.read<MovieRepository>(), movieId),
             child: MovieDetailsScreen(movieId: movieId),
           );
         },
@@ -134,11 +150,7 @@ class AppRouter {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red,
-            ),
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
             const SizedBox(height: 16),
             Text(
               'Page Not Found',
@@ -177,7 +189,9 @@ class AppRouter {
 
   /// Navigate to explore with selected category
   static void goToExploreWithCategory(BuildContext context, String category) {
-    context.go('${AppConstants.exploreRoute}?category=${Uri.encodeComponent(category)}');
+    context.go(
+      '${AppConstants.exploreRoute}?category=${Uri.encodeComponent(category)}',
+    );
   }
 
   /// Navigate to favorites
@@ -206,7 +220,10 @@ class AppRouter {
   }
 
   /// Navigate to all items screen
-  static void goToAllItems(BuildContext context, CollectionType collectionType) {
+  static void goToAllItems(
+    BuildContext context,
+    CollectionType collectionType,
+  ) {
     context.push('${AppConstants.allItemsRoute}/${collectionType.name}');
   }
 

@@ -26,9 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Profile',
-      ),
+      appBar: const CustomAppBar(title: 'Profile'),
       body: Consumer<ProfileProvider>(
         builder: (context, provider, child) {
           return SingleChildScrollView(
@@ -49,16 +47,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const _AboutSection(),
 
                 const SizedBox(height: 32), // Add space before sign out button
-
                 // Sign Out button (moved here)
-                Consumer<AuthProvider>( // Use Consumer to access AuthProvider
+                Consumer<AuthProvider>(
+                  // Use Consumer to access AuthProvider
                   builder: (context, authProvider, child) {
                     if (authProvider.isAuthenticated) {
-                      return ElevatedButton.icon( // Use ElevatedButton.icon for icon
-                        onPressed: () => _showSignOutDialog(context, authProvider),
+                      return ElevatedButton.icon(
+                        // Use ElevatedButton.icon for icon
+                        onPressed: () =>
+                            _showSignOutDialog(context, authProvider),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Theme.of(context).colorScheme.error,
-                          foregroundColor: Theme.of(context).colorScheme.onError,
+                          foregroundColor: Theme.of(
+                            context,
+                          ).colorScheme.onError,
                           minimumSize: const Size(double.infinity, 48),
                         ),
                         icon: const Icon(Icons.logout), // Add logout icon
@@ -69,7 +71,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     }
                   },
                 ),
-
 
                 // Bottom padding for navigation bar
                 SizedBox(height: MediaQuery.of(context).padding.bottom + 20),
@@ -151,7 +152,9 @@ class _UserInfoSection extends StatelessWidget {
 
                 // Name
                 Text(
-                  isAuthenticated ? (user?.displayName ?? 'User') : 'Guest User',
+                  isAuthenticated
+                      ? (user?.displayName ?? 'User')
+                      : 'Guest User',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -162,7 +165,9 @@ class _UserInfoSection extends StatelessWidget {
                 // Status/Username
                 Text(
                   isAuthenticated
-                      ? (user?.username != null ? '@${user!.username}' : 'TMDB User')
+                      ? (user?.username != null
+                            ? '@${user!.username}'
+                            : 'TMDB User')
                       : 'Browsing as guest',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
@@ -174,7 +179,10 @@ class _UserInfoSection extends StatelessWidget {
                 // Session status for authenticated users
                 if (isAuthenticated && user != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(12),
@@ -198,24 +206,71 @@ class _UserInfoSection extends StatelessWidget {
                     ),
                   ),
 
+                // --- Additional TMDB details ---
+                if (isAuthenticated && user != null) ...[
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      if (user.createdAt != null)
+                        _ProfileInfoTile(
+                          icon: Icons.calendar_today,
+                          label: 'Joined',
+                          value: user.createdAt!
+                              .toLocal()
+                              .toString()
+                              .split(' ')
+                              .first,
+                        ),
+                      _ProfileInfoTile(
+                        icon: Icons.language,
+                        label: 'Language',
+                        value: user.iso639_1,
+                      ),
+                      _ProfileInfoTile(
+                        icon: Icons.flag,
+                        label: 'Region',
+                        value: user.iso3166_1,
+                      ),
+                      _ProfileInfoTile(
+                        icon: Icons.privacy_tip,
+                        label: 'Adult',
+                        value: user.includeAdult ? 'Yes' : 'No',
+                      ),
+                    ],
+                  ),
+                ],
+
                 const SizedBox(height: 16),
 
                 // Action buttons
                 if (isAuthenticated) ...[
-                  // Authenticated user buttons (Sign Out button removed from here)
-                  // Add other authenticated user actions here if needed
+                  ElevatedButton.icon(
+                    onPressed: () =>
+                        context.push(AppConstants.accountInfoRoute),
+                    icon: const Icon(Icons.info_outline),
+                    label: const Text('View Account Info'),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 48),
+                    ),
+                  ),
                 ] else ...[
                   // Guest user buttons
-                  ElevatedButton.icon( // Sign In button
+                  ElevatedButton.icon(
+                    // Sign In button
                     onPressed: () => context.push(AppConstants.loginRoute),
                     icon: const Icon(Icons.login),
                     label: const Text('Sign In'),
                     style: ElevatedButton.styleFrom(
-                       minimumSize: const Size(double.infinity, 48), // Make it full width
+                      minimumSize: const Size(
+                        double.infinity,
+                        48,
+                      ), // Make it full width
                     ),
                   ),
                   const SizedBox(height: 12), // Add spacing
-                  TextButton( // Sign Up text button
+                  TextButton(
+                    // Sign Up text button
                     onPressed: () => _launchTmdbSignUpUrl(context),
                     child: const Text('Sign Up at TMDB'),
                   ),
@@ -243,6 +298,33 @@ class _UserInfoSection extends StatelessWidget {
   }
 }
 
+class _ProfileInfoTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  const _ProfileInfoTile({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
+        const SizedBox(height: 4),
+        Text(label, style: Theme.of(context).textTheme.labelSmall),
+        Text(
+          value,
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+}
+
 class _SettingsSection extends StatelessWidget {
   final ProfileProvider provider;
 
@@ -265,36 +347,51 @@ class _SettingsSection extends StatelessWidget {
               ),
             ),
           ),
-
-          // Dark mode toggle
+          // --- New settings navigation tiles ---
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('Account Information'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(AppConstants.accountInfoRoute),
+          ),
+          ListTile(
+            leading: const Icon(Icons.privacy_tip_outlined),
+            title: const Text('Privacy Settings'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(AppConstants.privacySettingsRoute),
+          ),
+          ListTile(
+            leading: const Icon(Icons.language),
+            title: const Text('App Language'),
+            trailing: DropdownButton<String>(
+              value: provider.appLanguageCode,
+              items: const [
+                // Hardcoded for now, will use localization later
+                DropdownMenuItem(value: 'en', child: Text('EN')),
+                DropdownMenuItem(value: 'id', child: Text('ID')),
+              ],
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  provider.setAppLanguage(newValue);
+                }
+              },
+            ),
+          ),
+          // --- Theme toggle remains ---
           ListTile(
             leading: Icon(
               provider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
             ),
             title: const Text('Dark Mode'),
             subtitle: Text(
-              provider.isDarkMode ? 'Dark theme enabled' : 'Light theme enabled',
+              provider.isDarkMode
+                  ? 'Dark theme enabled'
+                  : 'Light theme enabled',
             ),
             trailing: Switch(
               value: provider.isDarkMode,
               onChanged: (value) => provider.toggleTheme(),
             ),
-          ),
-
-          // Notifications (placeholder)
-          const ListTile(
-            leading: Icon(Icons.notifications_outlined),
-            title: Text('Notifications'),
-            subtitle: Text('Manage notification preferences'),
-            trailing: Icon(Icons.chevron_right),
-          ),
-
-          // Language (placeholder)
-          const ListTile(
-            leading: Icon(Icons.language),
-            title: Text('Language'),
-            subtitle: Text('English'),
-            trailing: Icon(Icons.chevron_right),
           ),
         ],
       ),

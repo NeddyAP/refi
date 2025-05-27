@@ -14,6 +14,10 @@ class AppConstants {
   static const String loginRoute = '/login';
   static const String registerRoute = '/register';
   static const String forgotPasswordRoute = '/forgot-password';
+  static const String accountInfoRoute = '/profile/account-info';
+  static const String privacySettingsRoute = '/profile/privacy';
+  static const String notificationSettingsRoute = '/profile/notifications';
+  static const String languageSettingsRoute = '/profile/language';
 
   // Storage keys
   static const String userTokenKey = 'user_token';
