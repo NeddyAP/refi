@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/router/app_router.dart';
@@ -7,6 +8,7 @@ import '../../../shared/widgets/error_widget.dart';
 import '../../../shared/models/movie.dart';
 import '../../../shared/models/user.dart';
 import '../providers/home_provider.dart';
+import '../widgets/content_carousel.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,19 +20,61 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final PageController _pageController = PageController();
   int _currentCarouselIndex = 0;
+  Timer? _autoSlideTimer;
+  bool _userInteracting = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomeProvider>().initialize();
+      _startAutoSlide();
     });
   }
 
   @override
   void dispose() {
+    _autoSlideTimer?.cancel();
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _startAutoSlide() {
+    _autoSlideTimer?.cancel();
+    _autoSlideTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (!_userInteracting && _pageController.hasClients) {
+        final provider = context.read<HomeProvider>();
+        final movieCount = provider.upcomingMovies?.when(
+          success: (movieResponse) => movieResponse.results.length > 5 ? 5 : movieResponse.results.length,
+          error: (_, __) => 5,
+          loading: () => 5,
+        ) ?? 5;
+        
+        if (movieCount > 1) {
+          final nextIndex = (_currentCarouselIndex + 1) % movieCount;
+          _pageController.animateToPage(
+            nextIndex,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+      }
+    });
+  }
+
+  void _stopAutoSlide() {
+    setState(() {
+      _userInteracting = true;
+    });
+    
+    // Resume auto-slide after 5 seconds of inactivity
+    Timer(const Duration(seconds: 5), () {
+      if (mounted) {
+        setState(() {
+          _userInteracting = false;
+        });
+      }
+    });
   }
 
   @override
@@ -53,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         _currentCarouselIndex = index;
                       });
                     },
+                    onUserInteraction: _stopAutoSlide,
                     currentIndex: _currentCarouselIndex,
                   ),
                   // Header overlay
@@ -68,15 +113,106 @@ class _HomeScreenState extends State<HomeScreen> {
                     topRight: Radius.circular(30),
                   ),
                 ),
-                child: const Column(
+                child: Column(
                   children: [
-                    SizedBox(height: 24),
-                    _CategoriesSection(),
-                    SizedBox(height: 24),
-                    _FrequentlyVisitedSection(),
-                    SizedBox(height: 24),
-                    _RecommendationsSection(),
-                    SizedBox(height: 100), // Add bottom padding for floating nav
+                    const SizedBox(height: 24),
+                    const _CategoriesSection(),
+                    const SizedBox(height: 24),
+                    // Frequently Visited Section using ContentCarousel
+                    Consumer<HomeProvider>(
+                      builder: (context, provider, child) {
+                        return ContentCarousel(
+                          title: 'Frequently Visited',
+                          apiResult: provider.nowPlayingMovies,
+                          sectionKey: 'nowPlaying',
+                          onRetry: () => provider.retrySection('nowPlaying'),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    // Recommendations Section using ContentCarousel
+                    Consumer<HomeProvider>(
+                      builder: (context, provider, child) {
+                        return ContentCarousel(
+                          title: 'Recommendations',
+                          apiResult: provider.topRatedMovies,
+                          sectionKey: 'topRated',
+                          onRetry: () => provider.retrySection('topRated'),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    // New Content Carousels
+                    Consumer<HomeProvider>(
+                      builder: (context, provider, child) {
+                        return Column(
+                          children: [
+                            // Trending Today
+                            ContentCarousel(
+                              title: 'Trending Today',
+                              apiResult: provider.trendingToday,
+                              sectionKey: 'trendingToday',
+                              onRetry: () => provider.retrySection('trendingToday'),
+                            ),
+                            const SizedBox(height: 24),
+                            
+                            // Trending This Week
+                            ContentCarousel(
+                              title: 'Trending This Week',
+                              apiResult: provider.trendingThisWeek,
+                              sectionKey: 'trendingThisWeek',
+                              onRetry: () => provider.retrySection('trendingThisWeek'),
+                            ),
+                            const SizedBox(height: 24),
+                            
+                            // Latest Trailers
+                            ContentCarousel(
+                              title: 'Latest Trailers',
+                              apiResult: provider.latestTrailers,
+                              sectionKey: 'latestTrailers',
+                              onRetry: () => provider.retrySection('latestTrailers'),
+                            ),
+                            const SizedBox(height: 24),
+                            
+                            // Popular on Streaming
+                            ContentCarousel(
+                              title: 'Popular on Streaming',
+                              apiResult: provider.popularOnStreaming,
+                              sectionKey: 'popularOnStreaming',
+                              onRetry: () => provider.retrySection('popularOnStreaming'),
+                            ),
+                            const SizedBox(height: 24),
+                            
+                            // Popular On TV
+                            ContentCarousel(
+                              title: 'Popular On TV',
+                              apiResult: provider.popularOnTv,
+                              sectionKey: 'popularOnTv',
+                              onRetry: () => provider.retrySection('popularOnTv'),
+                            ),
+                            const SizedBox(height: 24),
+                            
+                            // Available For Rent
+                            ContentCarousel(
+                              title: 'Available For Rent',
+                              apiResult: provider.availableForRent,
+                              sectionKey: 'availableForRent',
+                              onRetry: () => provider.retrySection('availableForRent'),
+                            ),
+                            const SizedBox(height: 24),
+                            
+                            // Currently In Theaters
+                            ContentCarousel(
+                              title: 'Currently In Theaters',
+                              apiResult: provider.currentlyInTheaters,
+                              sectionKey: 'currentlyInTheaters',
+                              onRetry: () => provider.retrySection('currentlyInTheaters'),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 100), // Add bottom padding for floating nav
                   ],
                 ),
               ),
@@ -203,11 +339,13 @@ class _HeaderSection extends StatelessWidget {
 class _MovieCarouselSection extends StatelessWidget {
   final PageController pageController;
   final Function(int) onPageChanged;
+  final VoidCallback onUserInteraction;
   final int currentIndex;
 
   const _MovieCarouselSection({
     required this.pageController,
     required this.onPageChanged,
+    required this.onUserInteraction,
     required this.currentIndex,
   });
 
@@ -231,12 +369,16 @@ class _MovieCarouselSection extends StatelessWidget {
                   
                   return PageView.builder(
                     controller: pageController,
-                    onPageChanged: onPageChanged,
+                    onPageChanged: (index) {
+                      onUserInteraction();
+                      onPageChanged(index);
+                    },
                     itemCount: newestMovies.length,
                     itemBuilder: (context, index) {
                       final movie = newestMovies[index];
                       return GestureDetector(
                         onTap: () => AppRouter.goToMovieDetails(context, movie.id),
+                        onPanDown: (_) => onUserInteraction(),
                         child: Stack(
                           children: [
                             // Background Image
@@ -572,147 +714,6 @@ class _CategoriesSection extends StatelessWidget {
   }
 }
 
-class _FrequentlyVisitedSection extends StatelessWidget {
-  const _FrequentlyVisitedSection();
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<HomeProvider>(
-      builder: (context, provider, child) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Sering Dikunjungi',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 200,
-              child: provider.nowPlayingMovies?.when(
-                success: (movieResponse) {
-                  if (movieResponse.results.isEmpty) {
-                    return const Center(child: Text('No movies available'));
-                  }
-                  
-                  return ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: movieResponse.results.length,
-                    itemBuilder: (context, index) {
-                      final movie = movieResponse.results[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: _CompactMovieCard(
-                          movie: movie,
-                          onTap: () => AppRouter.goToMovieDetails(context, movie.id),
-                        ),
-                      );
-                    },
-                  );
-                },
-                error: (message, statusCode) => Center(
-                  child: ErrorDisplayWidget(
-                    message: message,
-                    onRetry: () => provider.retrySection('nowPlaying'),
-                  ),
-                ),
-                loading: () => ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return const Padding(
-                      padding: EdgeInsets.only(right: 12),
-                      child: MovieCardSkeleton(),
-                    );
-                  },
-                ),
-              ) ?? const SizedBox.shrink(),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _RecommendationsSection extends StatelessWidget {
-  const _RecommendationsSection();
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<HomeProvider>(
-      builder: (context, provider, child) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Rekomendasi',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 200,
-              child: provider.topRatedMovies?.when(
-                success: (movieResponse) {
-                  if (movieResponse.results.isEmpty) {
-                    return const Center(child: Text('No movies available'));
-                  }
-                  
-                  return ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: movieResponse.results.length,
-                    itemBuilder: (context, index) {
-                      final movie = movieResponse.results[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: _CompactMovieCard(
-                          movie: movie,
-                          onTap: () => AppRouter.goToMovieDetails(context, movie.id),
-                        ),
-                      );
-                    },
-                  );
-                },
-                error: (message, statusCode) => Center(
-                  child: ErrorDisplayWidget(
-                    message: message,
-                    onRetry: () => provider.retrySection('topRated'),
-                  ),
-                ),
-                loading: () => ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return const Padding(
-                      padding: EdgeInsets.only(right: 12),
-                      child: MovieCardSkeleton(),
-                    );
-                  },
-                ),
-              ) ?? const SizedBox.shrink(),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
 
 class _CompactMovieCard extends StatelessWidget {
   final Movie movie;

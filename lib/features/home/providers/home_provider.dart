@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import '../../../core/network/api_result.dart';
 import '../../../shared/models/movie.dart';
+import '../../../shared/models/tv_show.dart';
+import '../../../shared/models/mixed_content.dart';
 import '../../../shared/repositories/movie_repository.dart';
 
 class HomeProvider extends ChangeNotifier {
@@ -24,6 +26,28 @@ class HomeProvider extends ChangeNotifier {
   ApiResult<MovieResponse>? _upcomingMovies;
   ApiResult<MovieResponse>? get upcomingMovies => _upcomingMovies;
 
+  // New content sections
+  ApiResult<MixedContentResponse>? _trendingToday;
+  ApiResult<MixedContentResponse>? get trendingToday => _trendingToday;
+
+  ApiResult<MixedContentResponse>? _trendingThisWeek;
+  ApiResult<MixedContentResponse>? get trendingThisWeek => _trendingThisWeek;
+
+  ApiResult<MovieResponse>? _latestTrailers;
+  ApiResult<MovieResponse>? get latestTrailers => _latestTrailers;
+
+  ApiResult<MovieResponse>? _popularOnStreaming;
+  ApiResult<MovieResponse>? get popularOnStreaming => _popularOnStreaming;
+
+  ApiResult<TvShowResponse>? _popularOnTv;
+  ApiResult<TvShowResponse>? get popularOnTv => _popularOnTv;
+
+  ApiResult<MovieResponse>? _availableForRent;
+  ApiResult<MovieResponse>? get availableForRent => _availableForRent;
+
+  ApiResult<MovieResponse>? _currentlyInTheaters;
+  ApiResult<MovieResponse>? get currentlyInTheaters => _currentlyInTheaters;
+
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
 
@@ -36,6 +60,13 @@ class HomeProvider extends ChangeNotifier {
       loadTopRatedMovies(),
       loadNowPlayingMovies(),
       loadUpcomingMovies(),
+      loadTrendingToday(),
+      loadTrendingThisWeek(),
+      loadLatestTrailers(),
+      loadPopularOnStreaming(),
+      loadPopularOnTv(),
+      loadAvailableForRent(),
+      loadCurrentlyInTheaters(),
     ]);
 
     _isInitialized = true;
@@ -101,6 +132,111 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Load trending today content
+  Future<void> loadTrendingToday() async {
+    _trendingToday = const ApiLoading();
+    notifyListeners();
+
+    try {
+      final result = await _movieRepository.getTrendingToday();
+      _trendingToday = result;
+    } catch (e) {
+      _trendingToday = ApiError(message: 'Failed to load trending today: $e');
+    }
+    
+    notifyListeners();
+  }
+
+  /// Load trending this week content
+  Future<void> loadTrendingThisWeek() async {
+    _trendingThisWeek = const ApiLoading();
+    notifyListeners();
+
+    try {
+      final result = await _movieRepository.getTrendingThisWeek();
+      _trendingThisWeek = result;
+    } catch (e) {
+      _trendingThisWeek = ApiError(message: 'Failed to load trending this week: $e');
+    }
+    
+    notifyListeners();
+  }
+
+  /// Load latest trailers
+  Future<void> loadLatestTrailers() async {
+    _latestTrailers = const ApiLoading();
+    notifyListeners();
+
+    try {
+      final result = await _movieRepository.getLatestTrailers();
+      _latestTrailers = result;
+    } catch (e) {
+      _latestTrailers = ApiError(message: 'Failed to load latest trailers: $e');
+    }
+    
+    notifyListeners();
+  }
+
+  /// Load popular on streaming content
+  Future<void> loadPopularOnStreaming() async {
+    _popularOnStreaming = const ApiLoading();
+    notifyListeners();
+
+    try {
+      final result = await _movieRepository.getPopularOnStreaming();
+      _popularOnStreaming = result;
+    } catch (e) {
+      _popularOnStreaming = ApiError(message: 'Failed to load popular on streaming: $e');
+    }
+    
+    notifyListeners();
+  }
+
+  /// Load popular on TV content
+  Future<void> loadPopularOnTv() async {
+    _popularOnTv = const ApiLoading();
+    notifyListeners();
+
+    try {
+      final result = await _movieRepository.getPopularOnTv();
+      _popularOnTv = result;
+    } catch (e) {
+      _popularOnTv = ApiError(message: 'Failed to load popular on TV: $e');
+    }
+    
+    notifyListeners();
+  }
+
+  /// Load available for rent content
+  Future<void> loadAvailableForRent() async {
+    _availableForRent = const ApiLoading();
+    notifyListeners();
+
+    try {
+      final result = await _movieRepository.getAvailableForRent();
+      _availableForRent = result;
+    } catch (e) {
+      _availableForRent = ApiError(message: 'Failed to load available for rent: $e');
+    }
+    
+    notifyListeners();
+  }
+
+  /// Load currently in theaters content
+  Future<void> loadCurrentlyInTheaters() async {
+    _currentlyInTheaters = const ApiLoading();
+    notifyListeners();
+
+    try {
+      final result = await _movieRepository.getCurrentlyInTheaters();
+      _currentlyInTheaters = result;
+    } catch (e) {
+      _currentlyInTheaters = ApiError(message: 'Failed to load currently in theaters: $e');
+    }
+    
+    notifyListeners();
+  }
+
   /// Refresh all data
   Future<void> refresh() async {
     _isInitialized = false;
@@ -121,6 +257,27 @@ class HomeProvider extends ChangeNotifier {
         break;
       case 'upcoming':
         await loadUpcomingMovies();
+        break;
+      case 'trendingToday':
+        await loadTrendingToday();
+        break;
+      case 'trendingThisWeek':
+        await loadTrendingThisWeek();
+        break;
+      case 'latestTrailers':
+        await loadLatestTrailers();
+        break;
+      case 'popularOnStreaming':
+        await loadPopularOnStreaming();
+        break;
+      case 'popularOnTv':
+        await loadPopularOnTv();
+        break;
+      case 'availableForRent':
+        await loadAvailableForRent();
+        break;
+      case 'currentlyInTheaters':
+        await loadCurrentlyInTheaters();
         break;
     }
   }

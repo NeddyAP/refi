@@ -25,7 +25,18 @@ class ApiConstants {
   static const String movieCredits = '/credits';
   static const String movieVideos = '/videos';
   static const String movieReviews = '/reviews';
+  static const String movieImages = '/images';
   static const String genres = '/genre/movie/list';
+  
+  // New endpoints for enhanced home screen
+  static const String trendingAll = '/trending/all';  // For trending today/week
+  static const String trendingMovies = '/trending/movie';  // For trending movies
+  static const String trendingTv = '/trending/tv';  // For trending TV shows
+  static const String discoverMovie = '/discover/movie';  // For filtered movie discovery
+  static const String discoverTv = '/discover/tv';  // For TV show discovery
+  static const String popularTv = '/tv/popular';  // For Popular On TV
+  static const String onTheAirTv = '/tv/on_the_air';  // For Currently On Air TV
+  static const String watchProviders = '/watch/providers';  // For streaming providers
   
   // Query parameters
   static const String apiKeyParam = 'api_key';
@@ -35,6 +46,12 @@ class ApiConstants {
   static const String genreParam = 'with_genres';
   static const String yearParam = 'year';
   static const String sortByParam = 'sort_by';
+  static const String timeWindowParam = 'time_window';
+  static const String withWatchProvidersParam = 'with_watch_providers';
+  static const String watchRegionParam = 'watch_region';
+  static const String releaseDateGteParam = 'release_date.gte';
+  static const String releaseDateLteParam = 'release_date.lte';
+  static const String withWatchMonetizationTypesParam = 'with_watch_monetization_types';
   
   // Default values
   static const String defaultLanguage = 'en-US';
