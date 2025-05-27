@@ -98,6 +98,41 @@ class ExploreProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Search movies by genre name
+  Future<void> searchMoviesByGenre(String genreName) async {
+    // First load genres if not already loaded
+    if (_genres == null) {
+      await loadGenres();
+    }
+    
+    _genres?.when(
+      success: (genreResponse) {
+        // Find the genre by name (case insensitive)
+        final genre = genreResponse.genres.firstWhere(
+          (g) => g.name.toLowerCase() == genreName.toLowerCase(),
+          orElse: () => Genre(id: -1, name: genreName), // Create a placeholder if not found
+        );
+        
+        if (genre.id != -1) {
+          selectGenre(genre);
+        } else {
+          // If genre not found, perform a text search instead
+          searchMovies(genreName);
+        }
+      },
+      error: (_, __) {
+        // If genres failed to load, perform a text search instead
+        searchMovies(genreName);
+      },
+      loading: () {
+        // If still loading, we'll try again after a short delay
+        Future.delayed(const Duration(milliseconds: 500), () {
+          searchMoviesByGenre(genreName);
+        });
+      },
+    );
+  }
+
   /// Clear search
   void clearSearch() {
     _searchQuery = '';

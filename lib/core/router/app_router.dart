@@ -35,7 +35,10 @@ class AppRouter {
           GoRoute(
             path: AppConstants.exploreRoute,
             name: 'explore',
-            builder: (context, state) => const ExploreScreen(),
+            builder: (context, state) {
+              final category = state.uri.queryParameters['category'];
+              return ExploreScreen(selectedCategory: category);
+            },
           ),
           GoRoute(
             path: AppConstants.favoritesRoute,
@@ -108,6 +111,11 @@ class AppRouter {
   /// Navigate to explore
   static void goToExplore(BuildContext context) {
     context.go(AppConstants.exploreRoute);
+  }
+
+  /// Navigate to explore with selected category
+  static void goToExploreWithCategory(BuildContext context, String category) {
+    context.go('${AppConstants.exploreRoute}?category=${Uri.encodeComponent(category)}');
   }
 
   /// Navigate to favorites

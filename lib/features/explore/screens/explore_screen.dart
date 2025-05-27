@@ -9,7 +9,9 @@ import '../../../shared/widgets/error_widget.dart';
 import '../providers/explore_provider.dart';
 
 class ExploreScreen extends StatefulWidget {
-  const ExploreScreen({super.key});
+  final String? selectedCategory;
+  
+  const ExploreScreen({super.key, this.selectedCategory});
 
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();
@@ -22,7 +24,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ExploreProvider>().initialize();
+      final provider = context.read<ExploreProvider>();
+      provider.initialize();
+      
+      // If a category is provided, search for it or select it
+      if (widget.selectedCategory != null) {
+        provider.searchMoviesByGenre(widget.selectedCategory!);
+      }
     });
   }
 
