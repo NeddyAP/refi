@@ -19,7 +19,7 @@ class RatingDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final normalizedRating = (rating / maxRating) * 5; // Convert to 5-star scale
+    final double() = (rating / maxRating) * 5; // Convert to 5-star scale
     final starColor = color ?? _getRatingColor(rating);
     
     return Row(
