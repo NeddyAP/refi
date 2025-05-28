@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Registration screen that redirects to TMDB registration
 class RegisterScreen extends StatelessWidget {
@@ -10,10 +11,11 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign Up'),
+        title: Text(l10n.signUpTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -35,7 +37,7 @@ class RegisterScreen extends StatelessWidget {
 
               // Title
               Text(
-                'Create TMDB Account',
+                l10n.createTmdbAccount,
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -46,7 +48,7 @@ class RegisterScreen extends StatelessWidget {
 
               // Description
               Text(
-                'To use all features of ${AppConstants.appName}, you need a TMDB account. Registration is free and takes just a minute.',
+                l10n.createTmdbAccountDescription(AppConstants.appName),
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -68,7 +70,7 @@ class RegisterScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      'With a TMDB account you can:',
+                      l10n.withTmdbAccountYouCan,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -77,25 +79,25 @@ class RegisterScreen extends StatelessWidget {
                     _buildFeatureItem(
                       context,
                       Icons.star,
-                      'Rate movies and TV shows',
+                      l10n.rateMoviesAndTvShows,
                     ),
                     const SizedBox(height: 12),
                     _buildFeatureItem(
                       context,
                       Icons.bookmark,
-                      'Create and manage watchlists',
+                      l10n.createAndManageWatchlists,
                     ),
                     const SizedBox(height: 12),
                     _buildFeatureItem(
                       context,
                       Icons.favorite,
-                      'Mark movies as favorites',
+                      l10n.markMoviesAsFavorites,
                     ),
                     const SizedBox(height: 12),
                     _buildFeatureItem(
                       context,
                       Icons.sync,
-                      'Sync across all devices',
+                      l10n.syncAcrossDevices,
                     ),
                   ],
                 ),
@@ -112,9 +114,9 @@ class RegisterScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  'Register at TMDB',
-                  style: TextStyle(
+                child: Text(
+                  l10n.registerAtTmdb,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -128,7 +130,7 @@ class RegisterScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Already have an account? ',
+                    l10n.alreadyHaveAccount,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -136,7 +138,7 @@ class RegisterScreen extends StatelessWidget {
                   TextButton(
                     onPressed: () => context.push(AppConstants.loginRoute),
                     child: Text(
-                      'Sign In',
+                      l10n.signIn,
                       style: TextStyle(
                         color: theme.colorScheme.primary,
                         fontWeight: FontWeight.w600,
@@ -152,7 +154,7 @@ class RegisterScreen extends StatelessWidget {
               TextButton(
                 onPressed: () => context.go(AppConstants.homeRoute),
                 child: Text(
-                  'Continue browsing as guest',
+                  l10n.continueBrowsingAsGuest,
                   style: TextStyle(
                     color: theme.colorScheme.onSurfaceVariant,
                     decoration: TextDecoration.underline,
@@ -189,6 +191,7 @@ class RegisterScreen extends StatelessWidget {
   }
 
   Future<void> _launchTmdbRegistration(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     const url = 'https://www.themoviedb.org/signup';
     try {
       if (await canLaunchUrl(Uri.parse(url))) {
@@ -199,9 +202,9 @@ class RegisterScreen extends StatelessWidget {
       } else {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please visit https://www.themoviedb.org/signup to register'),
-              duration: Duration(seconds: 3),
+            SnackBar(
+              content: Text(l10n.pleaseVisitTmdbSignup),
+              duration: const Duration(seconds: 3),
             ),
           );
         }
@@ -209,9 +212,9 @@ class RegisterScreen extends StatelessWidget {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please visit https://www.themoviedb.org/signup to register'),
-            duration: Duration(seconds: 3),
+          SnackBar(
+            content: Text(l10n.pleaseVisitTmdbSignup),
+            duration: const Duration(seconds: 3),
           ),
         );
       }

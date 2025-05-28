@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   # HTTP client
   dio: ^5.3.0
@@ -33,7 +35,7 @@ dependencies:
   google_fonts: ^6.1.0
 
   # Utilities
-  intl: ^0.19.0
+  intl: ^0.20.2
   url_launcher: ^6.2.0
 
 dev_dependencies:
@@ -43,6 +45,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
 
   assets:
     - .env

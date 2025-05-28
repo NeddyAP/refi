@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/bottom_navigation.dart';
 import '../../../core/constants/app_constants.dart';
 import '../providers/profile_provider.dart';
@@ -26,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Profile'),
+      appBar: CustomAppBar(title: AppLocalizations.of(context)!.profileScreenTitle),
       body: Consumer<ProfileProvider>(
         builder: (context, provider, child) {
           return SingleChildScrollView(
@@ -64,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           minimumSize: const Size(double.infinity, 48),
                         ),
                         icon: const Icon(Icons.logout), // Add logout icon
-                        label: const Text('Sign Out'),
+                        label: Text(AppLocalizations.of(context)!.signOut),
                       );
                     } else {
                       return const SizedBox.shrink(); // Hide button if not authenticated
@@ -87,12 +88,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Sign Out'),
-        content: const Text('Are you sure you want to sign out?'),
+        title: Text(AppLocalizations.of(context)!.signOutDialogTitle),
+        content: Text(AppLocalizations.of(context)!.signOutDialogContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -103,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               backgroundColor: Theme.of(context).colorScheme.error,
               foregroundColor: Theme.of(context).colorScheme.onError,
             ),
-            child: const Text('Sign Out'),
+            child: Text(AppLocalizations.of(context)!.signOut),
           ),
         ],
       ),
@@ -154,7 +155,7 @@ class _UserInfoSection extends StatelessWidget {
                 Text(
                   isAuthenticated
                       ? (user?.displayName ?? 'User')
-                      : 'Guest User',
+                      : AppLocalizations.of(context)!.guestUser,
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -167,8 +168,8 @@ class _UserInfoSection extends StatelessWidget {
                   isAuthenticated
                       ? (user?.username != null
                             ? '@${user!.username}'
-                            : 'TMDB User')
-                      : 'Browsing as guest',
+                            : AppLocalizations.of(context)!.tmdbUser)
+                      : AppLocalizations.of(context)!.browsingAsGuest,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -197,7 +198,7 @@ class _UserInfoSection extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          user.isGuest ? 'Guest Session' : 'TMDB Account',
+                          user.isGuest ? AppLocalizations.of(context)!.guestSession : AppLocalizations.of(context)!.tmdbAccount,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.onPrimaryContainer,
                           ),
@@ -215,7 +216,7 @@ class _UserInfoSection extends StatelessWidget {
                       if (user.createdAt != null)
                         _ProfileInfoTile(
                           icon: Icons.calendar_today,
-                          label: 'Joined',
+                          label: AppLocalizations.of(context)!.joined,
                           value: user.createdAt!
                               .toLocal()
                               .toString()
@@ -224,18 +225,18 @@ class _UserInfoSection extends StatelessWidget {
                         ),
                       _ProfileInfoTile(
                         icon: Icons.language,
-                        label: 'Language',
+                        label: AppLocalizations.of(context)!.language,
                         value: user.iso639_1,
                       ),
                       _ProfileInfoTile(
                         icon: Icons.flag,
-                        label: 'Region',
+                        label: AppLocalizations.of(context)!.region,
                         value: user.iso3166_1,
                       ),
                       _ProfileInfoTile(
                         icon: Icons.privacy_tip,
-                        label: 'Adult',
-                        value: user.includeAdult ? 'Yes' : 'No',
+                        label: AppLocalizations.of(context)!.adult,
+                        value: user.includeAdult ? AppLocalizations.of(context)!.yes : AppLocalizations.of(context)!.no,
                       ),
                     ],
                   ),
@@ -249,7 +250,7 @@ class _UserInfoSection extends StatelessWidget {
                     onPressed: () =>
                         context.push(AppConstants.accountInfoRoute),
                     icon: const Icon(Icons.info_outline),
-                    label: const Text('View Account Info'),
+                    label: Text(AppLocalizations.of(context)!.viewAccountInfo),
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 48),
                     ),
@@ -260,7 +261,7 @@ class _UserInfoSection extends StatelessWidget {
                     // Sign In button
                     onPressed: () => context.push(AppConstants.loginRoute),
                     icon: const Icon(Icons.login),
-                    label: const Text('Sign In'),
+                    label: Text(AppLocalizations.of(context)!.signIn),
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(
                         double.infinity,
@@ -272,7 +273,7 @@ class _UserInfoSection extends StatelessWidget {
                   TextButton(
                     // Sign Up text button
                     onPressed: () => _launchTmdbSignUpUrl(context),
-                    child: const Text('Sign Up at TMDB'),
+                    child: Text(AppLocalizations.of(context)!.signUpAtTmdb),
                   ),
                 ],
               ],
@@ -288,12 +289,14 @@ class _UserInfoSection extends StatelessWidget {
     final Uri url = Uri.parse('https://www.themoviedb.org/signup');
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       // Handle error, e.g., show a SnackBar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Could not open $url'),
-          duration: const Duration(seconds: 3),
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.couldNotOpen(url.toString())),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 }
@@ -341,7 +344,7 @@ class _SettingsSection extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
-              'Settings',
+              AppLocalizations.of(context)!.settings,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -350,25 +353,45 @@ class _SettingsSection extends StatelessWidget {
           // --- New settings navigation tiles ---
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: const Text('Account Information'),
+            title: Text(AppLocalizations.of(context)!.accountInformation),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(AppConstants.accountInfoRoute),
           ),
           ListTile(
             leading: const Icon(Icons.privacy_tip_outlined),
-            title: const Text('Privacy Settings'),
+            title: Text(AppLocalizations.of(context)!.privacySettings),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(AppConstants.privacySettingsRoute),
           ),
           ListTile(
             leading: const Icon(Icons.language),
-            title: const Text('App Language'),
+            title: Text(AppLocalizations.of(context)!.appLanguage),
             trailing: DropdownButton<String>(
               value: provider.appLanguageCode,
               items: const [
                 // Hardcoded for now, will use localization later
-                DropdownMenuItem(value: 'en', child: Text('EN')),
-                DropdownMenuItem(value: 'id', child: Text('ID')),
+                DropdownMenuItem(
+                  value: 'en',
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('🇺🇸', style: TextStyle(fontSize: 16)),
+                      SizedBox(width: 8),
+                      Text('EN'),
+                    ],
+                  ),
+                ),
+                DropdownMenuItem(
+                  value: 'id',
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('🇮🇩', style: TextStyle(fontSize: 16)),
+                      SizedBox(width: 8),
+                      Text('ID'),
+                    ],
+                  ),
+                ),
               ],
               onChanged: (String? newValue) {
                 if (newValue != null) {
@@ -382,11 +405,11 @@ class _SettingsSection extends StatelessWidget {
             leading: Icon(
               provider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
             ),
-            title: const Text('Dark Mode'),
+            title: Text(AppLocalizations.of(context)!.darkMode),
             subtitle: Text(
               provider.isDarkMode
-                  ? 'Dark theme enabled'
-                  : 'Light theme enabled',
+                  ? AppLocalizations.of(context)!.darkThemeEnabled
+                  : AppLocalizations.of(context)!.lightThemeEnabled,
             ),
             trailing: Switch(
               value: provider.isDarkMode,
@@ -413,35 +436,35 @@ class _AboutSection extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
-              'About',
+              AppLocalizations.of(context)!.about,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
 
-          const ListTile(
-            leading: Icon(Icons.info_outline),
-            title: Text('App Version'),
-            subtitle: Text('1.0.0'),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(AppLocalizations.of(context)!.appVersion),
+            subtitle: const Text('1.0.0'),
           ),
 
-          const ListTile(
-            leading: Icon(Icons.privacy_tip_outlined),
-            title: Text('Privacy Policy'),
-            trailing: Icon(Icons.chevron_right),
+          ListTile(
+            leading: const Icon(Icons.privacy_tip_outlined),
+            title: Text(AppLocalizations.of(context)!.privacyPolicy),
+            trailing: const Icon(Icons.chevron_right),
           ),
 
-          const ListTile(
-            leading: Icon(Icons.description_outlined),
-            title: Text('Terms of Service'),
-            trailing: Icon(Icons.chevron_right),
+          ListTile(
+            leading: const Icon(Icons.description_outlined),
+            title: Text(AppLocalizations.of(context)!.termsOfService),
+            trailing: const Icon(Icons.chevron_right),
           ),
 
-          const ListTile(
-            leading: Icon(Icons.help_outline),
-            title: Text('Help & Support'),
-            trailing: Icon(Icons.chevron_right),
+          ListTile(
+            leading: const Icon(Icons.help_outline),
+            title: Text(AppLocalizations.of(context)!.helpAndSupport),
+            trailing: const Icon(Icons.chevron_right),
           ),
         ],
       ),

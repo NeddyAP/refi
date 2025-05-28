@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'l10n/app_localizations.dart';
 
 import 'core/network/api_client.dart';
 import 'core/router/app_router.dart';
@@ -52,7 +54,7 @@ class MainApp extends StatelessWidget {
           create: (context) => AuthProvider(context.read<AuthRepository>()),
         ),
         ChangeNotifierProvider<ProfileProvider>(
-          create: (_) => ProfileProvider(),
+          create: (_) => ProfileProvider()..initialize(),
         ),
         ChangeNotifierProvider<FavoritesProvider>(
           create: (_) => FavoritesProvider(
@@ -79,13 +81,24 @@ class MainApp extends StatelessWidget {
       child: Consumer<ProfileProvider>(
         builder: (context, profileProvider, child) {
           return MaterialApp.router(
-            title: 'Refi - Movie Recommendations',
+            onGenerateTitle: (BuildContext context) {
+              // This context is safe to use for AppLocalizations
+              return AppLocalizations.of(context)!.appTitleFull;
+            },
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: profileProvider.isDarkMode
                 ? ThemeMode.dark
                 : ThemeMode.light,
+            locale: Locale(profileProvider.appLanguageCode),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [Locale('en'), Locale('id')],
             routerConfig: AppRouter.router,
           );
         },

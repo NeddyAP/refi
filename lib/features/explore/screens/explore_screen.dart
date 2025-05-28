@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:refi/core/network/api_result.dart';
 import '../../../core/router/app_router.dart';
 import '../../../shared/widgets/bottom_navigation.dart';
@@ -62,8 +63,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Explore',
+      appBar: CustomAppBar(
+        title: AppLocalizations.of(context)!.exploreScreenTitle,
       ),
       body: Consumer<ExploreProvider>(
         builder: (context, provider, child) {
@@ -80,8 +81,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         enabled: !provider.isAdvancedSearchMode,
                         decoration: InputDecoration(
                           hintText: provider.isAdvancedSearchMode
-                              ? 'Advanced search active'
-                              : 'Search movies...',
+                              ? AppLocalizations.of(context)!.advancedSearchActive
+                              : AppLocalizations.of(context)!.searchMoviesHint,
                           prefixIcon: const Icon(Icons.search),
                           suffixIcon: _searchController.text.isNotEmpty && !provider.isAdvancedSearchMode
                               ? IconButton(
@@ -119,8 +120,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             : null,
                       ),
                       tooltip: provider.isAdvancedSearchMode
-                          ? 'Exit advanced search'
-                          : 'Advanced search',
+                          ? AppLocalizations.of(context)!.exitAdvancedSearch
+                          : AppLocalizations.of(context)!.advancedSearch,
                     ),
                   ],
                 ),
@@ -267,7 +268,7 @@ class _AdvancedSearchResults extends StatelessWidget {
       success: (movieResponse) {
         if (movieResponse.results.isEmpty) {
           return NoResultsWidget(
-            searchQuery: 'advanced search',
+            searchQuery: AppLocalizations.of(context)!.advancedSearch,
             onClearSearch: () => provider.clearAdvancedSearch(),
           );
         }
@@ -312,9 +313,9 @@ class _AdvancedSearchResults extends StatelessWidget {
           return const MovieCardSkeleton();
         },
       ),
-    ) ?? const EmptyStateWidget(
-      title: 'No Advanced Search Performed',
-      message: 'Configure your filters and search for movies.',
+    ) ?? EmptyStateWidget(
+      title: AppLocalizations.of(context)!.noAdvancedSearchPerformed,
+      message: AppLocalizations.of(context)!.configureFiltersMessage,
       icon: Icons.tune,
     );
   }
@@ -329,29 +330,29 @@ class _AdvancedSearchModal extends StatefulWidget {
 
 class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
   // Language options for dropdown
-  static const List<Map<String, String>> _languageOptions = [
-    {'code': 'en', 'name': 'English'},
-    {'code': 'es', 'name': 'Spanish'},
-    {'code': 'fr', 'name': 'French'},
-    {'code': 'de', 'name': 'German'},
-    {'code': 'it', 'name': 'Italian'},
-    {'code': 'ja', 'name': 'Japanese'},
-    {'code': 'ko', 'name': 'Korean'},
-    {'code': 'zh', 'name': 'Chinese'},
-    {'code': 'pt', 'name': 'Portuguese'},
-    {'code': 'ru', 'name': 'Russian'},
+  List<Map<String, String>> _getLanguageOptions(BuildContext context) => [
+    {'code': 'en', 'name': AppLocalizations.of(context)!.english},
+    {'code': 'es', 'name': AppLocalizations.of(context)!.spanish},
+    {'code': 'fr', 'name': AppLocalizations.of(context)!.french},
+    {'code': 'de', 'name': AppLocalizations.of(context)!.german},
+    {'code': 'it', 'name': AppLocalizations.of(context)!.italian},
+    {'code': 'ja', 'name': AppLocalizations.of(context)!.japanese},
+    {'code': 'ko', 'name': AppLocalizations.of(context)!.korean},
+    {'code': 'zh', 'name': AppLocalizations.of(context)!.chinese},
+    {'code': 'pt', 'name': AppLocalizations.of(context)!.portuguese},
+    {'code': 'ru', 'name': AppLocalizations.of(context)!.russian},
   ];
 
   // Sort options for dropdown
-  static const List<Map<String, String>> _sortOptions = [
-    {'value': 'popularity.desc', 'name': 'Popularity (High to Low)'},
-    {'value': 'popularity.asc', 'name': 'Popularity (Low to High)'},
-    {'value': 'release_date.desc', 'name': 'Release Date (Newest)'},
-    {'value': 'release_date.asc', 'name': 'Release Date (Oldest)'},
-    {'value': 'vote_average.desc', 'name': 'Rating (High to Low)'},
-    {'value': 'vote_average.asc', 'name': 'Rating (Low to High)'},
-    {'value': 'vote_count.desc', 'name': 'Vote Count (High to Low)'},
-    {'value': 'revenue.desc', 'name': 'Revenue (High to Low)'},
+  List<Map<String, String>> _getSortOptions(BuildContext context) => [
+    {'value': 'popularity.desc', 'name': AppLocalizations.of(context)!.popularityHighToLow},
+    {'value': 'popularity.asc', 'name': AppLocalizations.of(context)!.popularityLowToHigh},
+    {'value': 'release_date.desc', 'name': AppLocalizations.of(context)!.releaseDateNewest},
+    {'value': 'release_date.asc', 'name': AppLocalizations.of(context)!.releaseDateOldest},
+    {'value': 'vote_average.desc', 'name': AppLocalizations.of(context)!.ratingHighToLow},
+    {'value': 'vote_average.asc', 'name': AppLocalizations.of(context)!.ratingLowToHigh},
+    {'value': 'vote_count.desc', 'name': AppLocalizations.of(context)!.voteCountHighToLow},
+    {'value': 'revenue.desc', 'name': AppLocalizations.of(context)!.revenueHighToLow},
   ];
 
   @override
@@ -391,7 +392,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      'Advanced Search',
+                      AppLocalizations.of(context)!.advancedSearchTitle,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -460,7 +461,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
                             onPressed: () {
                               provider.clearAdvancedSearch();
                             },
-                            child: const Text('Clear Filters'),
+                            child: Text(AppLocalizations.of(context)!.clearFilters),
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -471,7 +472,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
                               provider.performAdvancedSearch();
                               Navigator.pop(context);
                             },
-                            child: const Text('Apply Filters'),
+                            child: Text(AppLocalizations.of(context)!.applyFilters),
                           ),
                         ),
                       ],
@@ -491,7 +492,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Genres',
+          AppLocalizations.of(context)!.genres,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -521,7 +522,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
             );
           },
           error: (message, statusCode) => Text(
-            'Failed to load genres: $message',
+            AppLocalizations.of(context)!.failedToLoadGenres(message),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.error,
             ),
@@ -537,7 +538,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Release Year',
+          AppLocalizations.of(context)!.releaseYear,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -547,8 +548,8 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
           children: [
             Expanded(
               child: TextField(
-                decoration: const InputDecoration(
-                  labelText: 'From Year',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.fromYear,
                   hintText: '1900',
                 ),
                 keyboardType: TextInputType.number,
@@ -565,8 +566,8 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
             const SizedBox(width: 16),
             Expanded(
               child: TextField(
-                decoration: const InputDecoration(
-                  labelText: 'To Year',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.toYear,
                   hintText: '2024',
                 ),
                 keyboardType: TextInputType.number,
@@ -591,7 +592,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Rating Range',
+          AppLocalizations.of(context)!.ratingRange,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -616,8 +617,8 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Min: ${(provider.ratingMin ?? 0.0).toStringAsFixed(1)}'),
-            Text('Max: ${(provider.ratingMax ?? 10.0).toStringAsFixed(1)}'),
+            Text(AppLocalizations.of(context)!.minRatingLabel((provider.ratingMin ?? 0.0).toStringAsFixed(1))),
+            Text(AppLocalizations.of(context)!.maxRatingLabel((provider.ratingMax ?? 10.0).toStringAsFixed(1))),
           ],
         ),
       ],
@@ -629,7 +630,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Minimum Vote Count',
+          AppLocalizations.of(context)!.minimumVoteCount,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -645,7 +646,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
             provider.updateMinVoteCount(value.toInt());
           },
         ),
-        Text('Minimum votes: ${provider.minVoteCount ?? 0}'),
+        Text(AppLocalizations.of(context)!.minimumVotesLabel(provider.minVoteCount ?? 0)),
       ],
     );
   }
@@ -655,7 +656,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Original Language',
+          AppLocalizations.of(context)!.originalLanguage,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -663,15 +664,15 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
         const SizedBox(height: 12),
         DropdownButtonFormField<String>(
           value: provider.selectedLanguage,
-          decoration: const InputDecoration(
-            labelText: 'Select Language',
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.selectLanguage,
           ),
           items: [
-            const DropdownMenuItem<String>(
+            DropdownMenuItem<String>(
               value: null,
-              child: Text('Any Language'),
+              child: Text(AppLocalizations.of(context)!.anyLanguage),
             ),
-            ..._languageOptions.map((lang) => DropdownMenuItem<String>(
+            ..._getLanguageOptions(context).map((lang) => DropdownMenuItem<String>(
               value: lang['code'],
               child: Text(lang['name']!),
             )),
@@ -689,7 +690,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Runtime (minutes)',
+          AppLocalizations.of(context)!.runtimeMinutes,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -699,8 +700,8 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
           children: [
             Expanded(
               child: TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Min Runtime',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.minRuntime,
                   hintText: '60',
                 ),
                 keyboardType: TextInputType.number,
@@ -716,8 +717,8 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
             const SizedBox(width: 16),
             Expanded(
               child: TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Max Runtime',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.maxRuntime,
                   hintText: '180',
                 ),
                 keyboardType: TextInputType.number,
@@ -741,7 +742,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Sort By',
+          AppLocalizations.of(context)!.sortBy,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -749,10 +750,10 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
         const SizedBox(height: 12),
         DropdownButtonFormField<String>(
           value: provider.sortBy,
-          decoration: const InputDecoration(
-            labelText: 'Sort Order',
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.sortOrder,
           ),
-          items: _sortOptions.map((sort) => DropdownMenuItem<String>(
+          items: _getSortOptions(context).map((sort) => DropdownMenuItem<String>(
             value: sort['value'],
             child: Text(sort['name']!),
           )).toList(),
@@ -781,7 +782,7 @@ class _DefaultMoviesDisplay extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
-            'Popular Movies',
+            AppLocalizations.of(context)!.popularMovies,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -795,9 +796,9 @@ class _DefaultMoviesDisplay extends StatelessWidget {
           child: provider.defaultMovies?.when(
             success: (movieResponse) {
               if (movieResponse.results.isEmpty) {
-                return const EmptyStateWidget(
-                  title: 'No Movies Available',
-                  message: 'Unable to load popular movies at this time.',
+                return EmptyStateWidget(
+                  title: AppLocalizations.of(context)!.noMoviesAvailable,
+                  message: AppLocalizations.of(context)!.unableToLoadPopularMovies,
                   icon: Icons.movie_outlined,
                 );
               }
@@ -842,9 +843,9 @@ class _DefaultMoviesDisplay extends StatelessWidget {
                 return const MovieCardSkeleton();
               },
             ),
-          ) ?? const EmptyStateWidget(
-            title: 'Loading...',
-            message: 'Fetching popular movies for you.',
+          ) ?? EmptyStateWidget(
+            title: AppLocalizations.of(context)!.loadingText,
+            message: AppLocalizations.of(context)!.fetchingPopularMovies,
             icon: Icons.movie_outlined,
           ),
         ),

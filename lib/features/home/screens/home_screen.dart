@@ -12,6 +12,7 @@ import '../widgets/content_carousel.dart';
 import 'all_items_screen.dart';
 import '../../../features/auth/services/tmdb_auth_service.dart';
 import '../../../features/auth/models/auth_user.dart';
+import '../../../l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -127,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Consumer<HomeProvider>(
                       builder: (context, provider, child) {
                         return ContentCarousel(
-                          title: 'Frequently Visited',
+                          title: AppLocalizations.of(context)!.frequentlyVisited,
                           apiResult: provider.nowPlayingMovies,
                           sectionKey: 'nowPlaying',
                           onRetry: () => provider.retrySection('nowPlaying'),
@@ -140,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Consumer<HomeProvider>(
                       builder: (context, provider, child) {
                         return ContentCarousel(
-                          title: 'Recommendations',
+                          title: AppLocalizations.of(context)!.recommendations,
                           apiResult: provider.topRatedMovies,
                           sectionKey: 'topRated',
                           onRetry: () => provider.retrySection('topRated'),
@@ -156,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             // Trending Today
                             ContentCarousel(
-                              title: 'Trending Today',
+                              title: AppLocalizations.of(context)!.trendingToday,
                               apiResult: provider.trendingToday,
                               sectionKey: 'trendingToday',
                               onRetry: () =>
@@ -167,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             // Trending This Week
                             ContentCarousel(
-                              title: 'Trending This Week',
+                              title: AppLocalizations.of(context)!.trendingThisWeek,
                               apiResult: provider.trendingThisWeek,
                               sectionKey: 'trendingThisWeek',
                               onRetry: () =>
@@ -178,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             // Latest Trailers
                             ContentCarousel(
-                              title: 'Latest Trailers',
+                              title: AppLocalizations.of(context)!.latestTrailers,
                               apiResult: provider.latestTrailers,
                               sectionKey: 'latestTrailers',
                               onRetry: () =>
@@ -189,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             // Popular on Streaming
                             ContentCarousel(
-                              title: 'Popular on Streaming',
+                              title: AppLocalizations.of(context)!.popularOnStreaming,
                               apiResult: provider.popularOnStreaming,
                               sectionKey: 'popularOnStreaming',
                               onRetry: () =>
@@ -200,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             // Popular On TV
                             ContentCarousel(
-                              title: 'Popular On TV',
+                              title: AppLocalizations.of(context)!.popularOnTv,
                               apiResult: provider.popularOnTv,
                               sectionKey: 'popularOnTv',
                               onRetry: () =>
@@ -211,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             // Available For Rent
                             ContentCarousel(
-                              title: 'Available For Rent',
+                              title: AppLocalizations.of(context)!.availableForRent,
                               apiResult: provider.availableForRent,
                               sectionKey: 'availableForRent',
                               onRetry: () =>
@@ -222,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             // Currently In Theaters
                             ContentCarousel(
-                              title: 'Currently In Theaters',
+                              title: AppLocalizations.of(context)!.currentlyInTheaters,
                               apiResult: provider.currentlyInTheaters,
                               sectionKey: 'currentlyInTheaters',
                               onRetry: () =>
@@ -255,11 +256,11 @@ class _HeaderSection extends StatelessWidget {
 
   AuthUser? get tmdbUser => TmdbAuthService().currentUser;
 
-  String get userName {
+  String userName(BuildContext context) {
     if (tmdbUser != null && tmdbUser!.displayName.isNotEmpty) {
       return tmdbUser!.displayName;
     }
-    return "Guest";
+    return AppLocalizations.of(context)!.guest;
   }
 
   Widget userAvatar(BuildContext context) {
@@ -311,7 +312,7 @@ class _HeaderSection extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'Hi, $userName!',
+                      AppLocalizations.of(context)!.hiUserGreeting(userName(context)),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
@@ -350,7 +351,7 @@ class _HeaderSection extends StatelessWidget {
                       color: Colors.white,
                       size: 22,
                     ),
-                    tooltip: 'Profile & Settings',
+                    tooltip: AppLocalizations.of(context)!.profileAndSettings,
                   ),
                 ),
               ),
@@ -456,9 +457,9 @@ class _MovieCarouselSection extends StatelessWidget {
                 child: Column(
                   children: [
                     // Search Section
-                    const Text(
-                      'what movie do you want to see?',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.whatMovieDoYouWantToSee,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w300,
@@ -482,16 +483,16 @@ class _MovieCarouselSection extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: const TextField(
+                      child: TextField(
                         decoration: InputDecoration(
-                          hintText: 'find the movie you like',
-                          hintStyle: TextStyle(
+                          hintText: AppLocalizations.of(context)!.findTheMovieYouLike,
+                          hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 14,
                           ),
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(vertical: 12),
-                          suffixIcon: Icon(
+                          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                          suffixIcon: const Icon(
                             Icons.search,
                             color: Colors.grey,
                             size: 20,
@@ -613,9 +614,9 @@ class _MovieCarouselSection extends StatelessWidget {
                                   ),
                                   textAlign: TextAlign.right,
                                 ),
-                                const Text(
-                                  'Family',
-                                  style: TextStyle(
+                                Text(
+                                  AppLocalizations.of(context)!.family,
+                                  style: const TextStyle(
                                     color: Colors.white70,
                                     fontSize: 12,
                                     shadows: [
@@ -779,7 +780,7 @@ class _CompactMovieCard extends StatelessWidget {
             const SizedBox(height: 4),
             // Genre
             Text(
-              'Family', // Placeholder genre
+              AppLocalizations.of(context)!.family, // Placeholder genre
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w400,

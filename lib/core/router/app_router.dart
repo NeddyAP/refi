@@ -18,6 +18,7 @@ import '../constants/app_constants.dart';
 import '../../features/profile/screens/account_info_screen.dart';
 import '../../features/profile/screens/privacy_settings_screen.dart';
 import '../../features/profile/screens/language_settings_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -145,31 +146,34 @@ class AppRouter {
         },
       ),
     ],
-    errorBuilder: (context, state) => Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: Colors.red),
-            const SizedBox(height: 16),
-            Text(
-              'Page Not Found',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'The page you are looking for does not exist.',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () => context.go(AppConstants.homeRoute),
-              child: const Text('Go Home'),
-            ),
-          ],
+    errorBuilder: (context, state) {
+      final localizations = AppLocalizations.of(context)!;
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              Text(
+                localizations.pageNotFound,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                localizations.pageNotFoundMessage,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => context.go(AppConstants.homeRoute),
+                child: Text(localizations.goHome),
+              ),
+            ],
+          ),
         ),
-      ),
-    ),
+      );
+    },
   );
 
   /// Navigate to movie details

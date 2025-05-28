@@ -1,0 +1,306 @@
+{
+  "@@locale": "en",
+  "appTitle": "Refi",
+  "profileScreenTitle": "Profile",
+  "signOut": "Sign Out",
+  "signOutDialogTitle": "Sign Out",
+  "signOutDialogContent": "Are you sure you want to sign out?",
+  "cancel": "Cancel",
+  "guestUser": "Guest User",
+  "browsingAsGuest": "Browsing as guest",
+  "tmdbUser": "TMDB User",
+  "guestSession": "Guest Session",
+  "tmdbAccount": "TMDB Account",
+  "joined": "Joined",
+  "language": "Language",
+  "region": "Region",
+  "adult": "Adult",
+  "yes": "Yes",
+  "no": "No",
+  "viewAccountInfo": "View Account Info",
+  "signIn": "Sign In",
+  "signUpAtTmdb": "Sign Up at TMDB",
+  "couldNotOpen": "Could not open {url}",
+  "@couldNotOpen": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "settings": "Settings",
+  "appLanguage": "App Language",
+  "darkMode": "Dark Mode",
+  "darkThemeEnabled": "Dark theme enabled",
+  "lightThemeEnabled": "Light theme enabled",
+  "about": "About",
+  "appVersion": "App Version",
+  "privacyPolicy": "Privacy Policy",
+  "termsOfService": "Terms of Service",
+  "helpAndSupport": "Help & Support",
+  "guest": "Guest",
+  "hiUserGreeting": "Hi, {userName}!",
+  "@hiUserGreeting": {
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "profileAndSettings": "Profile & Settings",
+  "whatMovieDoYouWantToSee": "what movie do you want to see?",
+  "findTheMovieYouLike": "find the movie you like",
+  "frequentlyVisited": "Frequently Visited",
+  "trendingToday": "Trending Today",
+  "trendingThisWeek": "Trending This Week",
+  "latestTrailers": "Latest Trailers",
+  "popularOnStreaming": "Popular on Streaming",
+  "popularOnTv": "Popular On TV",
+  "availableForRent": "Available For Rent",
+  "currentlyInTheaters": "Currently In Theaters",
+  "family": "Family",
+  "loadingMovieDetails": "Loading movie details...",
+  "addedToFavorites": "Added to favorites",
+  "removedFromFavorites": "Removed from favorites",
+  "removeFromFavorites": "Remove from favorites",
+  "addToFavorites": "Add to favorites",
+  "addedToWatchlist": "Added to watchlist",
+  "removedFromWatchlist": "Removed from watchlist",
+  "removeFromWatchlist": "Remove from watchlist",
+  "addToWatchlist": "Add to watchlist",
+  "noOverviewAvailable": "No overview available.",
+  "trailers": "Trailers",
+  "topBilledCast": "Top Billed Cast",
+  "fullCastAndCrew": "Full Cast & Crew",
+  "director": "Director",
+  "writers": "Writers",
+  "viewFullCastAndCrew": "View Full Cast & Crew",
+  "crew": "Crew",
+  "userReviews": "User Reviews",
+  "viewAllReviews": "View All Reviews ({count})",
+  "@viewAllReviews": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "allReviews": "All Reviews ({count})",
+  "@allReviews": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "media": "Media",
+  "backdrops": "Backdrops",
+  "posters": "Posters",
+  "imageGalleryTitle": "{current} of {total}",
+  "@imageGalleryTitle": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreScreenTitle": "Explore",
+  "searchMoviesHint": "Search movies...",
+  "advancedSearchActive": "Advanced search active",
+  "exitAdvancedSearch": "Exit advanced search",
+  "advancedSearch": "Advanced search",
+  "advancedSearchTitle": "Advanced Search",
+  "clearFilters": "Clear Filters",
+  "applyFilters": "Apply Filters",
+  "genres": "Genres",
+  "failedToLoadGenres": "Failed to load genres: {message}",
+  "@failedToLoadGenres": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "releaseYear": "Release Year",
+  "fromYear": "From Year",
+  "toYear": "To Year",
+  "ratingRange": "Rating Range",
+  "minimumVoteCount": "Minimum Vote Count",
+  "originalLanguage": "Original Language",
+  "selectLanguage": "Select Language",
+  "anyLanguage": "Any Language",
+  "spanish": "Spanish",
+  "french": "French",
+  "german": "German",
+  "italian": "Italian",
+  "japanese": "Japanese",
+  "korean": "Korean",
+  "chinese": "Chinese",
+  "portuguese": "Portuguese",
+  "russian": "Russian",
+  "runtimeMinutes": "Runtime (minutes)",
+  "minRuntime": "Min Runtime",
+  "maxRuntime": "Max Runtime",
+  "sortBy": "Sort By",
+  "sortOrder": "Sort Order",
+  "popularityHighToLow": "Popularity (High to Low)",
+  "popularityLowToHigh": "Popularity (Low to High)",
+  "releaseDateNewest": "Release Date (Newest)",
+  "releaseDateOldest": "Release Date (Oldest)",
+  "ratingHighToLow": "Rating (High to Low)",
+  "ratingLowToHigh": "Rating (Low to High)",
+  "voteCountHighToLow": "Vote Count (High to Low)",
+  "revenueHighToLow": "Revenue (High to Low)",
+  "noAdvancedSearchPerformed": "No Advanced Search Performed",
+  "configureFiltersMessage": "Configure your filters and search for movies.",
+  "popularMovies": "Popular Movies",
+  "noMoviesAvailable": "No Movies Available",
+  "unableToLoadPopularMovies": "Unable to load popular movies at this time.",
+  "loadingText": "Loading...",
+  "fetchingPopularMovies": "Fetching popular movies for you.",
+  "minRatingLabel": "Min: {rating}",
+  "@minRatingLabel": {
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      }
+    }
+  },
+  "maxRatingLabel": "Max: {rating}",
+  "@maxRatingLabel": {
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      }
+    }
+  },
+  "minimumVotesLabel": "Minimum votes: {count}",
+  "@minimumVotesLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "favoritesScreenTitle": "My Movies",
+  "favoritesTabTitle": "Favorites",
+  "watchlistTabTitle": "Watchlist",
+  "loadingYourMovies": "Loading your movies...",
+  "noMoviesInWatchlistTitle": "No Movies in Watchlist",
+  "noMoviesInWatchlistMessage": "Add movies to your watchlist to keep track of what you want to watch.",
+  "welcomeToApp": "Welcome to {appName}",
+  "@welcomeToApp": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "signInWithTmdbSubtitle": "Sign in with your TMDB account to discover amazing movies",
+  "tmdbUsername": "TMDB Username",
+  "enterTmdbUsername": "Enter your TMDB username",
+  "enterPassword": "Enter your password",
+  "signInWithTmdb": "Sign In with TMDB",
+  "browseModeInfo": "You can browse movies without signing in",
+  "signInBenefits": "Sign in to rate movies and create watchlists",
+  "noTmdbAccount": "Don't have a TMDB account? ",
+  "pleaseRegisterAt": "Please register at https://www.themoviedb.org/signup",
+  "pleaseResetPasswordAt": "Please reset your password at https://www.themoviedb.org/reset-password",
+  "dismiss": "Dismiss",
+  "enterTmdbUsernameValidation": "Please enter your TMDB username",
+  "usernameMinLengthValidation": "Username must be at least 3 characters",
+  "enterPasswordValidation": "Please enter your password",
+  "passwordMinLengthValidation": "Password must be at least 6 characters",
+  "signUpTitle": "Sign Up",
+  "createTmdbAccount": "Create TMDB Account",
+  "createTmdbAccountDescription": "To use all features of {appName}, you need a TMDB account. Registration is free and takes just a minute.",
+  "@createTmdbAccountDescription": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "withTmdbAccountYouCan": "With a TMDB account you can:",
+  "rateMoviesAndTvShows": "Rate movies and TV shows",
+  "createAndManageWatchlists": "Create and manage watchlists",
+  "markMoviesAsFavorites": "Mark movies as favorites",
+  "syncAcrossDevices": "Sync across all devices",
+  "registerAtTmdb": "Register at TMDB",
+  "alreadyHaveAccount": "Already have an account? ",
+  "continueBrowsingAsGuest": "Continue browsing as guest",
+  "pleaseVisitTmdbSignup": "Please visit https://www.themoviedb.org/signup to register",
+  "resetPasswordTitle": "Reset Password",
+  "resetYourPassword": "Reset Your Password",
+  "resetPasswordDescription": "To reset your TMDB account password, you need to visit the TMDB website.",
+  "howToResetPassword": "How to reset your password:",
+  "visitTmdbResetPage": "Visit the TMDB password reset page",
+  "enterUsernameOrEmail": "Enter your TMDB username or email",
+  "checkEmailForInstructions": "Check your email for reset instructions",
+  "returnToSignIn": "Return here to sign in with your new password",
+  "resetPasswordAtTmdb": "Reset Password at TMDB",
+  "backToSignIn": "Back to Sign In",
+  "pleaseVisitTmdbResetPassword": "Please visit https://www.themoviedb.org/reset-password to reset your password",
+  "homeLabel": "Home",
+  "exploreLabel": "Explore",
+  "favoritesLabel": "Favorites",
+  "profileLabel": "Profile",
+  "appTitleFull": "Refi - Movie Recommendations",
+  "login": "Login",
+  "register": "Register",
+  "email": "Email",
+  "password": "Password",
+  "forgotPassword": "Forgot Password?",
+  "loginButton": "Login",
+  "registerButton": "Register",
+  "sendResetLink": "Send Reset Link",
+  "home": "Home",
+  "explore": "Explore",
+  "favorites": "Favorites",
+  "profile": "Profile",
+  "nowPlaying": "Now Playing",
+  "upcoming": "Upcoming",
+  "topRated": "Top Rated",
+  "popular": "Popular",
+  "viewAll": "View All",
+  "searchMovies": "Search movies...",
+  "movieDetails": "Movie Details",
+  "overview": "Overview",
+  "cast": "Cast",
+  "reviews": "Reviews",
+  "recommendations": "Recommendations",
+  "accountInformation": "Account Information",
+  "name": "Name",
+  "changePassword": "Change Password",
+  "privacySettings": "Privacy Settings",
+  "allowPersonalization": "Allow Personalization",
+  "allowNotifications": "Allow Notifications",
+  "languageSettings": "Language Settings",
+  "english": "English",
+  "indonesian": "Indonesian",
+  "logout": "Logout",
+  "oopsSomethingWentWrong": "Oops! Something went wrong.",
+  "tryAgain": "Try Again",
+  "networkErrorMessage": "Please check your internet connection and try again.",
+  "retry": "Retry",
+  "noResultsFoundTitle": "No Results Found",
+  "noResultsFoundMessage": "We couldn't find any movies matching \"{searchQuery}\". Please try a different search term.",
+  "@noResultsFoundMessage": {
+    "placeholders": {
+      "searchQuery": {
+        "type": "String"
+      }
+    }
+  },
+  "noMoviesFoundGenericMessage": "We couldn't find any movies at the moment. Please try again later.",
+  "clearSearchButton": "Clear Search",
+  "noFavoritesYetTitle": "No Favorites Yet",
+  "noFavoritesYetMessage": "You haven't added any movies to your favorites. Start exploring and add some!",
+  "exploreMoviesButton": "Explore Movies",
+  "pageNotFound": "Page Not Found",
+  "pageNotFoundMessage": "The page you are looking for does not exist.",
+  "goHome": "Go Home"
+}

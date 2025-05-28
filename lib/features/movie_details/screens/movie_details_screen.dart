@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:refi/core/network/api_result.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/loading_widget.dart';
 import '../../../shared/widgets/error_widget.dart';
 import '../../../shared/models/movie.dart';
@@ -69,12 +70,12 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     onRetry: () => provider.retry(),
                   ),
                 ),
-                loading: () => const Scaffold(
-                  body: LoadingWidget(message: 'Loading movie details...'),
+                loading: () => Scaffold(
+                  body: LoadingWidget(message: AppLocalizations.of(context)!.loadingMovieDetails),
                 ),
               ) ??
-              const Scaffold(
-                body: LoadingWidget(message: 'Loading movie details...'),
+              Scaffold(
+                body: LoadingWidget(message: AppLocalizations.of(context)!.loadingMovieDetails),
               );
         },
       ),
@@ -171,8 +172,8 @@ class _HeaderSection extends StatelessWidget {
                         await favoritesProvider.toggleFavorite(movie);
                         final msg = favoritesProvider.errorMessage == null
                             ? (favoritesProvider.isFavorite(movie.id)
-                                  ? 'Added to favorites'
-                                  : 'Removed from favorites')
+                                  ? AppLocalizations.of(context)!.addedToFavorites
+                                  : AppLocalizations.of(context)!.removedFromFavorites)
                             : favoritesProvider.errorMessage!;
                         ScaffoldMessenger.of(
                           context,
@@ -184,16 +185,16 @@ class _HeaderSection extends StatelessWidget {
                         size: 28,
                       ),
                       tooltip: isFavorite
-                          ? 'Remove from favorites'
-                          : 'Add to favorites',
+                          ? AppLocalizations.of(context)!.removeFromFavorites
+                          : AppLocalizations.of(context)!.addToFavorites,
                     ),
                     IconButton(
                       onPressed: () async {
                         await favoritesProvider.toggleWatchlist(movie);
                         final msg = favoritesProvider.errorMessage == null
                             ? (favoritesProvider.isInWatchlist(movie.id)
-                                  ? 'Added to watchlist'
-                                  : 'Removed from watchlist')
+                                  ? AppLocalizations.of(context)!.addedToWatchlist
+                                  : AppLocalizations.of(context)!.removedFromWatchlist)
                             : favoritesProvider.errorMessage!;
                         ScaffoldMessenger.of(
                           context,
@@ -205,8 +206,8 @@ class _HeaderSection extends StatelessWidget {
                         size: 28,
                       ),
                       tooltip: isInWatchlist
-                          ? 'Remove from watchlist'
-                          : 'Add to watchlist',
+                          ? AppLocalizations.of(context)!.removeFromWatchlist
+                          : AppLocalizations.of(context)!.addToWatchlist,
                     ),
                   ],
                 );
@@ -573,7 +574,7 @@ class _DescriptionSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Overview',
+          AppLocalizations.of(context)!.overview,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             // Use onSurface color for title
@@ -594,7 +595,7 @@ class _DescriptionSection extends StatelessWidget {
           )
         else
           Text(
-            'No overview available.',
+            AppLocalizations.of(context)!.noOverviewAvailable,
             style: theme.textTheme.bodyMedium?.copyWith(
               // Use onSurfaceVariant for placeholder text
               color: theme.colorScheme.onSurfaceVariant,
@@ -623,7 +624,7 @@ class _TrailersSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Trailers',
+              AppLocalizations.of(context)!.trailers,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 // Use onSurface color for title
@@ -783,7 +784,7 @@ class _TopBilledCastSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Top Billed Cast',
+              AppLocalizations.of(context)!.topBilledCast,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 // Use onSurface color for title
@@ -914,7 +915,7 @@ class _FullCastCrewSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Full Cast & Crew',
+                    AppLocalizations.of(context)!.fullCastAndCrew,
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                       // Use onSurface color for title
@@ -927,7 +928,7 @@ class _FullCastCrewSection extends StatelessWidget {
                   // Director info
                   if (credits.director != null) ...[
                     _CrewMemberRow(
-                      title: 'Director',
+                      title: AppLocalizations.of(context)!.director,
                       crewMember: credits.director!,
                     ),
                     const SizedBox(height: 8),
@@ -936,7 +937,7 @@ class _FullCastCrewSection extends StatelessWidget {
                   // Writers
                   if (credits.writers.isNotEmpty) ...[
                     _CrewMemberRow(
-                      title: 'Writers',
+                      title: AppLocalizations.of(context)!.writers,
                       crewMember: credits.writers.first,
                       additionalCount: credits.writers.length - 1,
                     ),
@@ -949,7 +950,7 @@ class _FullCastCrewSection extends StatelessWidget {
                       _showFullCastBottomSheet(context, credits);
                     },
                     child: Text(
-                      'View Full Cast & Crew',
+                      AppLocalizations.of(context)!.viewFullCastAndCrew,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         // Use primary color for button text
                         color: theme.colorScheme.primary,
@@ -1072,7 +1073,7 @@ class _FullCastBottomSheet extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
-              'Full Cast & Crew',
+              AppLocalizations.of(context)!.fullCastAndCrew,
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 // Use onSurface color for header
@@ -1089,7 +1090,7 @@ class _FullCastBottomSheet extends StatelessWidget {
               children: [
                 // Cast section
                 Text(
-                  'Cast',
+                  AppLocalizations.of(context)!.cast,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     // Use onSurface color for section title
@@ -1105,7 +1106,7 @@ class _FullCastBottomSheet extends StatelessWidget {
 
                 // Crew section
                 Text(
-                  'Crew',
+                  AppLocalizations.of(context)!.crew,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     // Use onSurface color for section title
@@ -1308,7 +1309,7 @@ class _ReviewsSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'User Reviews',
+              AppLocalizations.of(context)!.userReviews,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 // Use onSurface color for title
@@ -1328,7 +1329,7 @@ class _ReviewsSection extends StatelessWidget {
                   _showAllReviewsBottomSheet(context, reviews);
                 },
                 child: Text(
-                  'View All Reviews (${reviews.length})',
+                  AppLocalizations.of(context)!.viewAllReviews(reviews.length),
                   style: theme.textTheme.bodyMedium?.copyWith(
                     // Use primary color for button text
                     color: theme.colorScheme.primary,
@@ -1509,7 +1510,7 @@ class _AllReviewsBottomSheet extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
-              'All Reviews (${reviews.length})',
+              AppLocalizations.of(context)!.allReviews(reviews.length),
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 // Use onSurface color for header
@@ -1557,7 +1558,7 @@ class _ImageGalleriesSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Media',
+              AppLocalizations.of(context)!.media,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 // Use onSurface color for title
@@ -1570,7 +1571,7 @@ class _ImageGalleriesSection extends StatelessWidget {
             // Backdrops section
             if (backdrops.isNotEmpty) ...[
               Text(
-                'Backdrops',
+                AppLocalizations.of(context)!.backdrops,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   // Use onSurface color for section title
@@ -1598,7 +1599,7 @@ class _ImageGalleriesSection extends StatelessWidget {
             // Posters section
             if (posters.isNotEmpty) ...[
               Text(
-                'Posters',
+                AppLocalizations.of(context)!.posters,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   // Use onSurface color for section title
@@ -1734,7 +1735,7 @@ class _ImageGalleryScreenState extends State<_ImageGalleryScreen> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        title: Text('${_currentIndex + 1} of ${widget.images.length}'),
+        title: Text(AppLocalizations.of(context)!.imageGalleryTitle(_currentIndex + 1, widget.images.length)),
       ),
       body: PageView.builder(
         controller: _pageController,

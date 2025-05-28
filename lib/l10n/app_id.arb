@@ -1,0 +1,306 @@
+{
+  "@@locale": "id",
+  "appTitle": "Refi",
+  "profileScreenTitle": "Profil",
+  "signOut": "Keluar",
+  "signOutDialogTitle": "Keluar",
+  "signOutDialogContent": "Apakah Anda yakin ingin keluar?",
+  "cancel": "Batal",
+  "guestUser": "Pengguna Tamu",
+  "browsingAsGuest": "Menjelajah sebagai tamu",
+  "tmdbUser": "Pengguna TMDB",
+  "guestSession": "Sesi Tamu",
+  "tmdbAccount": "Akun TMDB",
+  "joined": "Bergabung",
+  "language": "Bahasa",
+  "region": "Wilayah",
+  "adult": "Dewasa",
+  "yes": "Ya",
+  "no": "Tidak",
+  "viewAccountInfo": "Lihat Info Akun",
+  "signIn": "Masuk",
+  "signUpAtTmdb": "Daftar di TMDB",
+  "couldNotOpen": "Tidak dapat membuka {url}",
+  "@couldNotOpen": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "settings": "Pengaturan",
+  "appLanguage": "Bahasa Aplikasi",
+  "darkMode": "Mode Gelap",
+  "darkThemeEnabled": "Tema gelap diaktifkan",
+  "lightThemeEnabled": "Tema terang diaktifkan",
+  "about": "Tentang",
+  "appVersion": "Versi Aplikasi",
+  "privacyPolicy": "Kebijakan Privasi",
+  "termsOfService": "Syarat Layanan",
+  "helpAndSupport": "Bantuan & Dukungan",
+  "guest": "Tamu",
+  "hiUserGreeting": "Hai, {userName}!",
+  "@hiUserGreeting": {
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "profileAndSettings": "Profil & Pengaturan",
+  "whatMovieDoYouWantToSee": "film apa yang ingin Anda tonton?",
+  "findTheMovieYouLike": "temukan film yang Anda suka",
+  "frequentlyVisited": "Sering Dikunjungi",
+  "trendingToday": "Trending Hari Ini",
+  "trendingThisWeek": "Trending Minggu Ini",
+  "latestTrailers": "Trailer Terbaru",
+  "popularOnStreaming": "Populer di Streaming",
+  "popularOnTv": "Populer di TV",
+  "availableForRent": "Tersedia untuk Disewa",
+  "currentlyInTheaters": "Sedang di Bioskop",
+  "family": "Keluarga",
+  "loadingMovieDetails": "Memuat detail film...",
+  "addedToFavorites": "Ditambahkan ke favorit",
+  "removedFromFavorites": "Dihapus dari favorit",
+  "removeFromFavorites": "Hapus dari favorit",
+  "addToFavorites": "Tambah ke favorit",
+  "addedToWatchlist": "Ditambahkan ke daftar tonton",
+  "removedFromWatchlist": "Dihapus dari daftar tonton",
+  "removeFromWatchlist": "Hapus dari daftar tonton",
+  "addToWatchlist": "Tambah ke daftar tonton",
+  "noOverviewAvailable": "Tidak ada ringkasan tersedia.",
+  "trailers": "Trailer",
+  "topBilledCast": "Pemeran Utama",
+  "fullCastAndCrew": "Semua Pemeran & Kru",
+  "director": "Sutradara",
+  "writers": "Penulis",
+  "viewFullCastAndCrew": "Lihat Semua Pemeran & Kru",
+  "crew": "Kru",
+  "userReviews": "Ulasan Pengguna",
+  "viewAllReviews": "Lihat Semua Ulasan ({count})",
+  "@viewAllReviews": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "allReviews": "Semua Ulasan ({count})",
+  "@allReviews": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "media": "Media",
+  "backdrops": "Latar Belakang",
+  "posters": "Poster",
+  "imageGalleryTitle": "{current} dari {total}",
+  "@imageGalleryTitle": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreScreenTitle": "Jelajahi",
+  "searchMoviesHint": "Cari film...",
+  "advancedSearchActive": "Pencarian lanjutan aktif",
+  "exitAdvancedSearch": "Keluar dari pencarian lanjutan",
+  "advancedSearch": "Pencarian lanjutan",
+  "advancedSearchTitle": "Pencarian Lanjutan",
+  "clearFilters": "Hapus Filter",
+  "applyFilters": "Terapkan Filter",
+  "genres": "Genre",
+  "failedToLoadGenres": "Gagal memuat genre: {message}",
+  "@failedToLoadGenres": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "releaseYear": "Tahun Rilis",
+  "fromYear": "Dari Tahun",
+  "toYear": "Ke Tahun",
+  "ratingRange": "Rentang Rating",
+  "minimumVoteCount": "Jumlah Vote Minimum",
+  "originalLanguage": "Bahasa Asli",
+  "selectLanguage": "Pilih Bahasa",
+  "anyLanguage": "Bahasa Apa Saja",
+  "spanish": "Spanyol",
+  "french": "Prancis",
+  "german": "Jerman",
+  "italian": "Italia",
+  "japanese": "Jepang",
+  "korean": "Korea",
+  "chinese": "Tiongkok",
+  "portuguese": "Portugis",
+  "russian": "Rusia",
+  "runtimeMinutes": "Durasi (menit)",
+  "minRuntime": "Durasi Min",
+  "maxRuntime": "Durasi Maks",
+  "sortBy": "Urutkan Berdasarkan",
+  "sortOrder": "Urutan",
+  "popularityHighToLow": "Popularitas (Tinggi ke Rendah)",
+  "popularityLowToHigh": "Popularitas (Rendah ke Tinggi)",
+  "releaseDateNewest": "Tanggal Rilis (Terbaru)",
+  "releaseDateOldest": "Tanggal Rilis (Terlama)",
+  "ratingHighToLow": "Rating (Tinggi ke Rendah)",
+  "ratingLowToHigh": "Rating (Rendah ke Tinggi)",
+  "voteCountHighToLow": "Jumlah Vote (Tinggi ke Rendah)",
+  "revenueHighToLow": "Pendapatan (Tinggi ke Rendah)",
+  "noAdvancedSearchPerformed": "Belum Ada Pencarian Lanjutan",
+  "configureFiltersMessage": "Konfigurasi filter Anda dan cari film.",
+  "popularMovies": "Film Populer",
+  "noMoviesAvailable": "Tidak Ada Film Tersedia",
+  "unableToLoadPopularMovies": "Tidak dapat memuat film populer saat ini.",
+  "loadingText": "Memuat...",
+  "fetchingPopularMovies": "Mengambil film populer untuk Anda.",
+  "minRatingLabel": "Min: {rating}",
+  "@minRatingLabel": {
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      }
+    }
+  },
+  "maxRatingLabel": "Maks: {rating}",
+  "@maxRatingLabel": {
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      }
+    }
+  },
+  "minimumVotesLabel": "Vote minimum: {count}",
+  "@minimumVotesLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "favoritesScreenTitle": "Film Saya",
+  "favoritesTabTitle": "Favorit",
+  "watchlistTabTitle": "Daftar Tonton",
+  "loadingYourMovies": "Memuat film Anda...",
+  "noMoviesInWatchlistTitle": "Tidak Ada Film di Daftar Tonton",
+  "noMoviesInWatchlistMessage": "Tambahkan film ke daftar tonton Anda untuk melacak film yang ingin ditonton.",
+  "welcomeToApp": "Selamat datang di {appName}",
+  "@welcomeToApp": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "signInWithTmdbSubtitle": "Masuk dengan akun TMDB Anda untuk menemukan film yang menakjubkan",
+  "tmdbUsername": "Username TMDB",
+  "enterTmdbUsername": "Masukkan username TMDB Anda",
+  "enterPassword": "Masukkan kata sandi Anda",
+  "signInWithTmdb": "Masuk dengan TMDB",
+  "browseModeInfo": "Anda dapat menjelajahi film tanpa masuk",
+  "signInBenefits": "Masuk untuk menilai film dan membuat daftar tonton",
+  "noTmdbAccount": "Tidak punya akun TMDB? ",
+  "pleaseRegisterAt": "Silakan daftar di https://www.themoviedb.org/signup",
+  "pleaseResetPasswordAt": "Silakan reset kata sandi Anda di https://www.themoviedb.org/reset-password",
+  "dismiss": "Tutup",
+  "enterTmdbUsernameValidation": "Silakan masukkan username TMDB Anda",
+  "usernameMinLengthValidation": "Username harus minimal 3 karakter",
+  "enterPasswordValidation": "Silakan masukkan kata sandi Anda",
+  "passwordMinLengthValidation": "Kata sandi harus minimal 6 karakter",
+  "signUpTitle": "Daftar",
+  "createTmdbAccount": "Buat Akun TMDB",
+  "createTmdbAccountDescription": "Untuk menggunakan semua fitur {appName}, Anda memerlukan akun TMDB. Pendaftaran gratis dan hanya membutuhkan satu menit.",
+  "@createTmdbAccountDescription": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "withTmdbAccountYouCan": "Dengan akun TMDB Anda dapat:",
+  "rateMoviesAndTvShows": "Menilai film dan acara TV",
+  "createAndManageWatchlists": "Membuat dan mengelola daftar tonton",
+  "markMoviesAsFavorites": "Menandai film sebagai favorit",
+  "syncAcrossDevices": "Sinkronisasi di semua perangkat",
+  "registerAtTmdb": "Daftar di TMDB",
+  "alreadyHaveAccount": "Sudah punya akun? ",
+  "continueBrowsingAsGuest": "Lanjutkan menjelajah sebagai tamu",
+  "pleaseVisitTmdbSignup": "Silakan kunjungi https://www.themoviedb.org/signup untuk mendaftar",
+  "resetPasswordTitle": "Reset Kata Sandi",
+  "resetYourPassword": "Reset Kata Sandi Anda",
+  "resetPasswordDescription": "Untuk mereset kata sandi akun TMDB Anda, Anda perlu mengunjungi situs web TMDB.",
+  "howToResetPassword": "Cara mereset kata sandi Anda:",
+  "visitTmdbResetPage": "Kunjungi halaman reset kata sandi TMDB",
+  "enterUsernameOrEmail": "Masukkan username atau email TMDB Anda",
+  "checkEmailForInstructions": "Periksa email Anda untuk instruksi reset",
+  "returnToSignIn": "Kembali ke sini untuk masuk dengan kata sandi baru Anda",
+  "resetPasswordAtTmdb": "Reset Kata Sandi di TMDB",
+  "backToSignIn": "Kembali ke Masuk",
+  "pleaseVisitTmdbResetPassword": "Silakan kunjungi https://www.themoviedb.org/reset-password untuk mereset kata sandi Anda",
+  "homeLabel": "Beranda",
+  "exploreLabel": "Jelajahi",
+  "favoritesLabel": "Favorit",
+  "profileLabel": "Profil",
+  "appTitleFull": "Refi - Rekomendasi Film",
+  "login": "Masuk",
+  "register": "Daftar",
+  "email": "Email",
+  "password": "Kata Sandi",
+  "forgotPassword": "Lupa Kata Sandi?",
+  "loginButton": "Masuk",
+  "registerButton": "Daftar",
+  "sendResetLink": "Kirim Tautan Reset",
+  "home": "Beranda",
+  "explore": "Jelajahi",
+  "favorites": "Favorit",
+  "profile": "Profil",
+  "nowPlaying": "Sedang Tayang",
+  "upcoming": "Akan Datang",
+  "topRated": "Peringkat Teratas",
+  "popular": "Populer",
+  "viewAll": "Lihat Semua",
+  "searchMovies": "Cari film...",
+  "movieDetails": "Detail Film",
+  "overview": "Ringkasan",
+  "cast": "Pemeran",
+  "reviews": "Ulasan",
+  "recommendations": "Rekomendasi",
+  "accountInformation": "Informasi Akun",
+  "name": "Nama",
+  "changePassword": "Ubah Kata Sandi",
+  "privacySettings": "Pengaturan Privasi",
+  "allowPersonalization": "Izinkan Personalisasi",
+  "allowNotifications": "Izinkan Notifikasi",
+  "languageSettings": "Pengaturan Bahasa",
+  "english": "Inggris",
+  "indonesian": "Indonesia",
+  "logout": "Keluar",
+  "oopsSomethingWentWrong": "Ups! Terjadi kesalahan.",
+  "tryAgain": "Coba Lagi",
+  "networkErrorMessage": "Silakan periksa koneksi internet Anda dan coba lagi.",
+  "retry": "Coba Lagi",
+  "noResultsFoundTitle": "Tidak Ada Hasil yang Ditemukan",
+  "noResultsFoundMessage": "Kami tidak dapat menemukan film yang cocok dengan \"{searchQuery}\". Silakan coba istilah pencarian yang berbeda.",
+  "@noResultsFoundMessage": {
+    "placeholders": {
+      "searchQuery": {
+        "type": "String"
+      }
+    }
+  },
+  "noMoviesFoundGenericMessage": "Kami tidak dapat menemukan film apa pun saat ini. Silakan coba lagi nanti.",
+  "clearSearchButton": "Hapus Pencarian",
+  "noFavoritesYetTitle": "Belum Ada Favorit",
+  "noFavoritesYetMessage": "Anda belum menambahkan film apa pun ke favorit Anda. Mulai jelajahi dan tambahkan beberapa!",
+  "exploreMoviesButton": "Jelajahi Film",
+  "pageNotFound": "Halaman Tidak Ditemukan",
+  "pageNotFoundMessage": "Halaman yang Anda cari tidak ada.",
+  "goHome": "Kembali ke Beranda"
+}

@@ -55,7 +55,6 @@ class ProfileProvider extends ChangeNotifier {
       print('Error loading language preference: $e');
       _appLanguageCode = 'en';
     }
-    notifyListeners();
   }
 
   /// Load user data

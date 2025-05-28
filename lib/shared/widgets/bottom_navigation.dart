@@ -3,21 +3,20 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
 import '../providers/navigation_visibility_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class BottomNavigationWrapper extends StatelessWidget {
   final Widget child;
 
-  const BottomNavigationWrapper({
-    super.key,
-    required this.child,
-  });
+  const BottomNavigationWrapper({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: child,
       backgroundColor: Colors.transparent,
-      extendBody: true, // This allows the body to extend behind the bottom navigation
+      extendBody:
+          true, // This allows the body to extend behind the bottom navigation
       bottomNavigationBar: Consumer<NavigationVisibilityProvider>(
         builder: (context, navProvider, child) {
           return AnimatedSlide(
@@ -43,6 +42,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentLocation = GoRouterState.of(context).matchedLocation;
+    final localizations = AppLocalizations.of(context)!;
 
     int getCurrentIndex() {
       switch (currentLocation) {
@@ -80,15 +80,20 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
     return Container(
       // Add padding for floating effect
-      padding: EdgeInsets.fromLTRB(20, 16, 20, 10 + MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.fromLTRB(
+        20,
+        16,
+        20,
+        10 + MediaQuery.of(context).padding.bottom,
+      ),
       child: Container(
         height: 68,
-        margin: const EdgeInsets.only(
-          bottom: 0,
-        ),
+        margin: const EdgeInsets.only(bottom: 0),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(34), // Fully rounded for pill shape
+          borderRadius: BorderRadius.circular(
+            34,
+          ), // Fully rounded for pill shape
           border: Border.all(
             color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
             width: 0.5,
@@ -116,7 +121,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               _OptimizedNavItem(
                 icon: Icons.home_outlined,
                 activeIcon: Icons.home_rounded,
-                label: 'Home',
+                label: localizations.homeLabel,
                 isActive: currentIndex == 0,
                 onTap: () => onTap(0),
                 showBackground: false,
@@ -124,21 +129,21 @@ class CustomBottomNavigationBar extends StatelessWidget {
               _OptimizedNavItem(
                 icon: Icons.search_outlined,
                 activeIcon: Icons.search_rounded,
-                label: 'Explore',
+                label: localizations.exploreLabel,
                 isActive: currentIndex == 1,
                 onTap: () => onTap(1),
               ),
               _OptimizedNavItem(
                 icon: Icons.favorite_outline,
                 activeIcon: Icons.favorite_rounded,
-                label: 'Favorites',
+                label: localizations.favoritesLabel,
                 isActive: currentIndex == 2,
                 onTap: () => onTap(2),
               ),
               _OptimizedNavItem(
                 icon: Icons.person_outline,
                 activeIcon: Icons.person_rounded,
-                label: 'Profile',
+                label: localizations.profileLabel,
                 isActive: currentIndex == 3,
                 onTap: () => onTap(3),
               ),
@@ -172,7 +177,7 @@ class _OptimizedNavItem extends StatelessWidget {
     // Cache colors to avoid repeated lookups
     final activeColor = Theme.of(context).colorScheme.primary;
     final inactiveColor = Theme.of(context).colorScheme.onSurfaceVariant;
-    
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque, // Optimize touch detection
@@ -184,9 +189,7 @@ class _OptimizedNavItem extends StatelessWidget {
           vertical: 4.5,
         ),
         decoration: BoxDecoration(
-          color: isActive && showBackground
-              ? activeColor
-              : Colors.transparent,
+          color: isActive && showBackground ? activeColor : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           boxShadow: isActive && showBackground
               ? [
@@ -203,11 +206,7 @@ class _OptimizedNavItem extends StatelessWidget {
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    activeIcon,
-                    color: Colors.white,
-                    size: 22,
-                  ),
+                  Icon(activeIcon, color: Colors.white, size: 22),
                   const SizedBox(width: 8),
                   Text(
                     label,
@@ -283,7 +282,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(
-        kToolbarHeight + (bottom?.preferredSize.height ?? 0),
-      );
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
 }

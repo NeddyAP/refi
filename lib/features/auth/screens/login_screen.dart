@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import '../../../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
@@ -28,21 +29,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   String? _validateUsername(String? value) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.isEmpty) {
-      return 'Please enter your TMDB username';
+      return l10n.enterTmdbUsernameValidation;
     }
     if (value.length < 3) {
-      return 'Username must be at least 3 characters';
+      return l10n.usernameMinLengthValidation;
     }
     return null;
   }
 
   String? _validatePassword(String? value) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.isEmpty) {
-      return 'Please enter your password';
+      return l10n.enterPasswordValidation;
     }
     if (value.length < 6) {
-      return 'Password must be at least 6 characters';
+      return l10n.passwordMinLengthValidation;
     }
     return null;
   }
@@ -57,21 +60,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _goToTmdbRegister() {
+    final l10n = AppLocalizations.of(context)!;
     // Open TMDB registration page
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Please register at https://www.themoviedb.org/signup'),
-        duration: Duration(seconds: 3),
+      SnackBar(
+        content: Text(l10n.pleaseRegisterAt),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
 
   void _goToTmdbPasswordReset() {
+    final l10n = AppLocalizations.of(context)!;
     // Open TMDB password reset page
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Please reset your password at https://www.themoviedb.org/reset-password'),
-        duration: Duration(seconds: 3),
+      SnackBar(
+        content: Text(l10n.pleaseResetPasswordAt),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -79,6 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -102,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     content: Text(authProvider.errorMessage!),
                     backgroundColor: theme.colorScheme.error,
                     action: SnackBarAction(
-                      label: 'Dismiss',
+                      label: l10n.dismiss,
                       textColor: theme.colorScheme.onError,
                       onPressed: () {
                         authProvider.clearError();
@@ -131,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 16),
 
                     Text(
-                      'Welcome to ${AppConstants.appName}',
+                      l10n.welcomeToApp(AppConstants.appName),
                       style: theme.textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: theme.colorScheme.onSurface,
@@ -142,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 8),
 
                     Text(
-                      'Sign in with your TMDB account to discover amazing movies',
+                      l10n.signInWithTmdbSubtitle,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
@@ -153,8 +159,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Username field
                     AuthTextField(
-                      label: 'TMDB Username',
-                      hint: 'Enter your TMDB username',
+                      label: l10n.tmdbUsername,
+                      hint: l10n.enterTmdbUsername,
                       controller: _usernameController,
                       keyboardType: TextInputType.text,
                       validator: _validateUsername,
@@ -165,8 +171,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Password field
                     AuthTextField(
-                      label: 'Password',
-                      hint: 'Enter your password',
+                      label: l10n.password,
+                      hint: l10n.enterPassword,
                       controller: _passwordController,
                       obscureText: true,
                       validator: _validatePassword,
@@ -181,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: TextButton(
                         onPressed: _goToTmdbPasswordReset,
                         child: Text(
-                          'Forgot Password?',
+                          l10n.forgotPassword,
                           style: TextStyle(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.w600,
@@ -194,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Sign in button
                     AuthButton(
-                      text: 'Sign In with TMDB',
+                      text: l10n.signInWithTmdb,
                       onPressed: _signIn,
                       isLoading: authProvider.isLoading,
                     ),
@@ -220,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'You can browse movies without signing in',
+                            l10n.browseModeInfo,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                               fontWeight: FontWeight.w500,
@@ -229,7 +235,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Sign in to rate movies and create watchlists',
+                            l10n.signInBenefits,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                             ),
@@ -246,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Don't have a TMDB account? ",
+                          l10n.noTmdbAccount,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
@@ -254,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextButton(
                           onPressed: _goToTmdbRegister,
                           child: Text(
-                            'Sign Up at TMDB',
+                            l10n.signUpAtTmdb,
                             style: TextStyle(
                               color: theme.colorScheme.primary,
                               fontWeight: FontWeight.w600,

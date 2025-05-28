@@ -26,9 +26,19 @@ class LanguageSettingsScreen extends StatelessWidget {
                   items: supportedLanguages.map((String languageCode) {
                     return DropdownMenuItem<String>(
                       value: languageCode,
-                      child: Text(
-                        languageCode.toUpperCase(),
-                      ), // Display language code
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            languageCode == 'en' ? '🇺🇸' : '🇮🇩',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            languageCode.toUpperCase(),
+                          ),
+                        ],
+                      ),
                     );
                   }).toList(),
                   onChanged: (String? newValue) {

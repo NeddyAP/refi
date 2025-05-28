@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Forgot password screen that redirects to TMDB password reset
 class ForgotPasswordScreen extends StatelessWidget {
@@ -9,10 +10,11 @@ class ForgotPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reset Password'),
+        title: Text(l10n.resetPasswordTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -34,7 +36,7 @@ class ForgotPasswordScreen extends StatelessWidget {
 
               // Title
               Text(
-                'Reset Your Password',
+                l10n.resetYourPassword,
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -45,7 +47,7 @@ class ForgotPasswordScreen extends StatelessWidget {
 
               // Description
               Text(
-                'To reset your TMDB account password, you need to visit the TMDB website.',
+                l10n.resetPasswordDescription,
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -67,7 +69,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      'How to reset your password:',
+                      l10n.howToResetPassword,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -76,25 +78,25 @@ class ForgotPasswordScreen extends StatelessWidget {
                     _buildStepItem(
                       context,
                       '1',
-                      'Visit the TMDB password reset page',
+                      l10n.visitTmdbResetPage,
                     ),
                     const SizedBox(height: 12),
                     _buildStepItem(
                       context,
                       '2',
-                      'Enter your TMDB username or email',
+                      l10n.enterUsernameOrEmail,
                     ),
                     const SizedBox(height: 12),
                     _buildStepItem(
                       context,
                       '3',
-                      'Check your email for reset instructions',
+                      l10n.checkEmailForInstructions,
                     ),
                     const SizedBox(height: 12),
                     _buildStepItem(
                       context,
                       '4',
-                      'Return here to sign in with your new password',
+                      l10n.returnToSignIn,
                     ),
                   ],
                 ),
@@ -111,9 +113,9 @@ class ForgotPasswordScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  'Reset Password at TMDB',
-                  style: TextStyle(
+                child: Text(
+                  l10n.resetPasswordAtTmdb,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -126,7 +128,7 @@ class ForgotPasswordScreen extends StatelessWidget {
               TextButton(
                 onPressed: () => context.pop(),
                 child: Text(
-                  'Back to Sign In',
+                  l10n.backToSignIn,
                   style: TextStyle(
                     color: theme.colorScheme.onSurfaceVariant,
                     decoration: TextDecoration.underline,
@@ -176,6 +178,7 @@ class ForgotPasswordScreen extends StatelessWidget {
   }
 
   Future<void> _launchTmdbPasswordReset(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     const url = 'https://www.themoviedb.org/reset-password';
     try {
       if (await canLaunchUrl(Uri.parse(url))) {
@@ -186,9 +189,9 @@ class ForgotPasswordScreen extends StatelessWidget {
       } else {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please visit https://www.themoviedb.org/reset-password to reset your password'),
-              duration: Duration(seconds: 3),
+            SnackBar(
+              content: Text(l10n.pleaseVisitTmdbResetPassword),
+              duration: const Duration(seconds: 3),
             ),
           );
         }
@@ -196,9 +199,9 @@ class ForgotPasswordScreen extends StatelessWidget {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please visit https://www.themoviedb.org/reset-password to reset your password'),
-            duration: Duration(seconds: 3),
+          SnackBar(
+            content: Text(l10n.pleaseVisitTmdbResetPassword),
+            duration: const Duration(seconds: 3),
           ),
         );
       }

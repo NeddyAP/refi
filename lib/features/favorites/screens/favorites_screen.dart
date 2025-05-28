@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../core/router/app_router.dart';
 import '../../../shared/widgets/bottom_navigation.dart';
 import '../../../shared/widgets/movie_card.dart';
@@ -35,21 +36,25 @@ class _FavoritesScreenState extends State<FavoritesScreen>
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'My Movies',
+        title: localizations.favoritesScreenTitle,
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Favorites'),
-            Tab(text: 'Watchlist'),
+          tabs: [
+            Tab(text: localizations.favoritesTabTitle),
+            Tab(text: localizations.watchlistTabTitle),
           ],
         ),
       ),
       body: Consumer<FavoritesProvider>(
         builder: (context, provider, child) {
+          final localizations = AppLocalizations.of(context)!;
+          
           if (provider.isLoading) {
-            return const LoadingWidget(message: 'Loading your movies...');
+            return LoadingWidget(message: localizations.loadingYourMovies);
           }
           if (provider.errorMessage != null) {
             return ErrorDisplayWidget(
@@ -77,6 +82,8 @@ class _FavoritesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    
     return RefreshIndicator(
       onRefresh: provider.pullToRefresh,
       child: provider.favoriteMovies.isEmpty
@@ -109,7 +116,7 @@ class _FavoritesTab extends StatelessWidget {
                       right: 8,
                       child: IconButton(
                         icon: const Icon(Icons.favorite, color: Colors.red),
-                        tooltip: 'Remove from favorites',
+                        tooltip: localizations.removeFromFavorites,
                         onPressed: () => provider.removeFromFavorites(movie.id),
                       ),
                     ),
@@ -128,13 +135,14 @@ class _WatchlistTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    
     return RefreshIndicator(
       onRefresh: provider.pullToRefresh,
       child: provider.watchlistMovies.isEmpty
-          ? const EmptyStateWidget(
-              title: 'No Movies in Watchlist',
-              message:
-                  'Add movies to your watchlist to keep track of what you want to watch.',
+          ? EmptyStateWidget(
+              title: localizations.noMoviesInWatchlistTitle,
+              message: localizations.noMoviesInWatchlistMessage,
               icon: Icons.playlist_add,
             )
           : GridView.builder(
@@ -168,7 +176,7 @@ class _WatchlistTab extends StatelessWidget {
                           Icons.bookmark_remove,
                           color: Colors.blueGrey,
                         ),
-                        tooltip: 'Remove from watchlist',
+                        tooltip: localizations.removeFromWatchlist,
                         onPressed: () => provider.removeFromWatchlist(movie.id),
                       ),
                     ),
