@@ -695,4 +695,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goHome => 'Go Home';
+
+  @override
+  String get madeByText => 'Made by Neddy AP';
+
+  @override
+  String get authorWebsiteUrl => 'https://neddyap.me';
 }

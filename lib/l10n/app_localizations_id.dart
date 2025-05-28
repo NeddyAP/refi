@@ -696,4 +696,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get goHome => 'Kembali ke Beranda';
+
+  @override
+  String get madeByText => 'Dibuat oleh Neddy AP';
+
+  @override
+  String get authorWebsiteUrl => 'https://neddyap.me';
 }

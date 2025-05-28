@@ -1393,6 +1393,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go Home'**
   String get goHome;
+
+  /// No description provided for @madeByText.
+  ///
+  /// In en, this message translates to:
+  /// **'Made by Neddy AP'**
+  String get madeByText;
+
+  /// No description provided for @authorWebsiteUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'https://neddyap.me'**
+  String get authorWebsiteUrl;
 }
 
 class _AppLocalizationsDelegate

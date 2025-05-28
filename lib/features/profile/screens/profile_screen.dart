@@ -1,3 +1,4 @@
+// Author: Neddy AP
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +28,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: AppLocalizations.of(context)!.profileScreenTitle),
+      appBar: CustomAppBar(
+        title: AppLocalizations.of(context)!.profileScreenTitle,
+      ),
       body: Consumer<ProfileProvider>(
         builder: (context, provider, child) {
           return SingleChildScrollView(
@@ -198,7 +201,9 @@ class _UserInfoSection extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          user.isGuest ? AppLocalizations.of(context)!.guestSession : AppLocalizations.of(context)!.tmdbAccount,
+                          user.isGuest
+                              ? AppLocalizations.of(context)!.guestSession
+                              : AppLocalizations.of(context)!.tmdbAccount,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.onPrimaryContainer,
                           ),
@@ -236,7 +241,9 @@ class _UserInfoSection extends StatelessWidget {
                       _ProfileInfoTile(
                         icon: Icons.privacy_tip,
                         label: AppLocalizations.of(context)!.adult,
-                        value: user.includeAdult ? AppLocalizations.of(context)!.yes : AppLocalizations.of(context)!.no,
+                        value: user.includeAdult
+                            ? AppLocalizations.of(context)!.yes
+                            : AppLocalizations.of(context)!.no,
                       ),
                     ],
                   ),
@@ -292,7 +299,9 @@ class _UserInfoSection extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.couldNotOpen(url.toString())),
+            content: Text(
+              AppLocalizations.of(context)!.couldNotOpen(url.toString()),
+            ),
             duration: const Duration(seconds: 3),
           ),
         );
@@ -446,28 +455,77 @@ class _AboutSection extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: Text(AppLocalizations.of(context)!.appVersion),
-            subtitle: const Text('1.0.0'),
+            subtitle: const Text(AppConstants.appVersion),
           ),
 
           ListTile(
             leading: const Icon(Icons.privacy_tip_outlined),
             title: Text(AppLocalizations.of(context)!.privacyPolicy),
             trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              // TODO: Replace with actual Privacy Policy URL
+              _launchUrl(context, 'https://example.com/privacy');
+            },
           ),
 
           ListTile(
             leading: const Icon(Icons.description_outlined),
             title: Text(AppLocalizations.of(context)!.termsOfService),
             trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              // TODO: Replace with actual Terms of Service URL
+              _launchUrl(context, 'https://example.com/terms');
+            },
           ),
 
           ListTile(
             leading: const Icon(Icons.help_outline),
             title: Text(AppLocalizations.of(context)!.helpAndSupport),
             trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              // TODO: Replace with actual Help & Support URL
+              _launchUrl(context, 'https://example.com/help');
+            },
+          ),
+          const SizedBox(height: 24), // Add some spacing
+          Align(
+            alignment: Alignment.center,
+            child: InkWell(
+              onTap: () => _launchUrl(
+                context,
+                AppLocalizations.of(context)!.authorWebsiteUrl,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  AppLocalizations.of(context)!.madeByText,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
     );
+  }
+
+  // Helper function to launch a URL
+  void _launchUrl(BuildContext context, String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!.couldNotOpen(urlString),
+            ),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 }

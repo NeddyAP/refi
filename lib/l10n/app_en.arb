@@ -302,5 +302,7 @@
   "exploreMoviesButton": "Explore Movies",
   "pageNotFound": "Page Not Found",
   "pageNotFoundMessage": "The page you are looking for does not exist.",
-  "goHome": "Go Home"
+  "goHome": "Go Home",
+  "madeByText": "Made by Neddy AP",
+  "authorWebsiteUrl": "https://neddyap.me"
 }

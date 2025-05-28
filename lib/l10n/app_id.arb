@@ -302,5 +302,7 @@
   "exploreMoviesButton": "Jelajahi Film",
   "pageNotFound": "Halaman Tidak Ditemukan",
   "pageNotFoundMessage": "Halaman yang Anda cari tidak ada.",
-  "goHome": "Kembali ke Beranda"
+  "goHome": "Kembali ke Beranda",
+  "madeByText": "Dibuat oleh Neddy AP",
+  "authorWebsiteUrl": "https://neddyap.me"
 }
