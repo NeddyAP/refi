@@ -13,8 +13,9 @@ import '../providers/explore_provider.dart';
 
 class ExploreScreen extends StatefulWidget {
   final String? selectedCategory;
+  final String? searchQuery;
   
-  const ExploreScreen({super.key, this.selectedCategory});
+  const ExploreScreen({super.key, this.selectedCategory, this.searchQuery});
 
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();
@@ -30,8 +31,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
       final provider = context.read<ExploreProvider>();
       provider.initialize();
       
+      // If a search query is provided, perform the search
+      if (widget.searchQuery != null && widget.searchQuery!.isNotEmpty) {
+        _searchController.text = widget.searchQuery!;
+        provider.searchMovies(widget.searchQuery!);
+      }
       // If a category is provided, search for it or select it
-      if (widget.selectedCategory != null) {
+      else if (widget.selectedCategory != null) {
         provider.searchMoviesByGenre(widget.selectedCategory!);
       }
     });

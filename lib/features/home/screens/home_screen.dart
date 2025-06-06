@@ -360,7 +360,7 @@ class _HeaderSection extends StatelessWidget {
   }
 }
 
-class _MovieCarouselSection extends StatelessWidget {
+class _MovieCarouselSection extends StatefulWidget {
   final PageController pageController;
   final Function(int) onPageChanged;
   final VoidCallback onUserInteraction;
@@ -372,6 +372,19 @@ class _MovieCarouselSection extends StatelessWidget {
     required this.onUserInteraction,
     required this.currentIndex,
   });
+
+  @override
+  State<_MovieCarouselSection> createState() => _MovieCarouselSectionState();
+}
+
+class _MovieCarouselSectionState extends State<_MovieCarouselSection> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -394,10 +407,10 @@ class _MovieCarouselSection extends StatelessWidget {
                           .toList();
 
                       return PageView.builder(
-                        controller: pageController,
+                        controller: widget.pageController,
                         onPageChanged: (index) {
-                          onUserInteraction();
-                          onPageChanged(index);
+                          widget.onUserInteraction();
+                          widget.onPageChanged(index);
                         },
                         itemCount: newestMovies.length,
                         itemBuilder: (context, index) {
@@ -405,7 +418,7 @@ class _MovieCarouselSection extends StatelessWidget {
                           return GestureDetector(
                             onTap: () =>
                                 AppRouter.goToMovieDetails(context, movie.id),
-                            onPanDown: (_) => onUserInteraction(),
+                            onPanDown: (_) => widget.onUserInteraction(),
                             child: Stack(
                               children: [
                                 // Background Image
@@ -481,6 +494,7 @@ class _MovieCarouselSection extends StatelessWidget {
                         ],
                       ),
                       child: TextField(
+                        controller: _searchController,
                         decoration: InputDecoration(
                           hintText: AppLocalizations.of(context)!.findTheMovieYouLike,
                           hintStyle: const TextStyle(
@@ -495,6 +509,11 @@ class _MovieCarouselSection extends StatelessWidget {
                             size: 20,
                           ),
                         ),
+                        onSubmitted: (value) {
+                          if (value.trim().isNotEmpty) {
+                            AppRouter.goToExploreWithSearch(context, value.trim());
+                          }
+                        },
                       ),
                     ),
 
@@ -524,7 +543,7 @@ class _MovieCarouselSection extends StatelessWidget {
                               height: 8,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: currentIndex == index
+                                color: widget.currentIndex == index
                                     ? Colors.white
                                     : Colors.white.withOpacity(0.5),
                               ),
@@ -552,8 +571,8 @@ class _MovieCarouselSection extends StatelessWidget {
                                 .take(5)
                                 .toList();
                             final movie =
-                                newestMovies[currentIndex < newestMovies.length
-                                    ? currentIndex
+                                newestMovies[widget.currentIndex < newestMovies.length
+                                    ? widget.currentIndex
                                     : 0];
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.end,

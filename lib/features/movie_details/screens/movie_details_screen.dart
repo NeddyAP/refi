@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:refi/core/network/api_result.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'youtube_player_screen.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/loading_widget.dart';
 import '../../../shared/widgets/error_widget.dart';
@@ -665,13 +665,17 @@ class _TrailerCard extends StatelessWidget {
       width: 280,
       margin: const EdgeInsets.only(right: 16),
       child: GestureDetector(
-        onTap: () async {
-          final url = trailer.youtubeUrl;
-          if (url != null) {
-            final uri = Uri.parse(url);
-            if (await canLaunchUrl(uri)) {
-              await launchUrl(uri);
-            }
+        onTap: () {
+          final videoId = trailer.key;
+          if (videoId.isNotEmpty) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => YouTubePlayerScreen(
+                  videoId: videoId,
+                  videoTitle: trailer.name,
+                ),
+              ),
+            );
           }
         },
         child: Column(

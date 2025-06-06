@@ -87,7 +87,11 @@ class AppRouter {
             name: 'explore',
             builder: (context, state) {
               final category = state.uri.queryParameters['category'];
-              return ExploreScreen(selectedCategory: category);
+              final searchQuery = state.uri.queryParameters['searchQuery'];
+              return ExploreScreen(
+                selectedCategory: category,
+                searchQuery: searchQuery,
+              );
             },
           ),
           GoRoute(
@@ -195,6 +199,13 @@ class AppRouter {
   static void goToExploreWithCategory(BuildContext context, String category) {
     context.go(
       '${AppConstants.exploreRoute}?category=${Uri.encodeComponent(category)}',
+    );
+  }
+
+  /// Navigate to explore with search query
+  static void goToExploreWithSearch(BuildContext context, String searchQuery) {
+    context.go(
+      '${AppConstants.exploreRoute}?searchQuery=${Uri.encodeComponent(searchQuery)}',
     );
   }
 
