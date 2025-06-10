@@ -1397,7 +1397,7 @@ abstract class AppLocalizations {
   /// No description provided for @madeByText.
   ///
   /// In en, this message translates to:
-  /// **'Made by Neddy AP'**
+  /// **'Made by Ned'**
   String get madeByText;
 
   /// No description provided for @authorWebsiteUrl.

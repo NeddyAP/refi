@@ -1,7 +1,7 @@
 class AppConstants {
   // App info
   static const String appName = 'Refi';
-  static const String appVersion = '1.0.0';
+  static const String appVersion = '1.0.1';
 
   // Navigation
   static const String homeRoute = '/home';
