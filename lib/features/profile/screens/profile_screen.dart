@@ -8,6 +8,8 @@ import '../../../shared/widgets/bottom_navigation.dart';
 import '../../../core/constants/app_constants.dart';
 import '../providers/profile_provider.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../../core/services/update_service.dart';
+import '../../../shared/widgets/update_dialog.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -498,6 +500,13 @@ class _AboutSection extends StatelessWidget {
               }
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.system_update),
+            title: const Text('Check for Updates'),
+            subtitle: const Text('Check if a new version is available'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _checkForUpdates(context),
+          ),
           const SizedBox(height: 24), // Add some spacing
           Align(
             alignment: Alignment.center,
@@ -521,6 +530,65 @@ class _AboutSection extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  // Method to check for app updates
+  Future<void> _checkForUpdates(BuildContext context) async {
+    // Show loading indicator
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Row(
+          children: [
+            SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+            SizedBox(width: 16),
+            Text('Checking for updates...'),
+          ],
+        ),
+        duration: Duration(seconds: 2),
+      ),
+    );
+
+    try {
+      final updateService = UpdateService();
+      final updateResult = await updateService.isUpdateAvailable();
+
+      if (context.mounted) {
+        if (updateResult.isAvailable &&
+            updateResult.latestVersion != null &&
+            updateResult.downloadUrl != null) {
+          // Show update dialog
+          await UpdateDialog.show(
+            context: context,
+            latestVersion: updateResult.latestVersion!,
+            downloadUrl: updateResult.downloadUrl!,
+          );
+        } else {
+          // Show "up to date" message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('You are on the latest version!'),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to check for updates: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    }
   }
 
   // Helper function to launch a URL
