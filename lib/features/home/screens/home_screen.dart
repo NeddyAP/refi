@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/network/api_result.dart';
-import '../../../shared/models/movie.dart';
 import '../providers/home_provider.dart';
 import '../widgets/content_carousel.dart';
 import 'all_items_screen.dart';
@@ -283,7 +282,7 @@ class _HeaderSection extends StatelessWidget {
     } else {
       return CircleAvatar(
         radius: 18,
-        backgroundColor: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+        backgroundColor: Theme.of(context).colorScheme.outline.withAlpha((255 * 0.3).toInt()), // Replaced withOpacity
         child: Icon(
           Icons.person,
           color: Theme.of(context).colorScheme.outline,
@@ -336,7 +335,7 @@ class _HeaderSection extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withAlpha((255 * 0.2).toInt()), // Replaced withOpacity
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
@@ -440,9 +439,9 @@ class _MovieCarouselSectionState extends State<_MovieCarouselSection> {
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,
                                       colors: [
-                                        Colors.black.withOpacity(0.4),
-                                        Colors.black.withOpacity(0.6),
-                                        Colors.black.withOpacity(0.8),
+                                        Colors.black.withAlpha((255 * 0.4).toInt()), // Replaced withOpacity
+                                        Colors.black.withAlpha((255 * 0.6).toInt()), // Replaced withOpacity
+                                        Colors.black.withAlpha((255 * 0.8).toInt()), // Replaced withOpacity
                                       ],
                                       stops: const [0.0, 0.5, 1.0],
                                     ),
@@ -483,11 +482,11 @@ class _MovieCarouselSectionState extends State<_MovieCarouselSection> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.95),
+                        color: Colors.white.withAlpha((255 * 0.95).toInt()), // Replaced withOpacity
                         borderRadius: BorderRadius.circular(25),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withAlpha((255 * 0.1).toInt()), // Replaced withOpacity
                             blurRadius: 10,
                             offset: const Offset(0, 2),
                           ),
@@ -545,7 +544,7 @@ class _MovieCarouselSectionState extends State<_MovieCarouselSection> {
                                 shape: BoxShape.circle,
                                 color: widget.currentIndex == index
                                     ? Colors.white
-                                    : Colors.white.withOpacity(0.5),
+                                    : Colors.white.withAlpha((255 * 0.5).toInt()), // Replaced withOpacity
                               ),
                             ),
                           ),
@@ -587,7 +586,7 @@ class _MovieCarouselSectionState extends State<_MovieCarouselSection> {
                                     borderRadius: BorderRadius.circular(15),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.amber.withOpacity(0.3),
+                                        color: Colors.amber.withAlpha((255 * 0.3).toInt()), // Replaced withOpacity
                                         blurRadius: 6,
                                         offset: const Offset(0, 2),
                                       ),
@@ -684,126 +683,6 @@ class _MovieCarouselSectionState extends State<_MovieCarouselSection> {
       ),
       child: const Center(
         child: Icon(Icons.movie, size: 100, color: Colors.white54),
-      ),
-    );
-  }
-}
-
-class _CompactMovieCard extends StatelessWidget {
-  final Movie movie;
-  final VoidCallback? onTap;
-
-  const _CompactMovieCard({required this.movie, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 120,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Movie Poster
-            Expanded(
-              child: Stack(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.surfaceContainerHighest,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: movie.fullPosterUrl != null
-                          ? Image.network(
-                              movie.fullPosterUrl!,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Container(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerHighest,
-                                    child: Icon(
-                                      Icons.movie,
-                                      size: 50,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.outline,
-                                    ),
-                                  ),
-                            )
-                          : Container(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.surfaceContainerHighest,
-                              child: Icon(
-                                Icons.movie,
-                                size: 50,
-                                color: Theme.of(context).colorScheme.outline,
-                              ),
-                            ),
-                    ),
-                  ),
-                  // Bookmark Icon
-                  Positioned(
-                    top: 6,
-                    right: 6,
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 4,
-                            offset: const Offset(0, 1),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.bookmark_border,
-                        size: 14,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Movie Title
-            Text(
-              movie.title,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 4),
-            // Genre
-            Text(
-              AppLocalizations.of(context)!.family, // Placeholder genre
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -256,7 +256,7 @@ class _ShimmerEffectState extends State<_ShimmerEffect>
               end: Alignment.centerRight,
               colors: [
                 theme.colorScheme.surfaceContainerHighest,
-                theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                theme.colorScheme.surfaceContainerHighest.withAlpha((255 * 0.5).toInt()), // Replaced withOpacity
                 theme.colorScheme.surfaceContainerHighest,
               ],
               stops: [

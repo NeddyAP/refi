@@ -76,7 +76,9 @@ class AccountInfoScreen extends StatelessWidget {
     final Uri url = Uri.parse(
       'https://www.themoviedb.org/settings/account',
     ); // Assuming this is the correct URL
+    if (!context.mounted) return; // Check if context is still valid
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      if (!context.mounted) return; // Check if context is still valid
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Could not open $url'),

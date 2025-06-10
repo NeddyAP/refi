@@ -179,7 +179,8 @@ class AuthRepositoryImpl implements AuthRepository {
       await prefs.setString(_userKey, userJson);
     } catch (e) {
       // Log error but don't throw - local storage is not critical
-      print('Failed to save user locally: $e');
+      // print('Failed to save user locally: $e');
+      // TODO: Implement proper logging
     }
   }
 
@@ -197,7 +198,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return null;
     } catch (e) {
       // Log error but don't throw - local storage is not critical
-      print('Failed to get user from local storage: $e');
+      // print('Failed to get user from local storage: $e');
+      // TODO: Implement proper logging
       return null;
     }
   }
@@ -209,7 +211,8 @@ class AuthRepositoryImpl implements AuthRepository {
       await prefs.remove(_userKey);
     } catch (e) {
       // Log error but don't throw - local storage is not critical
-      print('Failed to clear local user data: $e');
+      // print('Failed to clear local user data: $e');
+      // TODO: Implement proper logging
     }
   }
 }

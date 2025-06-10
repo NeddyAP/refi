@@ -38,9 +38,8 @@ class AuthState {
         isLoading = true;
 
   /// Authenticated state
-  const AuthState.authenticated(AuthUser user)
+  AuthState.authenticated(this.user)
       : status = AuthStatus.authenticated,
-        user = user,
         errorMessage = null,
         isLoading = false;
 
@@ -52,10 +51,9 @@ class AuthState {
         isLoading = false;
 
   /// Error state
-  const AuthState.error(String errorMessage)
+  AuthState.error(this.errorMessage)
       : status = AuthStatus.error,
         user = null,
-        errorMessage = errorMessage,
         isLoading = false;
 
   /// Check if user is authenticated

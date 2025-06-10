@@ -62,7 +62,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
       builder: (context) => const _AdvancedSearchModal(),
     ).then((_) {
       // Show the bottom navigation bar when modal closes
-      context.read<NavigationVisibilityProvider>().show();
+      if (context.mounted) {
+        context.read<NavigationVisibilityProvider>().show();
+      }
     });
   }
 
@@ -452,7 +454,7 @@ class _AdvancedSearchModalState extends State<_AdvancedSearchModal> {
                   color: Theme.of(context).scaffoldBackgroundColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).shadowColor.withOpacity(0.1),
+                      color: Theme.of(context).shadowColor.withAlpha((255 * 0.1).toInt()), // Replaced withOpacity
                       blurRadius: 4,
                       offset: const Offset(0, -2),
                     ),

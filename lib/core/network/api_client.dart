@@ -37,17 +37,19 @@ class ApiClient {
           handler.next(options);
         },
         onError: (error, handler) {
-          print('API Error: ${error.message}');
+          // TODO: Replace with a proper logger
+          // print('API Error: ${error.message}');
           handler.next(error);
         },
       ),
     );
 
     // Add logging interceptor in debug mode
+    // TODO: Consider using a logger that can be disabled in release mode
     _dio.interceptors.add(LogInterceptor(
       requestBody: true,
       responseBody: true,
-      logPrint: (object) => print(object),
+      // logPrint: (object) => print(object),
     ));
   }
 

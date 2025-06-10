@@ -132,7 +132,8 @@ class TmdbAuthService {
       }
     } catch (e) {
       // Continue with local sign out even if server request fails
-      print('Failed to delete session on server: $e');
+      // print('Failed to delete session on server: $e');
+      // TODO: Implement proper logging
     }
 
     // Clear local data
@@ -268,7 +269,8 @@ class TmdbAuthService {
         }
       }
     } catch (e) {
-      print('Failed to load stored user: $e');
+      // print('Failed to load stored user: $e');
+      // TODO: Implement proper logging
       await _clearStoredUser();
     }
   }
@@ -280,7 +282,8 @@ class TmdbAuthService {
       final userJson = jsonEncode(user.toJson());
       await prefs.setString(_userKey, userJson);
     } catch (e) {
-      print('Failed to save user: $e');
+      // print('Failed to save user: $e');
+      // TODO: Implement proper logging
     }
   }
 
@@ -291,7 +294,8 @@ class TmdbAuthService {
       final sessionJson = jsonEncode(guestSession.toJson());
       await prefs.setString(_guestSessionKey, sessionJson);
     } catch (e) {
-      print('Failed to save guest session: $e');
+      // print('Failed to save guest session: $e');
+      // TODO: Implement proper logging
     }
   }
 
@@ -302,7 +306,8 @@ class TmdbAuthService {
       await prefs.remove(_userKey);
       await prefs.remove(_guestSessionKey);
     } catch (e) {
-      print('Failed to clear stored user: $e');
+      // print('Failed to clear stored user: $e');
+      // TODO: Implement proper logging
     }
   }
 

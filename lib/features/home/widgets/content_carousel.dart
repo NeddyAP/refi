@@ -207,7 +207,7 @@ class _ContentCard extends StatelessWidget {
                       color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withAlpha((255 * 0.1).toInt()), // Replaced withOpacity
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -232,11 +232,11 @@ class _ContentCard extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withAlpha((255 * 0.9).toInt()), // Replaced withOpacity
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withAlpha((255 * 0.1).toInt()), // Replaced withOpacity
                             blurRadius: 4,
                             offset: const Offset(0, 1),
                           ),
@@ -261,7 +261,7 @@ class _ContentCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.amber.withOpacity(0.3),
+                              color: Colors.amber.withAlpha((255 * 0.3).toInt()), // Replaced withOpacity
                               blurRadius: 4,
                               offset: const Offset(0, 1),
                             ),

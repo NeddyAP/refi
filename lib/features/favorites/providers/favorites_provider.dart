@@ -111,7 +111,9 @@ class FavoritesProvider extends ChangeNotifier {
           .map((movie) => jsonEncode(movie.toJson()))
           .toList();
       await prefs.setStringList(AppConstants.favoritesKey, favoritesJson);
-    } catch (e) {}
+    } catch (e) {
+      // TODO: Implement proper error handling/logging
+    }
   }
 
   /// Save watchlist to local storage
@@ -122,7 +124,9 @@ class FavoritesProvider extends ChangeNotifier {
           .map((movie) => jsonEncode(movie.toJson()))
           .toList();
       await prefs.setStringList(AppConstants.watchlistKey, watchlistJson);
-    } catch (e) {}
+    } catch (e) {
+      // TODO: Implement proper error handling/logging
+    }
   }
 
   /// Check if movie is in favorites

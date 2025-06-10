@@ -95,18 +95,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
             34,
           ), // Fully rounded for pill shape
           border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.outline.withAlpha((255 * 0.1).toInt()), // Replaced withOpacity
             width: 0.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withAlpha((255 * 0.08).toInt()), // Replaced withOpacity
               blurRadius: 24,
               offset: const Offset(0, 8),
               spreadRadius: -2,
             ),
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withAlpha((255 * 0.05).toInt()), // Replaced withOpacity
               blurRadius: 48,
               offset: const Offset(0, 16),
               spreadRadius: -4,
@@ -194,7 +194,7 @@ class _OptimizedNavItem extends StatelessWidget {
           boxShadow: isActive && showBackground
               ? [
                   BoxShadow(
-                    color: activeColor.withOpacity(0.3),
+                    color: activeColor.withAlpha((255 * 0.3).toInt()), // Replaced withOpacity
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                     spreadRadius: 0,

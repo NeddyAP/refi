@@ -39,7 +39,8 @@ class ProfileProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       _isDarkMode = prefs.getBool(AppConstants.themeKey) ?? false;
     } catch (e) {
-      print('Error loading theme preference: $e');
+      // print('Error loading theme preference: $e');
+      // TODO: Implement proper logging
       _isDarkMode = false;
     }
   }
@@ -52,7 +53,8 @@ class ProfileProvider extends ChangeNotifier {
           prefs.getString(AppConstants.languageKey) ??
           'en'; // Default to English on error
     } catch (e) {
-      print('Error loading language preference: $e');
+      // print('Error loading language preference: $e');
+      // TODO: Implement proper logging
       _appLanguageCode = 'en';
     }
   }
@@ -65,7 +67,8 @@ class ProfileProvider extends ChangeNotifier {
       _userEmail = prefs.getString('user_email');
       _isGuest = _userName == null && _userEmail == null;
     } catch (e) {
-      print('Error loading user data: $e');
+      // print('Error loading user data: $e');
+      // TODO: Implement proper logging
       _isGuest = true;
     }
   }
@@ -78,7 +81,8 @@ class ProfileProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(AppConstants.themeKey, _isDarkMode);
     } catch (e) {
-      print('Error saving theme preference: $e');
+      // print('Error saving theme preference: $e');
+      // TODO: Implement proper logging
     }
 
     notifyListeners();
@@ -91,7 +95,8 @@ class ProfileProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(AppConstants.languageKey, _appLanguageCode);
     } catch (e) {
-      print('Error saving language preference: $e');
+      // print('Error saving language preference: $e');
+      // TODO: Implement proper logging
     }
     notifyListeners();
   }
@@ -107,7 +112,8 @@ class ProfileProvider extends ChangeNotifier {
       await prefs.setString('user_name', name);
       await prefs.remove('user_email');
     } catch (e) {
-      print('Error saving guest data: $e');
+      // print('Error saving guest data: $e');
+      // TODO: Implement proper logging
     }
 
     notifyListeners();
@@ -124,7 +130,8 @@ class ProfileProvider extends ChangeNotifier {
       await prefs.remove('user_name');
       await prefs.remove('user_email');
     } catch (e) {
-      print('Error clearing user data: $e');
+      // print('Error clearing user data: $e');
+      // TODO: Implement proper logging
     }
 
     notifyListeners();

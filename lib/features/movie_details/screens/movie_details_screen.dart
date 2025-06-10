@@ -112,7 +112,7 @@ class _MovieDetailsContent extends StatelessWidget {
 class _HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context); // Unused local variable
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -122,7 +122,7 @@ class _HeaderSection extends StatelessWidget {
             // Back button
             Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface.withOpacity(0.3),
+                color: Theme.of(context).colorScheme.surface.withAlpha((255 * 0.3).toInt()), // Replaced withOpacity
                 shape: BoxShape.circle,
               ),
               child: IconButton(
@@ -140,10 +140,9 @@ class _HeaderSection extends StatelessWidget {
                     (context
                                 .findAncestorWidgetOfExactType<
                                   _MovieDetailsContent
-                                >()
-                            as _MovieDetailsContent?)
-                        ?.movieDetails;
-                if (movieDetails == null) return SizedBox.shrink();
+                                >())
+                        ?.movieDetails; // Removed unnecessary cast
+                if (movieDetails == null) return const SizedBox.shrink();
                 final movie = Movie(
                   id: movieDetails.id,
                   title: movieDetails.title,
@@ -169,12 +168,14 @@ class _HeaderSection extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () async {
+                        final localizations = AppLocalizations.of(context)!;
                         await favoritesProvider.toggleFavorite(movie);
                         final msg = favoritesProvider.errorMessage == null
                             ? (favoritesProvider.isFavorite(movie.id)
-                                  ? AppLocalizations.of(context)!.addedToFavorites
-                                  : AppLocalizations.of(context)!.removedFromFavorites)
+                                  ? localizations.addedToFavorites
+                                  : localizations.removedFromFavorites)
                             : favoritesProvider.errorMessage!;
+                        if (!context.mounted) return; // Check if context is still valid
                         ScaffoldMessenger.of(
                           context,
                         ).showSnackBar(SnackBar(content: Text(msg)));
@@ -190,12 +191,14 @@ class _HeaderSection extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () async {
+                        final localizations = AppLocalizations.of(context)!;
                         await favoritesProvider.toggleWatchlist(movie);
                         final msg = favoritesProvider.errorMessage == null
                             ? (favoritesProvider.isInWatchlist(movie.id)
-                                  ? AppLocalizations.of(context)!.addedToWatchlist
-                                  : AppLocalizations.of(context)!.removedFromWatchlist)
+                                  ? localizations.addedToWatchlist
+                                  : localizations.removedFromWatchlist)
                             : favoritesProvider.errorMessage!;
+                        if (!context.mounted) return; // Check if context is still valid
                         ScaffoldMessenger.of(
                           context,
                         ).showSnackBar(SnackBar(content: Text(msg)));
@@ -269,8 +272,8 @@ class _TopSection extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.3),
-                    Colors.black.withOpacity(0.7),
+                    Colors.black.withAlpha((255 * 0.3).toInt()), // Replaced withOpacity
+                    Colors.black.withAlpha((255 * 0.7).toInt()), // Replaced withOpacity
                   ],
                 ),
               ),
@@ -369,7 +372,7 @@ class _MovieTitleSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1), // Keep shadow color
+                color: Colors.black.withAlpha((255 * 0.1).toInt()), // Replaced withOpacity
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -688,7 +691,7 @@ class _TrailerCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1), // Keep shadow color
+                    color: Colors.black.withAlpha((255 * 0.1).toInt()), // Replaced withOpacity
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -728,7 +731,7 @@ class _TrailerCard extends StatelessWidget {
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withAlpha((255 * 0.3).toInt()), // Replaced withOpacity
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
@@ -838,7 +841,7 @@ class _CastMemberCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1), // Keep shadow color
+                  color: Colors.black.withAlpha((255 * 0.1).toInt()), // Replaced withOpacity
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -1672,7 +1675,7 @@ class _ImageCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1), // Keep shadow color
+              color: Colors.black.withAlpha((255 * 0.1).toInt()), // Replaced withOpacity
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
