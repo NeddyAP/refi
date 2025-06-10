@@ -11,7 +11,9 @@ import '../../features/home/screens/all_items_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/auth/screens/forgot_password_screen.dart';
+import '../../features/onboarding/screens/onboarding_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
+import '../../features/profile/providers/profile_provider.dart';
 import '../../shared/widgets/bottom_navigation.dart';
 import '../../shared/repositories/movie_repository.dart';
 import '../constants/app_constants.dart';
@@ -25,23 +27,35 @@ class AppRouter {
   static final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
   static GoRouter get router => _router;
-
   static final GoRouter _router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: AppConstants.homeRoute,
     redirect: (context, state) {
       final authProvider = context.read<AuthProvider>();
+      final profileProvider = context.read<ProfileProvider>();
       final isAuthenticated = authProvider.isAuthenticated;
       final isLoading = authProvider.isLoading;
+      final isFirstLaunch = profileProvider.isFirstLaunch;
       final isAuthRoute = [
         AppConstants.loginRoute,
         AppConstants.registerRoute,
         AppConstants.forgotPasswordRoute,
       ].contains(state.matchedLocation);
+      final isOnboardingRoute = state.matchedLocation == AppConstants.onboardingRoute;
 
       // Don't redirect while loading
       if (isLoading) {
         return null;
+      }
+
+      // If first launch and not on onboarding route, redirect to onboarding
+      if (isFirstLaunch && !isOnboardingRoute) {
+        return AppConstants.onboardingRoute;
+      }
+
+      // If not first launch and on onboarding route, redirect to home
+      if (!isFirstLaunch && isOnboardingRoute) {
+        return AppConstants.homeRoute;
       }
 
       // If authenticated and on auth route, redirect to home
@@ -53,6 +67,12 @@ class AppRouter {
       return null;
     },
     routes: [
+      // Onboarding route
+      GoRoute(
+        path: AppConstants.onboardingRoute,
+        name: 'onboarding',
+        builder: (context, state) => const OnboardingScreen(),
+      ),
       // Authentication routes
       GoRoute(
         path: AppConstants.loginRoute,
@@ -234,6 +254,11 @@ class AppRouter {
     context.go(AppConstants.forgotPasswordRoute);
   }
 
+  /// Navigate to onboarding
+  static void goToOnboarding(BuildContext context) {
+    context.go(AppConstants.onboardingRoute);
+  }
+
   /// Navigate to all items screen
   static void goToAllItems(
     BuildContext context,
@@ -257,7 +282,6 @@ class AppRouter {
       AppConstants.profileRoute,
     ].contains(route);
   }
-
   /// Check if current route is an auth route
   static bool isAuthRoute(String route) {
     return [
@@ -265,5 +289,10 @@ class AppRouter {
       AppConstants.registerRoute,
       AppConstants.forgotPasswordRoute,
     ].contains(route);
+  }
+
+  /// Check if current route is onboarding route
+  static bool isOnboardingRoute(String route) {
+    return route == AppConstants.onboardingRoute;
   }
 }

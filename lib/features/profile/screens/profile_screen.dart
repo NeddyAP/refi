@@ -43,12 +43,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 32),
 
                 // Settings section
-                _SettingsSection(provider: provider),
-
-                const SizedBox(height: 32),
+                _SettingsSection(provider: provider),                const SizedBox(height: 32),
 
                 // About section
-                const _AboutSection(),
+                _AboutSection(provider: provider),
 
                 const SizedBox(height: 32), // Add space before sign out button
                 // Sign Out button (moved here)
@@ -432,7 +430,9 @@ class _SettingsSection extends StatelessWidget {
 }
 
 class _AboutSection extends StatelessWidget {
-  const _AboutSection();
+  final ProfileProvider provider;
+  
+  const _AboutSection({required this.provider});
 
   @override
   Widget build(BuildContext context) {
@@ -476,15 +476,26 @@ class _AboutSection extends StatelessWidget {
               // TODO: Replace with actual Terms of Service URL
               _launchUrl(context, 'https://example.com/terms');
             },
-          ),
-
-          ListTile(
+          ),          ListTile(
             leading: const Icon(Icons.help_outline),
             title: Text(AppLocalizations.of(context)!.helpAndSupport),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               // TODO: Replace with actual Help & Support URL
               _launchUrl(context, 'https://example.com/help');
+            },
+          ),
+
+          ListTile(
+            leading: const Icon(Icons.replay_outlined),
+            title: const Text('Show Onboarding'),
+            subtitle: const Text('View the app introduction again'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () async {
+              await provider.resetOnboarding();
+              if (context.mounted) {
+                context.go(AppConstants.onboardingRoute);
+              }
             },
           ),
           const SizedBox(height: 24), // Add some spacing

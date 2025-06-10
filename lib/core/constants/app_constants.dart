@@ -18,9 +18,11 @@ class AppConstants {
   static const String privacySettingsRoute = '/profile/privacy';
   static const String notificationSettingsRoute = '/profile/notifications';
   static const String languageSettingsRoute = '/profile/language';
+  static const String onboardingRoute = '/onboarding';
 
   // Storage keys
   static const String userTokenKey = 'user_token';
+  static const String isFirstLaunchKey = 'is_first_launch';
   static const String userDataKey = 'user_data';
   static const String favoritesKey = 'favorites';
   static const String watchlistKey = 'watchlist';

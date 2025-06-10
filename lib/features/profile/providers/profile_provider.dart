@@ -21,13 +21,17 @@ class ProfileProvider extends ChangeNotifier {
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
 
-  /// Initialize profile data
+  bool _isFirstLaunch = true;
+  bool get isFirstLaunch => _isFirstLaunch;
+
+    /// Initialize profile data
   Future<void> initialize() async {
     if (_isInitialized) return;
 
     await _loadThemePreference();
     await _loadLanguagePreference();
     await _loadUserData();
+    await _loadFirstLaunchStatus();
 
     _isInitialized = true;
     notifyListeners();
@@ -70,6 +74,18 @@ class ProfileProvider extends ChangeNotifier {
       // print('Error loading user data: $e');
       // TODO: Implement proper logging
       _isGuest = true;
+    }
+  }
+
+  /// Load first launch status
+  Future<void> _loadFirstLaunchStatus() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _isFirstLaunch = prefs.getBool(AppConstants.isFirstLaunchKey) ?? true;
+    } catch (e) {
+      // print('Error loading first launch status: $e');
+      // TODO: Implement proper logging
+      _isFirstLaunch = true;
     }
   }
 
@@ -134,6 +150,32 @@ class ProfileProvider extends ChangeNotifier {
       // TODO: Implement proper logging
     }
 
+    notifyListeners();
+  }
+
+  /// Mark onboarding as completed
+  Future<void> completeOnboarding() async {
+    _isFirstLaunch = false;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(AppConstants.isFirstLaunchKey, false);
+    } catch (e) {
+      // print('Error saving onboarding completion: $e');
+      // TODO: Implement proper logging
+    }
+    notifyListeners();
+  }
+
+  /// Reset onboarding status (useful for testing)
+  Future<void> resetOnboarding() async {
+    _isFirstLaunch = true;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(AppConstants.isFirstLaunchKey, true);
+    } catch (e) {
+      // print('Error resetting onboarding status: $e');
+      // TODO: Implement proper logging
+    }
     notifyListeners();
   }
 
