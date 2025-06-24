@@ -78,6 +78,8 @@ class ContentCarousel extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary,
                       fontWeight: FontWeight.w500,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
             ],
@@ -124,7 +126,7 @@ class ContentCarousel extends StatelessWidget {
         final item = items[index];
         return Padding(
           padding: const EdgeInsets.only(right: 12),
-          child: _ContentCard(
+          child: ContentCard(
             item: item,
             onTap: () => _handleItemTap(context, item),
           ),
@@ -178,11 +180,11 @@ class ContentCarousel extends StatelessWidget {
 }
 
 /// Individual content card widget
-class _ContentCard extends StatelessWidget {
+class ContentCard extends StatelessWidget {
   final dynamic item;
   final VoidCallback? onTap;
 
-  const _ContentCard({
+  const ContentCard({
     required this.item,
     this.onTap,
   });

@@ -50,6 +50,8 @@ class ErrorDisplayWidget extends StatelessWidget {
                 color: theme.colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
             ),
 
             if (onRetry != null) ...[
@@ -133,6 +135,8 @@ class EmptyStateWidget extends StatelessWidget {
                 color: theme.colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
             ),
 
             if (action != null) ...[const SizedBox(height: 24), action!],

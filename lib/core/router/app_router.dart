@@ -29,23 +29,32 @@ class AppRouter {
   static GoRouter get router => _router;
   static final GoRouter _router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: AppConstants.homeRoute,
+    initialLocation: '/',
     redirect: (context, state) {
       final authProvider = context.read<AuthProvider>();
       final profileProvider = context.read<ProfileProvider>();
       final isAuthenticated = authProvider.isAuthenticated;
       final isLoading = authProvider.isLoading;
       final isFirstLaunch = profileProvider.isFirstLaunch;
+      final isInitialized = profileProvider.isInitialized;
+      final currentLocation = state.matchedLocation;
+      
       final isAuthRoute = [
         AppConstants.loginRoute,
         AppConstants.registerRoute,
         AppConstants.forgotPasswordRoute,
-      ].contains(state.matchedLocation);
-      final isOnboardingRoute = state.matchedLocation == AppConstants.onboardingRoute;
+      ].contains(currentLocation);
+      final isOnboardingRoute = currentLocation == AppConstants.onboardingRoute;
+      final isRootRoute = currentLocation == '/';
 
-      // Don't redirect while loading
-      if (isLoading) {
+      // Don't redirect while loading or not initialized
+      if (isLoading || !isInitialized) {
         return null;
+      }
+
+      // Handle root route - redirect based on first launch status
+      if (isRootRoute) {
+        return isFirstLaunch ? AppConstants.onboardingRoute : AppConstants.homeRoute;
       }
 
       // If first launch and not on onboarding route, redirect to onboarding
@@ -67,6 +76,24 @@ class AppRouter {
       return null;
     },
     routes: [
+      // Root route handler
+      GoRoute(
+        path: '/',
+        name: 'root',
+        redirect: (context, state) {
+          final profileProvider = context.read<ProfileProvider>();
+          final isFirstLaunch = profileProvider.isFirstLaunch;
+          final isInitialized = profileProvider.isInitialized;
+          
+          // Wait for initialization
+          if (!isInitialized) {
+            return null;
+          }
+          
+          // Redirect based on first launch status
+          return isFirstLaunch ? AppConstants.onboardingRoute : AppConstants.homeRoute;
+        },
+      ),
       // Onboarding route
       GoRoute(
         path: AppConstants.onboardingRoute,

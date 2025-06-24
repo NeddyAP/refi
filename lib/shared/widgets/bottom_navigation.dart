@@ -236,6 +236,8 @@ class _OptimizedNavItem extends StatelessWidget {
                       fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
                       letterSpacing: 0.2,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -273,7 +275,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(title),
+      title: Text(
+        title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
       actions: actions,
       leading: leading,
       centerTitle: centerTitle,

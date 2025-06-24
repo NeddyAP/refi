@@ -5,11 +5,11 @@ import '../../../l10n/app_localizations.dart';
 import 'package:refi/core/network/api_result.dart';
 import '../../../core/router/app_router.dart';
 import '../../../shared/widgets/bottom_navigation.dart';
-import '../../../shared/widgets/movie_card.dart';
 import '../../../shared/widgets/loading_widget.dart';
 import '../../../shared/widgets/error_widget.dart';
 import '../../../shared/providers/navigation_visibility_provider.dart';
 import '../providers/explore_provider.dart';
+import '../../home/widgets/content_carousel.dart';
 
 class ExploreScreen extends StatefulWidget {
   final String? selectedCategory;
@@ -159,6 +159,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Theme.of(context).colorScheme.onPrimaryContainer,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       IconButton(
@@ -229,16 +231,16 @@ class _SearchResults extends StatelessWidget {
             MediaQuery.of(context).padding.bottom + 100
           ),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.6,
+            crossAxisCount: 3,
+            childAspectRatio: 0.65,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
           ),
           itemCount: movieResponse.results.length,
           itemBuilder: (context, index) {
             final movie = movieResponse.results[index];
-            return MovieCard(
-              movie: movie,
+            return ContentCard(
+              item: movie,
               onTap: () => AppRouter.goToMovieDetails(context, movie.id),
             );
           },
@@ -251,8 +253,8 @@ class _SearchResults extends StatelessWidget {
       loading: () => GridView.builder(
         padding: const EdgeInsets.all(16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.6,
+          crossAxisCount: 3,
+          childAspectRatio: 0.65,
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
         ),
@@ -289,16 +291,16 @@ class _AdvancedSearchResults extends StatelessWidget {
             MediaQuery.of(context).padding.bottom + 100
           ),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.6,
+            crossAxisCount: 3,
+            childAspectRatio: 0.65,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
           ),
           itemCount: movieResponse.results.length,
           itemBuilder: (context, index) {
             final movie = movieResponse.results[index];
-            return MovieCard(
-              movie: movie,
+            return ContentCard(
+              item: movie,
               onTap: () => AppRouter.goToMovieDetails(context, movie.id),
             );
           },
@@ -311,8 +313,8 @@ class _AdvancedSearchResults extends StatelessWidget {
       loading: () => GridView.builder(
         padding: const EdgeInsets.all(16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.6,
+          crossAxisCount: 3,
+          childAspectRatio: 0.65,
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
         ),
@@ -819,16 +821,16 @@ class _DefaultMoviesDisplay extends StatelessWidget {
                   MediaQuery.of(context).padding.bottom + 20
                 ),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.6,
+                  crossAxisCount: 3,
+                  childAspectRatio: 0.65,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                 ),
                 itemCount: movieResponse.results.length,
                 itemBuilder: (context, index) {
                   final movie = movieResponse.results[index];
-                  return MovieCard(
-                    movie: movie,
+                  return ContentCard(
+                    item: movie,
                     onTap: () => AppRouter.goToMovieDetails(context, movie.id),
                   );
                 },
@@ -841,8 +843,8 @@ class _DefaultMoviesDisplay extends StatelessWidget {
             loading: () => GridView.builder(
               padding: const EdgeInsets.all(16),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.6,
+                crossAxisCount: 3,
+                childAspectRatio: 0.65,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
               ),

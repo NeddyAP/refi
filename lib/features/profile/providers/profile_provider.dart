@@ -179,6 +179,11 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Check if onboarding should be shown (utility method for debugging)
+  bool shouldShowOnboarding() {
+    return _isFirstLaunch && _isInitialized;
+  }
+
   /// Get display name
   String get displayName {
     if (_userName != null) return _userName!;

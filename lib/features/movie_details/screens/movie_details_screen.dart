@@ -470,6 +470,8 @@ class _MovieTitleSection extends StatelessWidget {
                       // Use onSurface color for rating text
                       color: theme.colorScheme.onSurface,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(width: 8),
                   Row(
@@ -595,6 +597,8 @@ class _DescriptionSection extends StatelessWidget {
               color: theme.colorScheme.onSurface,
               height: 1.5,
             ),
+            maxLines: 8,
+            overflow: TextOverflow.ellipsis,
           )
         else
           Text(

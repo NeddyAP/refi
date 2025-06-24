@@ -628,6 +628,8 @@ class _MovieCarouselSectionState extends State<_MovieCarouselSection> {
                                     ],
                                   ),
                                   textAlign: TextAlign.right,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
                                   AppLocalizations.of(context)!.family,

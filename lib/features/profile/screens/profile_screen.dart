@@ -162,6 +162,9 @@ class _UserInfoSection extends StatelessWidget {
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                 ),
 
                 const SizedBox(height: 8),
@@ -176,6 +179,9 @@ class _UserInfoSection extends StatelessWidget {
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                 ),
 
                 const SizedBox(height: 8),
@@ -207,6 +213,8 @@ class _UserInfoSection extends StatelessWidget {
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.onPrimaryContainer,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
@@ -331,6 +339,9 @@ class _ProfileInfoTile extends StatelessWidget {
           style: Theme.of(
             context,
           ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
         ),
       ],
     );
